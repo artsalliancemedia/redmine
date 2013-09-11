@@ -1,0 +1,15 @@
+<h2><%=l(:label_screen_new)%></h2>
+
+<%= labelled_form_for @screen do |f| %>
+  <%= error_messages_for 'screen' %>
+
+  <div class="box tabular">
+  <!--[form:screen]-->
+  <p><label><%= t(:cinema) %></label><%= f.collection_select :cinema_id ,@cinemas,:id,:name, :required => true %></p>
+  <p><%= f.text_field :title, :required => true, :size => 60 %></p>
+  <p><%= f.text_field :identifier, :size => 60 %></p>
+  <p><%= f.text_field :uuid, :size => 60 %></p>
+  </div>
+
+  <%= submit_tag l(:button_create) %>
+<% end %>

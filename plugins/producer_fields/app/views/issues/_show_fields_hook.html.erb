@@ -1,0 +1,5 @@
+<%= issue_fields_rows do |rows|
+  rows.left l(:field_cinema), h(@issue.cinema.name), :class => 'cinema'
+  rows.left l(:field_screen), (h(@issue.screen.identifier) if @issue.screen), :class => 'screen'
+  rows.left l(:field_device), (h(t(@issue.device.category)) if @issue.device), :class => 'device'
+end %>

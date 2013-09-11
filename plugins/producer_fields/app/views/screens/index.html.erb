@@ -1,0 +1,26 @@
+<div class="contextual">
+<%= link_to l(:label_screen_new), {:controller => 'screens', :action => 'new'}, :class => 'icon icon-add' %>
+</div>
+
+<h2><%= t(:screen_plural) %></h2>
+
+<p class="pagination"><%= pagination_links_full @screen_pages %></p>
+
+<table class="list">
+  <tr>
+    <%= sort_header_tag('cinemas.name', :caption => t(:complex)) %>
+    <%= sort_header_tag('identifier') %>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @screens.each do |screen| %>
+    <tr>
+      <td><%= screen.cinema.name %></td>
+      <td><%= screen.identifier %></td>
+      <td><%= link_to l(:button_update), edit_screen_path(screen), :class => 'icon icon-edit' %></td>
+      <td><%= link_to l(:button_delete), screen_path(screen), :data => {:confirm => l(:text_screens_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>
+    </tr>
+  <% end %>
+</table>
+<p class="pagination"><%= pagination_links_full @screen_pages %></p>

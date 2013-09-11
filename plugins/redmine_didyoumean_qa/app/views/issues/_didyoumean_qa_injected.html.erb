@@ -1,0 +1,20 @@
+<div id="similar_messages_root">
+  <div id="similar_messages" style="display: none;">
+    <b><%= l(:dym_similar_messages_caption) %> (<span id="messages_count">&nbsp;</span>)</b>
+    <ul id="similar_messages_list"></ul>
+  </div>
+</div>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'didyoumean_qa', :plugin => 'redmine_didyoumean_qa' %>
+  <%= javascript_include_tag 'didyoumean_qa', :plugin => 'redmine_didyoumean_qa' %>
+<% end %>
+
+<script type="text/javascript">
+  var dym_qa = {
+    label_more: "<%= l(:dym_more_issues) %>",
+    search_url: "<%= url_for(:action => 'index', :controller => 'search_messages') %>"
+  };
+</script>
+
+<%= javascript_tag "observeIssueSubjectField2('#{@project.id}', '#{issues_didyoumean_qa_event_type}');" %>

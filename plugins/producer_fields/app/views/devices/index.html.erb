@@ -1,0 +1,34 @@
+<div class="contextual">
+  <%= link_to l(:label_device_new), {:controller => 'devices', :action => 'new'}, :class => 'icon icon-add' %>
+</div>
+
+<h2><%= t(:device_plural) %></h2>
+
+<p class="pagination"><%= pagination_links_full @device_pages %></p>
+
+<table class="list">
+  <tr>
+    <%= sort_header_tag('cinema_name', :caption => t(:complex)) %>
+    <%= sort_header_tag('screen_identifier', :caption => t(:screen)) %>
+    <%= sort_header_tag('category', :caption => t(:category)) %>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @devices.each do |device| %>
+    <tr>
+    <% if device.deviceable_type == 'Cinema' %>
+      <td><%= Cinema.find_by_id(device.deviceable_id).name %></td>
+      <td></td>
+    <% else %>
+      <td><%= Screen.find_by_id(device.deviceable_id).cinema.name %></td>
+      <td><%= Screen.find_by_id(device.deviceable_id).identifier %></td>
+    <% end %>
+
+    <td><%= t(device.category) %></td>
+    <td><%= link_to l(:button_update), edit_device_path(device), :class => 'icon icon-edit' %></td>
+    <td><%= link_to l(:button_delete), device_path(device), :data => {:confirm => l(:text_devices_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>
+    </tr>
+  <% end %>
+</table>
+<p class="pagination"><%= pagination_links_full @device_pages %></p>

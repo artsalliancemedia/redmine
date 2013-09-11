@@ -1,0 +1,22 @@
+<div class="contextual">
+<%= link_to l(:label_cinema_new), {:controller => 'cinemas', :action => 'new'}, :class => 'icon icon-add' %>
+</div>
+
+<h2><%= t(:cinema_plural) %><%= @sort_c %></h2>
+
+<p class="pagination"><%= pagination_links_full @cinema_pages %></p>
+
+<table class="list">
+  <tr>
+    <%= sort_header_tag('name') %>
+    <th></th>
+  </tr>
+
+  <% @cinemas.each do |cinema| %>
+    <tr>
+      <td><%= link_to cinema.name, edit_cinema_path(cinema) %></td>
+      <td><%= link_to l(:button_delete), cinema_path(cinema), :data => {:confirm => l(:text_cinemas_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>
+    </tr>
+  <% end %>
+</table>
+<p class="pagination"><%= pagination_links_full @cinema_pages %></p>

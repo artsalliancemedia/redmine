@@ -1,0 +1,17 @@
+require 'redmine'
+
+Redmine::Plugin.register :streamline_menus do
+  name 'Streamline Menus'
+  author 'Arts Alliance Media'
+  description 'Remove some superfluous menu items.'
+  version '0.0.1'
+  author_url 'http://artsalliancemedia.com/'
+
+  delete_menu_item(:top_menu, :projects)
+  delete_menu_item(:top_menu, :questions)
+  delete_menu_item(:project_menu, :overview)
+  delete_menu_item(:project_menu, :activity)
+  delete_menu_item(:project_menu, :boards)
+
+  menu :project_menu, :boards, {:controller => 'boards', :action => 'index'}, :caption => :label_questions, :after => :new_issue, :param => :project_id
+end
