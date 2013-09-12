@@ -5,10 +5,10 @@ This covers the common features that should be changed to deploy Redmine to an e
 ## Changing the language
 
 1. Login
-1. Go to the _Administration_ page.
-1. Go to the _Settings_ page.
-1. Go to the _Display_ tab.
-1. Change the *Default language* field.
+1. Go to the *Administration* page.
+1. Go to the *Settings* page.
+1. Go to the *Display* tab.
+1. Change the **Default language** field.
 
 ## Adding Issue Priorities
 

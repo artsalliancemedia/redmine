@@ -18,7 +18,7 @@ Please follow these steps in order:
 1. Download a copy of Redmine 2.3.x, follow the install instructions included to get a working installation.
 1. Copy across the `AAM` theme to the redmine installation directory. The theme can be found found under `/public/themes/AAM`.
   * Restart the redmine web server.
-  * Then login to Redmine, navigate to _Administration_ then to _Settings_ and finally to _Display_.
+  * Then login to Redmine, navigate to *Administration* then to *Settings* and finally to *Display*.
   * On the _Display_ page there is an option to change over the theme to `AAM`.
   * Click around and test the installation is still working correctly before proceeding.
 1. Copy across the `/patches` folder to the root of the redmine installation directory.
