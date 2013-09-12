@@ -32,7 +32,6 @@ module IssuePatch
 
       # @todo: Add in paused status for ticket stops.
       if self.in_breach?
-        @css_classes <<
         l(:breach)
       end
     end
