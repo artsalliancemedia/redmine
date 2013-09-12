@@ -10,8 +10,8 @@ module ProducerIssueQueryPatch
       base.add_available_column(QueryColumn.new(:screen))
       base.add_available_column(QueryColumn.new(:device, :sortable => "#{Device.table_name}.category", :groupable => true))
 
-      alias_method_chain :available_filters, :extended
-      alias_method_chain :issues, :extended
+      alias_method_chain :available_filters, :producer_fields
+      alias_method_chain :issues, :producer_fields
 
       # Used to override the SQL generated for the issue filter field, required because we need to do a sub-query to the CinemaCircuitGroup table.
       def sql_for_circuit_group_id_field(field, operator, value)
@@ -23,8 +23,8 @@ module ProducerIssueQueryPatch
   end
 
   module InstanceMethods
-    def available_filters_with_extended
-      @available_filters = available_filters_without_extended
+    def available_filters_with_producer_fields
+      @available_filters = available_filters_without_producer_fields
 
       filters = {
         "cinema_id" => {
@@ -44,9 +44,9 @@ module ProducerIssueQueryPatch
       return @available_filters.merge(filters)
     end
 
-    def issues_with_extended(options={})
+    def issues_with_producer_fields(options={})
       options[:include] = (options[:include] || []) + [:cinema, :device]
-      issues = issues_without_extended(options)
+      issues = issues_without_producer_fields(options)
     end
   end
 end
