@@ -1,6 +1,6 @@
 require 'redmine'
 
-Redmine::Plugin.register :redmine_didyoumean_qa do
+Redmine::Plugin.register :aam_redmine_didyoumean_qa do
   name 'Did You Mean? QA Version'
   author 'Arts Alliance Media'
   description 'A plugin to search for knowledge base articles when opening new issues. Based on redmine_didyoumean by Alessandro Bahgat and Mattia Tommasone.'

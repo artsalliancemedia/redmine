@@ -7,7 +7,7 @@ class SearchMessagesController < ApplicationController
     @query.strip!
 
     logger.debug "Got request for [#{@query}]"
-    logger.debug "Did you mean settings: #{Setting.plugin_redmine_didyoumean_qa.to_json}"
+    logger.debug "Did you mean settings: #{Setting.plugin_aam_redmine_didyoumean_qa.to_json}"
 
     all_words = true # if true, returns records that contain all the words specified in the input query
 
@@ -15,7 +15,7 @@ class SearchMessagesController < ApplicationController
     # eg. hello "bye bye" => ["hello", "bye bye"]
     @tokens = @query.scan(%r{((\s|^)"[\s\w]+"(\s|$)|\S+)}).collect {|m| m.first.gsub(%r{(^\s*"\s*|\s*"\s*$)}, '')}
     
-    min_length = Setting.plugin_redmine_didyoumean_qa['min_word_length'].to_i
+    min_length = Setting.plugin_aam_redmine_didyoumean_qa['min_word_length'].to_i
     @tokens = @tokens.uniq.select {|w| w.length >= min_length }
 
     if !@tokens.empty?
@@ -37,7 +37,7 @@ class SearchMessagesController < ApplicationController
       # pick the current project
       project = Project.find(params[:project_id]) unless params[:project_id].blank?
       
-      case Setting.plugin_redmine_didyoumean_qa['project_filter']
+      case Setting.plugin_aam_redmine_didyoumean_qa['project_filter']
       when '2'
         project_tree = Project.all
       when '1'
@@ -46,7 +46,7 @@ class SearchMessagesController < ApplicationController
       when '0'
         project_tree = [project]
       else
-        logger.warn "Unrecognized option for project filter: [#{Setting.plugin_redmine_didyoumean_qa['project_filter']}], skipping"
+        logger.warn "Unrecognized option for project filter: [#{Setting.plugin_aam_redmine_didyoumean_qa['project_filter']}], skipping"
       end
 
       if project_tree
@@ -57,7 +57,7 @@ class SearchMessagesController < ApplicationController
         variables << scope
       end
 
-      limit = Setting.plugin_redmine_didyoumean_qa['limit']
+      limit = Setting.plugin_aam_redmine_didyoumean_qa['limit']
       limit = 5 if limit.nil? or limit.empty?
 
       @messages = Message.visible.find(:all, :conditions => [conditions, *variables], :limit => limit)

@@ -1,6 +1,6 @@
 require 'redmine'
 
-Redmine::Plugin.register :streamline_menus do
+Redmine::Plugin.register :aam_streamline_menus do
   name 'Streamline Menus'
   author 'Arts Alliance Media'
   description 'Remove some superfluous menu items.'
