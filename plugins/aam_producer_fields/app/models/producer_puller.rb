@@ -1,29 +1,27 @@
 require 'net/http'
+require 'net/https'
 
 class ProducerPuller
   
-  def query_ssl(path)
-#    path = path + '?username=' + Setting.plugin_producer_fields['username'] + '&password=' + Setting.plugin_producer_fields['password']
-#    uri = URI.join(Setting.plugin_producer_fields['producer_url'], path)
-#
-#    http = Net::HTTP.new(uri.host, uri.port)
-##    http.use_ssl = true
-##    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-#
-#    request = Net::HTTP::Get.new(uri.request_uri)
-#    http.request(request)
-
+  def query_api(path)
 		path += '?username=' + Setting.plugin_producer_fields['username'] +
 			'&password=' + Setting.plugin_producer_fields['password']
 		
-		uri = URI.join(Setting.plugin_producer_fields['producer_url'], path)
+		url_base = Setting.plugin_producer_fields['producer_url'];		
+		uri = URI.join(url_base, path)
 		http = Net::HTTP.new(uri.host, uri.port)
+		
+		if url_base.include? "https"
+			http.use_ssl = true
+			http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+		end
+		
 		req = Net::HTTP::Get.new(uri.request_uri)
 		return http.request(req)
   end
 
   def insert_complexes
-    response = query_ssl('complexes')
+    response = query_api('complexes')
     complexes_obj = ActiveSupport::JSON.decode(response.body)["data"]["complexes"]
 		
     @complexes_saved = 0
@@ -49,7 +47,7 @@ class ProducerPuller
   end
   
   def insert_screens
-    response = query_ssl('screens')
+    response = query_api('screens')
     screens_obj = ActiveSupport::JSON.decode(response.body)["data"]["screens"]
 
     @screens_saved = 0
@@ -74,10 +72,12 @@ class ProducerPuller
         @screens_skipped += 1
       end
     end
+		puts @screens_saved.to_s + " screens saved"
+		puts @screens_skipped.to_s + " screens skipped"
   end
 
   def insert_devices
-    response = query_ssl('devices')
+    response = query_api('devices')
     devices_obj = ActiveSupport::JSON.decode(response.body)["data"]["devices"]
 
     @devices_saved = 0
@@ -123,6 +123,8 @@ class ProducerPuller
         @devices_skipped += 1
       end
     end
+		puts @devices_saved.to_s + " devices saved"
+		puts @devices_skipped.to_s + " devices skipped"
   end
   
 	def pull

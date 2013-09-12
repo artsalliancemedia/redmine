@@ -26,7 +26,6 @@ Redmine::Plugin.register :aam_producer_fields do
   menu :admin_menu, :cinemas, { :controller => 'cinemas', :action => 'index' }, :caption => :cinema_plural, :after => :activity, :param => :project_id
   menu :admin_menu, :screens, { :controller => 'screens', :action => 'index' }, :caption => :screen_plural, :after => :activity, :param => :project_id
   menu :admin_menu, :devices, { :controller => 'devices', :action => 'index' }, :caption => :device_plural, :after => :activity, :param => :project_id
-  menu :admin_menu, :pulls, { :controller => 'pulls', :action => 'index' }, :caption => :pull_data, :after => :activity, :param => :project_id
 end
 
 Rails.configuration.to_prepare do
