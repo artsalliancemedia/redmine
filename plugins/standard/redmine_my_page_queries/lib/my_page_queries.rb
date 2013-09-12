@@ -1,0 +1,2 @@
+require_dependency 'my_page_queries/patches/user_patch'
+require_dependency 'my_page_queries/patches/my_controller_patch'
