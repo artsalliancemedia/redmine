@@ -4,10 +4,10 @@ require 'net/https'
 class ProducerPuller
   
   def query_api(path)
-		path += '?username=' + Setting.plugin_producer_fields['username'] +
-			'&password=' + Setting.plugin_producer_fields['password']
+		path += '?username=' + Setting.plugin_aam_producer_fields['username'] +
+			'&password=' + Setting.plugin_aam_producer_fields['password']
 		
-		url_base = Setting.plugin_producer_fields['producer_url'];		
+		url_base = Setting.plugin_aam_producer_fields['producer_url'];		
 		uri = URI.join(url_base, path)
 		http = Net::HTTP.new(uri.host, uri.port)
 		
