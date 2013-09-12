@@ -2,7 +2,7 @@ require "redmine"
 
 require_dependency 'producer_fields_hooks'
 
-Redmine::Plugin.register :producer_fields do
+Redmine::Plugin.register :aam_producer_fields do
   name 'Producer Fields plugin'
   author 'Arts Alliance Media'
   # Adapted from the extended_fields plugin.
