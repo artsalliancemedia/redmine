@@ -1,0 +1,8 @@
+en:
+  sla_seconds: SLA Seconds
+
+  field_sla_status: SLA Status
+  sla_status: SLA Status
+  ok: Okay
+  paused: Paused
+  breach: Breach
