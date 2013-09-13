@@ -16,7 +16,7 @@ class CinemasController < ApplicationController
 
   def new
     @cinema = Cinema.new
-    @exhibitors = Exhibitor.find(:all)
+    @exhibitors = CircuitGroup.find(:all)
   end
 
   def get_screens
