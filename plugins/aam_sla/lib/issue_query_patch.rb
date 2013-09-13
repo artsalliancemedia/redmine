@@ -12,10 +12,26 @@ module IssueQueryPatch
 
       # Used to override the SQL generated for the issue filter field.
       def sql_for_sla_status_field(field, operator, value)
-        # op = operator == "!" ? 'NOT' : ''
-        # "(#{Issue.table_name}.cinema_id #{op} IN (SELECT DISTINCT cinemas_circuit_groups.cinema_id FROM cinemas_circuit_groups " +
-        #   "WHERE cinemas_circuit_groups.circuit_group_id IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + ")))"
-        "1=1"
+        value = value.kind_of?(Array) ? value : [value]
+
+        clauses = []
+        value.each do |val|
+          case val.to_sym
+          when :ok
+            clauses << "(#{Issue.table_name}.due_date IS NULL OR #{Issue.table_name}.due_date >= '#{DateTime.now.utc.to_s}')"
+          when :paused
+            # @todo
+          when :breach
+            # Mirror in_breach? function found in the issue_patch file.
+            clause = "((#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on > #{Issue.table_name}.due_date)" +
+              "OR ('#{DateTime.now.utc.to_s}' > #{Issue.table_name}.due_date))"
+
+            clauses << clause
+          end
+        end
+
+        sql = "(" + clauses.join(" OR ") + ")"
+        sql
       end
     end
   end

@@ -21,15 +21,14 @@ module IssuePatch
     end
 
     def in_breach?
+      return false if due_date.nil?
+
       breach = (!closed_on.nil? and closed_on > due_date)
       breach ||= DateTime.now > due_date
-
       breach
     end
 
     def sla_status
-      return if start_date.nil? or due_date.nil?
-
       # @todo: Add in paused status for ticket stops.
       if in_breach?
         l(:breach)
