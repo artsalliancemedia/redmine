@@ -1,6 +1,6 @@
 Index: app/controllers/issues_controller.rb
 ===================================================================
---- app/controllers/issues_controller.rb	(revision 12122)
+--- app/controllers/issues_controller.rb	(revision 12132)
 +++ app/controllers/issues_controller.rb	(working copy)
 @@ -406,7 +406,7 @@
        render_error l(:error_no_tracker_in_project)
@@ -13,7 +13,7 @@ Index: app/controllers/issues_controller.rb
      @priorities = IssuePriority.active
 Index: app/helpers/application_helper.rb
 ===================================================================
---- app/helpers/application_helper.rb	(revision 12122)
+--- app/helpers/application_helper.rb	(revision 12132)
 +++ app/helpers/application_helper.rb	(working copy)
 @@ -291,6 +291,41 @@
      end
@@ -59,7 +59,7 @@ Index: app/helpers/application_helper.rb
      project_tree(projects) do |project, level|
 Index: app/helpers/queries_helper.rb
 ===================================================================
---- app/helpers/queries_helper.rb	(revision 12122)
+--- app/helpers/queries_helper.rb	(revision 12132)
 +++ app/helpers/queries_helper.rb	(working copy)
 @@ -100,7 +100,12 @@
          h(value)
@@ -77,7 +77,7 @@ Index: app/helpers/queries_helper.rb
      when 'Fixnum'
 Index: app/models/issue.rb
 ===================================================================
---- app/models/issue.rb	(revision 12122)
+--- app/models/issue.rb	(revision 12132)
 +++ app/models/issue.rb	(working copy)
 @@ -61,6 +61,9 @@
    DONE_RATIO_OPTIONS = %w(issue_field issue_status)
@@ -121,7 +121,29 @@ Index: app/models/issue.rb
      'done_ratio',
      'estimated_hours',
      'custom_field_values',
-@@ -1387,6 +1392,33 @@
+@@ -454,6 +459,21 @@
+ 
+     # mass-assignment security bypass
+     assign_attributes attrs, :without_protection => true
++
++    # Helper to make sure that when we load in the time it takes into account that it is supplied localised and must be converted back to utc.
++    def load_localised_time(date, time, time_zone)
++      localised_date = {:year => date.year, :month => date.month, :day => date.day}
++      localised_datetime = date.in_time_zone(time_zone).change({:hour => time['hour'], :min => time['minute']})
++      return localised_datetime.change(localised_date).utc
++    end
++
++    if (start_time = attrs.delete('start_time')) && safe_attribute?('start_time') && self.start_date.is_a?(Time)
++      self.start_date = load_localised_time(self.start_date, start_time, user.time_zone)
++    end
++
++    if (due_time = attrs.delete('due_time')) && safe_attribute?('due_time') && self.due_date.is_a?(Time)
++      self.due_date = load_localised_time(self.due_date, due_time, user.time_zone)
++    end
+   end
+ 
+   def disabled_core_fields
+@@ -1387,6 +1407,33 @@
      end
    end
  
@@ -157,7 +179,7 @@ Index: app/models/issue.rb
      if assigned_to.nil? && category && category.assigned_to
 Index: app/models/project.rb
 ===================================================================
---- app/models/project.rb	(revision 12122)
+--- app/models/project.rb	(revision 12132)
 +++ app/models/project.rb	(working copy)
 @@ -549,9 +549,9 @@
    # The earliest start date of a project, based on it's issues and versions
@@ -199,7 +221,7 @@ Index: app/models/project.rb
      'custom_fields',
 Index: app/models/version.rb
 ===================================================================
---- app/models/version.rb	(revision 12122)
+--- app/models/version.rb	(revision 12132)
 +++ app/models/version.rb	(working copy)
 @@ -100,7 +100,7 @@
      if completed_percent == 100
@@ -212,7 +234,7 @@ Index: app/models/version.rb
        false # No issues so it's not late
 Index: app/views/issues/_attributes.html.erb
 ===================================================================
---- app/views/issues/_attributes.html.erb	(revision 12122)
+--- app/views/issues/_attributes.html.erb	(revision 12132)
 +++ app/views/issues/_attributes.html.erb	(working copy)
 @@ -47,11 +47,18 @@
  <% end %>
@@ -220,7 +242,7 @@ Index: app/views/issues/_attributes.html.erb
  <% if @issue.safe_attribute? 'start_date' %>
 -<p><%= f.text_field :start_date, :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('start_date') %><%= calendar_for('issue_start_date') if @issue.leaf? %></p>
 +<p>
-+  <%= f.text_field :start_date, :value => (@issue.start_date ? @issue.start_date.strftime('%Y-%m-%d') : ''), :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('start_date') %>
++  <%= f.text_field :start_date, :value => (@issue.start_date ? localise_date(@issue.start_date).strftime('%Y-%m-%d') : ''), :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('start_date') %>
 +  <%= calendar_for('issue_start_date') if @issue.leaf? %>
 +  <%== time_select_tag( "issue[start_time]", @issue.start_date.to_s, :required => @issue.required_attribute?('start_date') ) if @project.use_datetime_for_issues %>
 +</p>
@@ -228,7 +250,7 @@ Index: app/views/issues/_attributes.html.erb
  
  <% if @issue.safe_attribute? 'due_date' %>
 -<p><%= f.text_field :due_date, :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('due_date') %><%= calendar_for('issue_due_date') if @issue.leaf? %></p>
-+<p><%= f.text_field :due_date, :value => (@issue.due_date ? @issue.due_date.strftime('%Y-%m-%d') : ''), :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('due_date') %>
++<p><%= f.text_field :due_date, :value => (@issue.due_date ? localise_date(@issue.due_date).strftime('%Y-%m-%d') : ''), :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('due_date') %>
 +   <%= calendar_for('issue_due_date') if @issue.leaf? %>
 +   <%== time_select_tag( "issue[due_time]", @issue.due_date.to_s, :required => @issue.required_attribute?('due_date') ) if @project.use_datetime_for_issues %>
 +</p>
@@ -237,7 +259,7 @@ Index: app/views/issues/_attributes.html.erb
  <% if @issue.safe_attribute? 'estimated_hours' %>
 Index: app/views/issues/show.html.erb
 ===================================================================
---- app/views/issues/show.html.erb	(revision 12122)
+--- app/views/issues/show.html.erb	(revision 12132)
 +++ app/views/issues/show.html.erb	(working copy)
 @@ -47,10 +47,10 @@
    end
@@ -254,7 +276,7 @@ Index: app/views/issues/show.html.erb
      rows.right l(:field_done_ratio), progress_bar(@issue.done_ratio, :width => '80px', :legend => "#{@issue.done_ratio}%"), :class => 'progress'
 Index: app/views/projects/_form.html.erb
 ===================================================================
---- app/views/projects/_form.html.erb	(revision 12122)
+--- app/views/projects/_form.html.erb	(revision 12132)
 +++ app/views/projects/_form.html.erb	(working copy)
 @@ -11,6 +11,7 @@
  <% end %></p>
@@ -266,7 +288,7 @@ Index: app/views/projects/_form.html.erb
      <p><%= label(:project, :parent_id, l(:field_parent)) %><%= parent_project_select_tag(@project) %></p>
 Index: config/locales/cs.yml
 ===================================================================
---- config/locales/cs.yml	(revision 12122)
+--- config/locales/cs.yml	(revision 12132)
 +++ config/locales/cs.yml	(working copy)
 @@ -311,7 +311,7 @@
    field_assigned_to_role: Role přiřaditele
@@ -279,7 +301,7 @@ Index: config/locales/cs.yml
    setting_welcome_text: Uvítací text
 Index: config/locales/en-GB.yml
 ===================================================================
---- config/locales/en-GB.yml	(revision 12122)
+--- config/locales/en-GB.yml	(revision 12132)
 +++ config/locales/en-GB.yml	(working copy)
 @@ -311,6 +311,7 @@
    field_assigned_to_role: "Assignee's role"
@@ -291,7 +313,7 @@ Index: config/locales/en-GB.yml
    setting_app_title: Application title
 Index: config/locales/en.yml
 ===================================================================
---- config/locales/en.yml	(revision 12122)
+--- config/locales/en.yml	(revision 12132)
 +++ config/locales/en.yml	(working copy)
 @@ -314,6 +314,7 @@
    field_assigned_to_role: "Assignee's role"
@@ -303,7 +325,7 @@ Index: config/locales/en.yml
    field_is_private: Private
 Index: config/locales/es.yml
 ===================================================================
---- config/locales/es.yml	(revision 12122)
+--- config/locales/es.yml	(revision 12132)
 +++ config/locales/es.yml	(working copy)
 @@ -1110,6 +1110,7 @@
    button_hide: Ocultar
@@ -347,7 +369,7 @@ Index: db/migrate/20130531174549_add_use_datetime_for_issues_to_projects.rb
 +end
 Index: lib/redmine/helpers/gantt.rb
 ===================================================================
---- lib/redmine/helpers/gantt.rb	(revision 12122)
+--- lib/redmine/helpers/gantt.rb	(revision 12132)
 +++ lib/redmine/helpers/gantt.rb	(working copy)
 @@ -628,6 +628,9 @@
        private
@@ -368,9 +390,28 @@ Index: lib/redmine/helpers/gantt.rb
        end
  
        # TODO: Sorts a collection of issues by start_date, due_date, id for gantt rendering
+Index: lib/redmine/i18n.rb
+===================================================================
+--- lib/redmine/i18n.rb	(revision 12132)
++++ lib/redmine/i18n.rb	(working copy)
+@@ -52,6 +52,14 @@
+       ::I18n.t(str.to_s, :value => value, :locale => lang.to_s.gsub(%r{(.+)\-(.+)$}) { "#{$1}-#{$2.upcase}" })
+     end
+ 
++    def localise_date(date)
++      return if date.nil?
++
++      zone = User.current.time_zone
++      local = zone ? date.in_time_zone(zone) : date
++      return local
++    end
++
+     def format_date(date)
+       return nil unless date
+       options = {}
 Index: lib/redmine/utils.rb
 ===================================================================
---- lib/redmine/utils.rb	(revision 12122)
+--- lib/redmine/utils.rb	(revision 12132)
 +++ lib/redmine/utils.rb	(working copy)
 @@ -60,7 +60,7 @@
            weeks = days / 7
@@ -401,7 +442,7 @@ Index: lib/redmine/utils.rb
            days += 1
 Index: test/functional/issues_controller_test.rb
 ===================================================================
---- test/functional/issues_controller_test.rb	(revision 12122)
+--- test/functional/issues_controller_test.rb	(revision 12132)
 +++ test/functional/issues_controller_test.rb	(working copy)
 @@ -1582,7 +1582,7 @@
      assert_template 'new'
