@@ -121,24 +121,29 @@ Index: app/models/issue.rb
      'done_ratio',
      'estimated_hours',
      'custom_field_values',
-@@ -454,6 +459,16 @@
+@@ -454,6 +459,21 @@
  
      # mass-assignment security bypass
      assign_attributes attrs, :without_protection => true
 +
-+    if (s = attrs.delete('start_time')) && safe_attribute?('start_time')
-+      time = {:hour => self.start_time['hour'], :min => self.start_time['minute']}
-+      self.start_date = self.start_date.in_time_zone(user.time_zone).change(time)
++    # Helper to make sure that when we load in the time it takes into account that it is supplied localised and must be converted back to utc.
++    def load_localised_time(date, time, time_zone)
++      localised_date = {:year => date.year, :month => date.month, :day => date.day}
++      localised_datetime = date.in_time_zone(time_zone).change({:hour => time['hour'], :min => time['minute']})
++      return localised_datetime.change(localised_date).utc
 +    end
 +
-+    if (s = attrs.delete('due_time')) && safe_attribute?('due_time')
-+      time = {:hour => self.due_time['hour'], :min => self.due_time['minute']}
-+      self.due_date = self.due_date.in_time_zone(user.time_zone).change(time)
++    if (start_time = attrs.delete('start_time')) && safe_attribute?('start_time') && self.start_date.is_a?(Time)
++      self.start_date = load_localised_time(self.start_date, start_time, user.time_zone)
++    end
++
++    if (due_time = attrs.delete('due_time')) && safe_attribute?('due_time') && self.due_date.is_a?(Time)
++      self.due_date = load_localised_time(self.due_date, due_time, user.time_zone)
 +    end
    end
  
    def disabled_core_fields
-@@ -1387,6 +1402,33 @@
+@@ -1387,6 +1407,33 @@
      end
    end
  
@@ -237,7 +242,7 @@ Index: app/views/issues/_attributes.html.erb
  <% if @issue.safe_attribute? 'start_date' %>
 -<p><%= f.text_field :start_date, :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('start_date') %><%= calendar_for('issue_start_date') if @issue.leaf? %></p>
 +<p>
-+  <%= f.text_field :start_date, :value => (@issue.start_date ? @issue.start_date.strftime('%Y-%m-%d') : ''), :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('start_date') %>
++  <%= f.text_field :start_date, :value => (@issue.start_date ? localise_date(@issue.start_date).strftime('%Y-%m-%d') : ''), :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('start_date') %>
 +  <%= calendar_for('issue_start_date') if @issue.leaf? %>
 +  <%== time_select_tag( "issue[start_time]", @issue.start_date.to_s, :required => @issue.required_attribute?('start_date') ) if @project.use_datetime_for_issues %>
 +</p>
@@ -245,7 +250,7 @@ Index: app/views/issues/_attributes.html.erb
  
  <% if @issue.safe_attribute? 'due_date' %>
 -<p><%= f.text_field :due_date, :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('due_date') %><%= calendar_for('issue_due_date') if @issue.leaf? %></p>
-+<p><%= f.text_field :due_date, :value => (@issue.due_date ? @issue.due_date.strftime('%Y-%m-%d') : ''), :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('due_date') %>
++<p><%= f.text_field :due_date, :value => (@issue.due_date ? localise_date(@issue.due_date).strftime('%Y-%m-%d') : ''), :size => 10, :disabled => !@issue.leaf?, :required => @issue.required_attribute?('due_date') %>
 +   <%= calendar_for('issue_due_date') if @issue.leaf? %>
 +   <%== time_select_tag( "issue[due_time]", @issue.due_date.to_s, :required => @issue.required_attribute?('due_date') ) if @project.use_datetime_for_issues %>
 +</p>
@@ -385,6 +390,25 @@ Index: lib/redmine/helpers/gantt.rb
        end
  
        # TODO: Sorts a collection of issues by start_date, due_date, id for gantt rendering
+Index: lib/redmine/i18n.rb
+===================================================================
+--- lib/redmine/i18n.rb	(revision 12132)
++++ lib/redmine/i18n.rb	(working copy)
+@@ -52,6 +52,14 @@
+       ::I18n.t(str.to_s, :value => value, :locale => lang.to_s.gsub(%r{(.+)\-(.+)$}) { "#{$1}-#{$2.upcase}" })
+     end
+ 
++    def localise_date(date)
++      return if date.nil?
++
++      zone = User.current.time_zone
++      local = zone ? date.in_time_zone(zone) : date
++      return local
++    end
++
+     def format_date(date)
+       return nil unless date
+       options = {}
 Index: lib/redmine/utils.rb
 ===================================================================
 --- lib/redmine/utils.rb	(revision 12132)
