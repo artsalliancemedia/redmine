@@ -8,7 +8,7 @@ Redmine::Plugin.register :aam_streamline_menus do
   author_url 'http://artsalliancemedia.com/'
 
   delete_menu_item(:top_menu, :projects)
-  delete_menu_item(:top_menu, :questions)
+  delete_menu_item(:top_menu, :questions) # @todo <- Doesn't work because plugins are loaded alphabetically so cannot override redmine_questions :S
   delete_menu_item(:project_menu, :overview)
   delete_menu_item(:project_menu, :activity)
   delete_menu_item(:project_menu, :boards)
