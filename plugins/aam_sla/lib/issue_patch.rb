@@ -27,12 +27,24 @@ module IssuePatch
       breach ||= DateTime.now > due_date
       breach
     end
-
-    def sla_status
+		
+		def paused?
       # @todo: Add in paused status for ticket stops.
+			false
+		end
+
+    def sla_status_raw
       if in_breach?
-        l(:breach)
+        :breach
+			elsif paused?
+				:paused
+			else
+				:ok
       end
+    end
+		
+    def sla_status
+			return l(sla_status_raw)
     end
   end
 end
