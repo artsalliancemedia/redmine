@@ -1,7 +1,3 @@
-require 'redmine'
-
-require_dependency 'issue_statuses_hook'
-
 Redmine::Plugin.register :aam_producer_sync do
   name 'Producer Ticket Sync plugin'
   author 'Arts Alliance Media'

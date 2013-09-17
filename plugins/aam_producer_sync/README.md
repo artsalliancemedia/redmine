@@ -4,13 +4,6 @@ Synchronises ticket data with Producer (by exposing a Rake task). Only fields re
 
 ##Setup
 
-Must edit the redmine core for it to work:
-
-In app->views->issue_statuses->_form.html.erb, change line 11 from
-`<%= call_hook(:view_issue_statuses_form, :issue_status => @issue_status ) %>`
-to
-`<%= call_hook(:view_issue_statuses_form, { :issue_status => @issue_status, :form => f } ) %>`
-
 Ticket statuses should be set in the UI under admin->ticket statuses. 
 This is to map the localised issue status string to a Producer-friendly ticket status
 
