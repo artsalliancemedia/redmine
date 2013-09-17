@@ -1,0 +1,8 @@
+# English strings go here for Rails i18n
+en:
+  # my_label: "My label"
+  producer_sync_url_label: "Producer Sync API endpoint"
+  username_label: "Username"
+  password_label: "Password"
+  
+  field_name_raw: "Producer status"
