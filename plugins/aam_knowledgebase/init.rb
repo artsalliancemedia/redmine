@@ -1,19 +1,18 @@
 ActionDispatch::Callbacks.to_prepare do
-	require 'redmine_questions'
+	require 'aam_knowledgebase'
 end
 
-Redmine::Plugin.register :redmine_questions do
-  name 'Redmine Q&A plugin'
-  author 'RedmineCRM'
-  description 'This is a Q&A plugin for Redmine'
-  version '0.0.5'
-  url 'http://www.redminecrm.com/projects/questions'
-  author_url 'mailto:support@redminecrm.com'
+Redmine::Plugin.register :aam_knowledgebase do
+  name 'Knowledgebase'
+  author 'Arts Alliance Media'
+  description "Repurposes forum into a custom knowledgebase. Based on 'Redmine Q&A plugin' by RedmineCRM"
+  version '0.0.1'
+  author_url 'http://artsalliancemedia.com'
 
-  requires_redmine :version_or_higher => '2.1.2'   
+  requires_redmine :version_or_higher => '2.1.2'
   
   settings :default => {
-    :notice_message => '*Can\'t find the answer you\'re looking for?* Email us at ...'
+    :notice_message => ''
   }, :partial => 'settings/questions'
 
   permission :view_questions, { 

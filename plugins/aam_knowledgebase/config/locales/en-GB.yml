@@ -1,9 +1,9 @@
 # English strings go here for Rails i18n
-en:
+en-GB:
   label_questions: 'Knowledgebase'
   label_questions_search: 'Search for an article'
   label_article_new: "New article"
-  label_questions_message: "Article"
+  label_questions_message: Article
   label_questions_added_time: "Added %{value} ago"
   label_questions_related_messages: Related articles
   label_questions_latest_messages: Latest articles
@@ -27,3 +27,5 @@ en:
   permission_view_questions: View Knowledgebase
   permission_edit_messages_tags: Edit tags
   permission_edit_vote_messages: Vote messages
+  
+
