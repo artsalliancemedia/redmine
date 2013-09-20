@@ -13,9 +13,9 @@ Gem::Specification.new do |s|
   s.license     = "GPL v2"
 
   # Which files should be included in the gem itself, hopefully basically everything in the lib folder.
-  s.files       = Dir["lib/*"]
-  #s.files.reject! { |f| f.include? "patches" }
-  #s.files.reject! { |f| f.include? ".git" }
+  s.files       = Dir["lib/**/*"]
+  s.files.reject! { |f| f.include? "core_patches" }
+  s.files.reject! { |f| f.include? ".git" }
 
   # External dependencies, please install these separately.
   s.requirements << 'ruby, v2.0.x'
