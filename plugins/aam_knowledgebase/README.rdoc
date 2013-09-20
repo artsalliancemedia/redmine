@@ -1,3 +1,9 @@
-= redmine_qa
+**Knowledgebase plugin
 
-Description goes here
+Re-vamps the redmine forum module into a knowledgebase.
+
+It is adapted from the Q&A plugin, with the following changes:
+
+- Renaming to knowledgebase concepts, namely articles.
+- Adding Device categorisation for articles
+- Add links to related issues for articles

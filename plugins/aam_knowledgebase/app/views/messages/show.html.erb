@@ -32,6 +32,26 @@
 
 <div class="message details">
     <h2><%=h @topic.subject %></h2>
+	
+	<% def neat(str) #easier than patching the message helper
+		if str.nil?
+		  str = ""
+		end
+		if str && str.empty?
+			return l(:na)
+		else
+			return str
+		end
+	end
+   %>
+	
+	<p>
+	  <span class="category-heading">Manufacturer</span>: <%= neat @message.manufacturer %>
+	  <span class="category-heading">Model</span>: <%= neat @message.model %>
+	  <span class="category-heading">Software</span>: <%= l(:version_short) + " " + neat(@message.software_version) %>
+	  <span class="category-heading">Firmware</span>: <%= l(:version_short) + " " + neat(@message.firmware_version) %>
+	</p>
+	
     <%= avatar(@topic.author, :size => "32") %>
     <p class="author"><%= link_to_user @topic.author %><br>
        <%= l(:label_questions_added_time, :value => time_tag(@topic.created_on)).html_safe %>
@@ -40,6 +60,13 @@
       <%= textilizable(@topic, :content) %>
     </div>
     <%= link_to_attachments @topic, :author => false %>
+	
+	<div id="issues-related">
+	  <h4>Related Issues</h4>
+	  <% @message.issues.each do |iss| %>
+		<%= link_to iss.subject, issue_path(iss) %> <br />
+	  <% end %>
+	</div>
 
 </div>
 <br />

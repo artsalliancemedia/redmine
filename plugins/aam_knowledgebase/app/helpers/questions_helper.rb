@@ -9,7 +9,6 @@ module QuestionsHelper
     url = {:controller => 'questions', :action => 'vote', :id => object}
     link_to((voted ? l(:button_questions_unvote) : l(:button_questions_vote)), url, 
       :class => (voted ? 'icon icon-vote' : 'icon icon-unvote'))
-
-  end  
+  end
 
 end

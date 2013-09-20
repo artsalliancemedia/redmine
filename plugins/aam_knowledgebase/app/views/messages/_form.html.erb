@@ -1,6 +1,11 @@
 <%= error_messages_for 'message' %>
 <% replying ||= false %>
 
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "article", :plugin => 'aam_knowledgebase'  %>
+  <%= stylesheet_link_tag "articles", :plugin => 'aam_knowledgebase'  %>
+<% end %>
+
 <div class="box">
 <!--[form:message]-->
 <p style=<%= "display:none;" if replying %> ><label for="message_subject"><%= l(:field_subject) %></label><br />
@@ -16,6 +21,7 @@
 <% end %>
 </p>
 
+
 <% if !replying && !@message.new_record? && @message.safe_attribute?('board_id') %>
   <p><label><%= l(:label_board) %></label><br />
   <%= f.select :board_id, boards_options_for_select(@message.project.boards) %></p>
@@ -27,6 +33,62 @@
 <%= wikitoolbar_for 'message_content' %>
 <!--[eoform:message]-->
 
+<p>
+  Custom content goes here
+</p>
+  
+ <p>
+<label for="message_model"><%= l(:field_kb_device_model) %></label>
+<%= f.select :model, Device.find_by_sql("SELECT DISTINCT model FROM devices").map{|m| m.model}.reject{|m| m.nil?}, {:include_blank => true} %>
+ </p>
+ <p>
+<label for="message_manufacturer"><%= l(:field_kb_device_manufacturer) %></label>
+<%= f.select :manufacturer, Device.find_by_sql("SELECT DISTINCT manufacturer FROM devices").map{|m| m.manufacturer}.reject{|m| m.nil?}, {:include_blank => true} %>
+</p>
+ <p>
+<label for="message_firmware_version"><%= l(:field_kb_device_firmware_version) %></label>
+<%= f.select :firmware_version, Device.find_by_sql("SELECT DISTINCT firmware_version FROM devices").map{|m| m.firmware_version}.reject{|m| m.nil?}, {:include_blank => true} %>
+</p>
+ <p>
+<label for="message_software_version"><%= l(:field_kb_device_software_version) %></label>
+<%= f.select :software_version, Device.find_by_sql("SELECT DISTINCT software_version FROM devices").map{|m| m.software_version}.reject{|m| m.nil?}, {:include_blank => true} %>
+</p>
+ 
+<% if Issue.exists? %>
+<p id="related-issues">
+  <span><%= l(:field_message_issues) %> </span><br />
+  <input id="message-related-issues-search" size="50" type="text" value="" />
+  <input type="hidden" id="message-related-issues-search-value" />
+  <a no-follow id="article-add-issue">Add</a> <br />
+  
+  <% @message.issues.each do |iss| %>
+	<span>
+	  <%= link_to iss.subject, issue_path(iss) %> <a class="article-remove-issue" no-follow>Remove</a><br />
+	  <%= hidden_field_tag 'message[issue_ids][]', iss.id %>
+	</span>
+  <% end %>
+</p>
+
+<%= javascript_tag "observeAutocompleteField(
+  'message-related-issues-search',
+  '#{escape_javascript auto_complete_issues_path}',
+  { 
+	select: function(event, ui) {
+		$('#message-related-issues-search-value').val(ui.item.id);
+		$('#message-related-issues-search').val(ui.item.label);
+		return false;
+	},
+    focus: function(event, ui) {
+        $('#message-related-issues-search').val(ui.item.label);
+        return false;
+    }
+  }
+)" %>
+
+<%= hidden_field_tag 'message[issue_ids][]', '' %>
+<% end %>
+  
+
 <% if !replying && @message.safe_attribute?('tag_list') %>
 <p>
   <label for="message_tag_list"><%= l(:field_questions_tags) %></label><br />
@@ -37,3 +99,4 @@
 <p><%= l(:label_attachment_plural) %><br />
 <%= render :partial => 'attachments/form', :locals => {:container => @message} %></p>
 </div>
+

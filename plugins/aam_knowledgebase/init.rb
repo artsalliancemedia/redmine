@@ -1,6 +1,9 @@
+require 'redmine'
+
 ActionDispatch::Callbacks.to_prepare do
 	require 'aam_knowledgebase'
 end
+
 
 Redmine::Plugin.register :aam_knowledgebase do
   name 'Knowledgebase'
@@ -20,7 +23,11 @@ Redmine::Plugin.register :aam_knowledgebase do
   }
 
   delete_menu_item(:top_menu, :help)
-
+	
+	#Allow extension of the 'message' model. Without this, the controller will reject this plugin's custom fields when saving/creating a message
+	Message.safe_attributes 'model', 'manufacturer', 'software_version', 'firmware_version', 'issue_ids'
+	Issue.safe_attributes 'message_ids' 
+	
   menu :top_menu, :questions, {:controller => 'questions', :action => 'index'}, 
     :last => true,
     :caption => :label_questions, 
@@ -34,4 +41,10 @@ Redmine::Plugin.register :aam_knowledgebase do
       map.permission :edit_messages_tags, {}
     end
   end    
+end
+
+# Patches to the Redmine core.
+Rails.configuration.to_prepare do
+	Issue.send(:include, KbIssuePatch) unless Issue.included_modules.include? KbIssuePatch
+	Message.send(:include, KbMessagePatch) unless Message.included_modules.include? KbMessagePatch
 end

@@ -1,4 +1,4 @@
-<h2><%= l(:label_message_new) %></h2>
+<h2><%= l(:label_article_new) %></h2>
 
 <%= form_for @message, :url => {:controller => "messages", :action => 'new'}, :html => {:multipart => true, :id => 'message-form'} do |f| %>
   <%= render :partial => 'messages/form', :locals => {:f => f} %>

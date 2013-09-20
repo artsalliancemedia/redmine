@@ -23,6 +23,12 @@ en-GB:
 
   field_questions_tags: Tags
   field_kb_device_model: "Device Model"
+  field_kb_device_manufacturer: "Device Manufacturer"
+  field_kb_device_firmware_version: "Device Firmware Version"
+  field_kb_device_software_version: "Device Software Version"
+  field_message_issues: "Related Issues"
+  version_short: "v"
+  na: "n/a"
 
   permission_view_questions: View Knowledgebase
   permission_edit_messages_tags: Edit tags
