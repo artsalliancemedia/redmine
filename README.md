@@ -1,20 +1,5 @@
-# Redmine Integration
+# Redmine
 
-In here contains the bits required to turn a vanilla installation of redmine into an installation of Lifeguard!
+A bunch of plugins that can combine together to provide NOC tools on top of the existing issue tracker found within Redmine.
 
-*What is Lifeguard?*
-
-Lifeguard is the other name for "NOC in a box", i.e. a set of software applications that can be combined together so you can run a Network Operations Center anywhere. 
-
-*Why Redmine?*
-
-It came close with a lot of features that were found to be early requirements and had a robust plugin architecture that is hoped will be flexible to accept future enhancements.
-
-
-## Installation
-
-Please see INSTALL.md for detailed instructions.
-
-## Customisation
-
-Please see CUSTOMISE.md for detailed instructions.
+If you are looking for the SLA plugin, it can be found under `/lib/aam_lifeguard/plugins`, it requires the patch under `/lib/aam_lifeguard/patches` to be applied before it'll function correctly.
