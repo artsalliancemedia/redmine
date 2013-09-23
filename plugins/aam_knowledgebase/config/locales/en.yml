@@ -30,6 +30,16 @@ en:
   version_short: "v"
   na: "n/a"
 
+  #Override core - doesn't actually work, unfortunately!
   permission_view_questions: View Knowledgebase
   permission_edit_messages_tags: Edit tags
-  permission_edit_vote_messages: Vote messages
+  permission_edit_vote_messages: Vote articles
+  label_board: Knowledgebase
+  label_board_new: New Knowledgebase
+  label_board_plural: Knowledgebase
+  label_topic_plural: Topics
+  label_message_plural: Articles
+  label_message_last: Last article
+  label_message_new: New article
+  label_message_posted: Article added
+  label_reply_plural: Comments

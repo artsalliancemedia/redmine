@@ -1,5 +1,7 @@
 require 'redmine'
 
+require_dependency 'aam_knowledgebase/kb_issue_hooks'
+
 ActionDispatch::Callbacks.to_prepare do
 	require 'aam_knowledgebase'
 end

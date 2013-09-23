@@ -34,24 +34,25 @@
 <!--[eoform:message]-->
 
 <p>
-  Custom content goes here
+  Categorisation
 </p>
   
  <p>
-<label for="message_model"><%= l(:field_kb_device_model) %></label>
-<%= f.select :model, Device.find_by_sql("SELECT DISTINCT model FROM devices").map{|m| m.model}.reject{|m| m.nil?}, {:include_blank => true} %>
- </p>
- <p>
 <label for="message_manufacturer"><%= l(:field_kb_device_manufacturer) %></label>
-<%= f.select :manufacturer, Device.find_by_sql("SELECT DISTINCT manufacturer FROM devices").map{|m| m.manufacturer}.reject{|m| m.nil?}, {:include_blank => true} %>
+<%= f.select :manufacturer, Device.find_by_sql("SELECT DISTINCT manufacturer FROM devices").map{|m| m.manufacturer}.reject{|m| m.nil?},
+  {:include_blank => true}, { :data => { :url => "/devices_for_autocomplete/manufacturer/" } }  %>
 </p>
  <p>
+<label for="message_model"><%= l(:field_kb_device_model) %></label>
+<%= f.select :model, [], {:include_blank => true}, { :data => { :url => "/devices_for_autocomplete/model/" } } %>
+ </p>
+ <p>
 <label for="message_firmware_version"><%= l(:field_kb_device_firmware_version) %></label>
-<%= f.select :firmware_version, Device.find_by_sql("SELECT DISTINCT firmware_version FROM devices").map{|m| m.firmware_version}.reject{|m| m.nil?}, {:include_blank => true} %>
+<%= f.select :firmware_version, {}, {:include_blank => true} %>
 </p>
  <p>
 <label for="message_software_version"><%= l(:field_kb_device_software_version) %></label>
-<%= f.select :software_version, Device.find_by_sql("SELECT DISTINCT software_version FROM devices").map{|m| m.software_version}.reject{|m| m.nil?}, {:include_blank => true} %>
+<%= f.select :software_version, {}, {:include_blank => true} %>
 </p>
  
 <% if Issue.exists? %>
@@ -99,4 +100,3 @@
 <p><%= l(:label_attachment_plural) %><br />
 <%= render :partial => 'attachments/form', :locals => {:container => @message} %></p>
 </div>
-

@@ -49,6 +49,13 @@ class QuestionsController < ApplicationController
     message.watchers = issue.watchers
     message.add_watcher(issue.author)
     message.attachments = issue.attachments
+		
+		message.manufacturer = issue.device.manufacturer
+		message.model = issue.device.model
+		message.software_version = issue.device.software_version
+		message.firmware_version = issue.device.firmware_version
+		message.issues << issue
+		
     issue.journals.select{|j| !j.notes.blank?}.each do |journal|
       reply = Message.new
       reply.author = journal.user
@@ -66,6 +73,29 @@ class QuestionsController < ApplicationController
     end
 
   end
+	
+	def device_models
+		@models = []
+		Device.where("model IS NOT NULL AND manufacturer = ?", params[:manufacturer]).select("DISTINCT(model)").reorder("model").each do |device|
+			@models << device.model
+		end
+		render :layout => false
+#		Device.find_by_sql("SELECT DISTINCT model FROM devices").map{|m| m.model}.reject{|m| m.nil?}
+	end
+	
+	def device_model_info
+		@softwares = []
+		@firmwares = []
+		Device.where("software_version IS NOT NULL AND model = ?", params[:model])
+		.select("DISTINCT(software_version)").reorder("software_version").each do |model|
+			@softwares << model.software_version
+		end
+		Device.where("firmware_version IS NOT NULL AND model = ?", params[:model])
+		.select("DISTINCT(firmware_version)").reorder("firmware_version").each do |model|
+			@firmwares << model.firmware_version
+		end
+		render :layout => false
+	end
 
 private
 
