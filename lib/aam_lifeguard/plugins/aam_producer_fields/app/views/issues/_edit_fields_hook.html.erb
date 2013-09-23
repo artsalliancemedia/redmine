@@ -1,5 +1,5 @@
 <% if @issue.safe_attribute? 'cinema_id' %>
-<p><%= form.select :cinema_id, Cinema.all.collect {|c| [c.name, c.id]}, {:required => true, :include_blank => true},
+<p><%= form.select :cinema_id, Cinema.all.collect {|c| [c.name, c.id]}, {:required => true, :include_blank => false},
                 :onchange => "updateIssueFrom('#{escape_javascript project_issue_form_path(@project, :id => @issue, :format => 'js')}')" %></p>
 <% end %>
 
