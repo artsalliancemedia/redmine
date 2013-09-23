@@ -29,3 +29,5 @@
 <p><%= form.select :device_id,  devices.collect {|d| [t(d.category), d.id]}, {:include_blank => true},
                 {:onchange => "updateIssueFrom('#{escape_javascript project_issue_form_path(@project, :id => @issue, :format => 'js')}')"} %></p>
 <% end %>
+
+<%= hidden_field_tag("issue-update_form-url", project_issue_form_path(@project, :id => @issue, :format => 'js'))  %>
