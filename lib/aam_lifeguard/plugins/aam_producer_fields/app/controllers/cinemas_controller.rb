@@ -33,7 +33,6 @@ class CinemasController < ApplicationController
   end
   
   def edit
-    @exhibitors = Exhibitor.find(:all)
   end
 
   def create
