@@ -33,9 +33,7 @@
 <%= wikitoolbar_for 'message_content' %>
 <!--[eoform:message]-->
 
-<p>
-  Categorisation
-</p>
+<h4><%= l(:categorisation) %></h4>
   
  <p>
 <label for="message_manufacturer"><%= l(:field_kb_device_manufacturer) %></label>
@@ -44,27 +42,28 @@
 </p>
  <p>
 <label for="message_model"><%= l(:field_kb_device_model) %></label>
-<%= f.select :model, [], {:include_blank => true}, { :data => { :url => "/devices_for_autocomplete/model/" } } %>
+<%= f.select :model, Message.get_models(@message.manufacturer), {:include_blank => true},
+	{ :data => { :url => "/devices_for_autocomplete/model/" } } %>
  </p>
  <p>
 <label for="message_firmware_version"><%= l(:field_kb_device_firmware_version) %></label>
-<%= f.select :firmware_version, {}, {:include_blank => true} %>
+<%= f.select :firmware_version, Message.get_firmwares(@message.model), {:include_blank => true} %>
 </p>
  <p>
 <label for="message_software_version"><%= l(:field_kb_device_software_version) %></label>
-<%= f.select :software_version, {}, {:include_blank => true} %>
+<%= f.select :software_version, Message.get_softwares(@message.model), {:include_blank => true} %>
 </p>
  
 <% if Issue.exists? %>
 <p id="related-issues">
-  <span><%= l(:field_message_issues) %> </span><br />
+  <span><%= l(:label_related_issues) %> </span><br />
   <input id="message-related-issues-search" size="50" type="text" value="" />
   <input type="hidden" id="message-related-issues-search-value" />
-  <a no-follow id="article-add-issue">Add</a> <br />
+  <a no-follow id="article-add-issue"><%= l(:button_add) %></a> <br />
   
   <% @message.issues.each do |iss| %>
 	<span>
-	  <%= link_to iss.subject, issue_path(iss) %> <a class="article-remove-issue" no-follow>Remove</a><br />
+	  <%= link_to iss.subject, issue_path(iss) %> <a class="article-remove-issue" no-follow><%= l(:button_remove) %></a><br />
 	  <%= hidden_field_tag 'message[issue_ids][]', iss.id %>
 	</span>
   <% end %>

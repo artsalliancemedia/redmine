@@ -16,6 +16,24 @@ module KbMessagePatch
   end
   
   module ClassMethods
+		def get_models(manufacturer)
+			return Device.where("model IS NOT NULL AND manufacturer = ?", manufacturer)
+				.select("DISTINCT(model)").reorder("model")
+				.map { |d| d.model }
+		end
+		
+		def get_softwares(model)
+			return Device.where("software_version IS NOT NULL AND model = ?", model)
+				.select("DISTINCT(software_version)").reorder("software_version")
+				.map { |d| d.software_version }
+		end
+		def get_firmwares(model)
+			return Device.where("firmware_version IS NOT NULL AND model = ?", model)
+				.select("DISTINCT(firmware_version)").reorder("firmware_version")
+				.map { |d| d.firmware_version }
+		end
+		
+		
   end
   
   module InstanceMethods

@@ -3,11 +3,11 @@
 <% end %>
 
 <p id="make-kb">
-  <a href="#make-kb-add" nofollow>Make knowledgebase article from this issue</a>
+  <a href="#make-kb-add" nofollow><%= l(:article_make_from_issue) %></a>
 </p>
 
 <div id="make-kb-add" style="display: none">
-  <p>Article Category</p>
+  <span><%= l(:label_topic) %> </span> 
   <%= select_tag :board_id, options_for_select(@issue.project.boards.collect {|b| [b.name, b.id]}) %> 
-  <a id="make-kb-add-submit" data-url="<%= issue_path(@issue) %>">Add</a>
+  <a id="make-kb-add-submit" data-url="<%= issue_path(@issue) %>"><%= l(:article_add) %> </a>
 </div>

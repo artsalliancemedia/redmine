@@ -20,15 +20,20 @@ en:
   button_questions_unvote: Unvote
   button_questions_like: Like
   button_questions_unlike: Unlike
+  button_remove: "Remove"
 
   field_questions_tags: Tags
   field_kb_device_model: "Device Model"
   field_kb_device_manufacturer: "Device Manufacturer"
   field_kb_device_firmware_version: "Device Firmware Version"
   field_kb_device_software_version: "Device Software Version"
-  field_message_issues: "Related Issues"
-  version_short: "v"
+
+  categorisation: "Categorisation"
+  article_add: "Add article"
+  article_make_from_issue: "Make knowledgebase article from this issue"
   na: "n/a"
+  
+  label_topic: "Topic"
 
   #Override core - doesn't actually work, unfortunately!
   permission_view_questions: View Knowledgebase

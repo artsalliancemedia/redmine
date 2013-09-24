@@ -50,10 +50,12 @@ class QuestionsController < ApplicationController
     message.add_watcher(issue.author)
     message.attachments = issue.attachments
 		
-		message.manufacturer = issue.device.manufacturer
-		message.model = issue.device.model
-		message.software_version = issue.device.software_version
-		message.firmware_version = issue.device.firmware_version
+		if issue.device
+			message.manufacturer = issue.device.manufacturer
+			message.model = issue.device.model
+			message.software_version = issue.device.software_version
+			message.firmware_version = issue.device.firmware_version
+		end
 		message.issues << issue
 		
     issue.journals.select{|j| !j.notes.blank?}.each do |journal|
@@ -75,25 +77,13 @@ class QuestionsController < ApplicationController
   end
 	
 	def device_models
-		@models = []
-		Device.where("model IS NOT NULL AND manufacturer = ?", params[:manufacturer]).select("DISTINCT(model)").reorder("model").each do |device|
-			@models << device.model
-		end
+		@models = Message.get_models( params[:manufacturer] )
 		render :layout => false
-#		Device.find_by_sql("SELECT DISTINCT model FROM devices").map{|m| m.model}.reject{|m| m.nil?}
 	end
 	
 	def device_model_info
-		@softwares = []
-		@firmwares = []
-		Device.where("software_version IS NOT NULL AND model = ?", params[:model])
-		.select("DISTINCT(software_version)").reorder("software_version").each do |model|
-			@softwares << model.software_version
-		end
-		Device.where("firmware_version IS NOT NULL AND model = ?", params[:model])
-		.select("DISTINCT(firmware_version)").reorder("firmware_version").each do |model|
-			@firmwares << model.firmware_version
-		end
+		@softwares = Message.get_softwares(params[:model])
+		@firmwares = Message.get_firmwares(params[:model])
 		render :layout => false
 	end
 
@@ -110,7 +100,7 @@ private
     find_options = {}
     find_options[:conditions] = [sql, * (tokens.collect {|w| "%#{w.downcase}%"} * token_clauses.size).sort]
 
-    scope = Message.scoped({}) 
+    scope = Message.scoped({})
     scope = scope.where("#{Message.table_name}.parent_id IS NULL")
     scope = scope.where(["#{Board.table_name}.project_id = ?", @project.id]) if @project
     scope = scope.where(["#{Message.table_name}.board_id = ?", @board.id]) if @board

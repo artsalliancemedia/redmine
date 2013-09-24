@@ -33,7 +33,7 @@
 <div class="message details">
     <h2><%=h @topic.subject %></h2>
 	
-	<% def neat(str) #easier than patching the message helper
+	<% def neat(str) #easier to define here than patch the message helper
 		if str.nil?
 		  str = ""
 		end
@@ -46,10 +46,10 @@
    %>
 	
 	<p>
-	  <span class="category-heading">Manufacturer</span>: <%= neat @message.manufacturer %>
-	  <span class="category-heading">Model</span>: <%= neat @message.model %>
-	  <span class="category-heading">Software</span>: <%= l(:version_short) + " " + neat(@message.software_version) %>
-	  <span class="category-heading">Firmware</span>: <%= l(:version_short) + " " + neat(@message.firmware_version) %>
+	  <span class="category-heading"><%= l(:field_manufacturer) %></span>: <%= neat @message.manufacturer %>
+	  <span class="category-heading"><%= l(:field_model) %></span>: <%= neat @message.model %>
+	  <span class="category-heading"><%= l(:field_software_version) %></span>: <%= neat(@message.software_version) %>
+	  <span class="category-heading"><%= l(:field_firmware_version) %></span>: <%= neat(@message.firmware_version) %>
 	</p>
 	
     <%= avatar(@topic.author, :size => "32") %>
@@ -62,7 +62,7 @@
     <%= link_to_attachments @topic, :author => false %>
 	
 	<div id="issues-related">
-	  <h4>Related Issues</h4>
+	  <h4><%= l(:label_related_issues) %></h4>
 	  <% @message.issues.each do |iss| %>
 		<%= link_to iss.subject, issue_path(iss) %> <br />
 	  <% end %>
