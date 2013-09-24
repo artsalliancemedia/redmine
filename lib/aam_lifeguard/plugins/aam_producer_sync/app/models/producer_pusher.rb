@@ -23,8 +23,8 @@ class ProducerPusher
 		req = Net::HTTP::Post.new(uri.request_uri)
 		req.body = ticket_slimmed.to_json
 		req.content_type = 'application/json'
-		puts "Making request"
-	#	puts req.body
+#		puts "Making request"
+#		puts req.body
 		return http.request(req)
   end
 	
@@ -34,22 +34,28 @@ class ProducerPusher
 		
 		issues.each do |issue|
 			ticket_id = issue.id.to_s
-			issue_slimmed = {
+			issue_slimmed = { #compulsory or derived fields
 				complex_id: issue.cinema.external_id,
-				screen_uuid: issue.screen.uuid,
-				device_uuid: issue.device.uuid,
 				status: issue.status.name_raw,
 				sla_status: issue.sla_status_raw,
-				url: Setting["protocol"] + "://" + Setting["host_name"] + "/issues/" + ticket_id
+				url: Setting["protocol"] + "://" + Setting["host_name"] + "/issues/" + ticket_id #derived
 			}
+			#Add optional fields, if present
+			if issue.screen
+				issue_slimmed["screen_uuid"] = issue.screen.uuid
+			end
+			if issue.device
+				issue_slimmed["device_uuid"] = issue.device.uuid
+			end
+			
 			if issue.uuid #updating previously-sent ticket
 				issue_slimmed["uuid"] = issue.uuid
 			end
-			puts issue_slimmed
+#			puts issue_slimmed
 
 			response = query_api(issue_slimmed)
 			status = response.code
-		#	puts "Receiving response"
+#			puts "Receiving response"
 			if (status != '200')
 				puts status + " Error. Terminating task now."
 				return false
@@ -75,7 +81,7 @@ class ProducerPusher
 		last_run_time = File.exist?(last_run_path) ? File.read(last_run_path) : Time.now - 9999999999
 		
 		succesful = send_tickets last_run_time
-		ran_at = Time.now.to_s
+		ran_at = (Time.now + 1).to_s #Round up to prevent same ticket being sent again next time task runs
 		
 		if succesful
 			file = open(last_run_path, 'w')
