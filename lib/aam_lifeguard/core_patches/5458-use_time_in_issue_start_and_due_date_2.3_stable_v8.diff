@@ -377,8 +377,8 @@ Index: lib/redmine/helpers/calendar.rb
          @events = events
 -        @ending_events_by_days = @events.group_by {|event| event.due_date}
 -        @starting_events_by_days = @events.group_by {|event| event.start_date}
-+        @ending_events_by_days = @events.group_by {|event| (event.due_date.is_a?(Date) ? event.due_date : event.due_date.to_date) }
-+        @starting_events_by_days = @events.group_by {|event| (event.start_date.is_a?(Date) ? event.start_date : event.start_date.to_date) }
++        @ending_events_by_days = @events.group_by {|event| (event.due_date.is_a?(Date) || event.due_date.nil? ? event.due_date : event.due_date.to_date) }
++        @starting_events_by_days = @events.group_by {|event| (event.start_date.is_a?(Date) || event.start_date.nil?  ? event.start_date : event.start_date.to_date) }
        end
  
        # Returns events for the given day
