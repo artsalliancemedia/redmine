@@ -346,7 +346,7 @@ Index: config/routes.rb
 
  RedmineApp::Application.routes.draw do
 -  root :to => 'welcome#index', :as => 'home'
-+  root :to => 'issues#index', :as => 'home'
++  root :to => 'issues#index', :as => 'home', :project_id => 'lifeguard'
 
    match 'login', :to => 'account#login', :as => 'signin', :via => [:get, :post]
    match 'logout', :to => 'account#logout', :as => 'signout', :via => [:get, :post]
