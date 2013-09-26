@@ -1,13 +1,15 @@
 <%= board_breadcrumb(@message) %>
 
 <div class="contextual">
-    <%= watcher_link(@topic, User.current) %>
+	<!-- disable some of this stuff for now, to simplify UI
+    <%= watcher_link(@topic, User.current) if false %>
     <% voted = User.current.voted_for?(@topic) %>
     <%= link_to(
           voted ? l(:button_questions_unvote) : l(:button_questions_vote),
           {:controller => 'questions', :action => 'vote', :id => @topic},
           :class => 'icon ' + (voted ? 'icon-vote' : 'icon-unvote')
         ) if User.current.allowed_to?(:vote_messages, @project) %>
+	-->
 
     <%= link_to(
           l(:button_quote),
@@ -76,12 +78,14 @@
 <% @replies.each do |message| %>
   <div class="message reply" id="<%= "message-#{message.id}" %>">
     <div class="contextual">
+	  <!--
     <% liked = User.current.voted_for?(message) %>
     <%= link_to(
           message.cached_votes_up > 0 ? "(#{message.cached_votes_up})" : "",
           {:controller => 'questions', :action => 'vote', :id => message},
           :class => 'vote icon ' + (liked ? 'icon-vote' : 'icon-unvote')
-        ) if true || User.current.allowed_to?(:vote_messages, @project) %>      
+        ) if true || User.current.allowed_to?(:vote_messages, @project) %>
+	  -->
       <%= link_to(
             image_tag('comment.png'),
             {:action => 'quote', :id => message},
@@ -132,12 +136,14 @@
 <% content_for :sidebar do %>  
   <h3><%= l(:label_questions_message) %></h3>
   <ul class="question-meta">
+	<!--
     <li class="votes icon icon-vote">
       <%= l(:label_questions_votes, :count => @topic.cached_votes_up - @topic.cached_votes_down ) %>
     </li>
     <li class="views icon icon-view">
       <%= l(:label_questions_views, :count => @topic.view_count ) %>
     </li>
+   -->
     <% unless @topic.tags.blank? %>  
     <li class="tags icon icon-tag">
       <%= 

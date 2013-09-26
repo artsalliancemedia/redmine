@@ -10,7 +10,7 @@
 <!--[form:message]-->
 <p style=<%= "display:none;" if replying %> ><label for="message_subject"><%= l(:field_subject) %></label><br />
   <%= f.text_field :subject, :style => "width: 80%;", :id => "message_subject" %>
-<% unless replying %>
+<% unless replying || true #disable for now, to simplify UI %>
 
   <% if @message.safe_attribute? 'sticky' %>
     <%= f.check_box :sticky %> <%= label_tag 'message_sticky', l(:label_board_sticky) %>
@@ -58,12 +58,11 @@
 <p id="related-issues">
   <span><%= l(:label_related_issues) %> </span><br />
   <input id="message-related-issues-search" size="50" type="text" value="" />
-  <input type="hidden" id="message-related-issues-search-value" />
-  <a no-follow id="article-add-issue"><%= l(:button_add) %></a> <br />
+  <input type="hidden" id="message-related-issues-search-value" /> <br />
   
   <% @message.issues.each do |iss| %>
-	<span>
-	  <%= link_to iss.subject, issue_path(iss) %> <a class="article-remove-issue" no-follow><%= l(:button_remove) %></a><br />
+	<span id="related-issue-<%= iss.id %>">
+	  <%= link_to iss.subject, issue_path(iss) %> <span class="article-remove-issue"><%= l(:button_remove) %></span><br />
 	  <%= hidden_field_tag 'message[issue_ids][]', iss.id %>
 	</span>
   <% end %>
@@ -74,8 +73,7 @@
   '#{escape_javascript auto_complete_issues_path}',
   { 
 	select: function(event, ui) {
-		$('#message-related-issues-search-value').val(ui.item.id);
-		$('#message-related-issues-search').val(ui.item.label);
+		addRelatedIssue(ui.item.id, ui.item.label);
 		return false;
 	},
     focus: function(event, ui) {

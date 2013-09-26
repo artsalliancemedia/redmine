@@ -1,12 +1,13 @@
 .article-remove-issue {
-	padding-left: 2em;
-	color: #a00;
+	margin-left: 2em;
+	color: #900;
 	background-color: #fee;
 }
-#article-add-issue {
-	padding-left: 0.5em;
-	color: #0a0;
-	background-color: #efe;
+.article-remove-issue:hover {
+	margin-left: 2em;
+	color: #b00;
+	background-color: #fdd;
+	cursor: pointer;
 }
 
 .category-heading {
