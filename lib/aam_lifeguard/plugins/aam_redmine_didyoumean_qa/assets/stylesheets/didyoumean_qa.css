@@ -1,13 +1,14 @@
-div#similar_messages {
-  padding: 5px 5px 5px 180px;
+div.dym {
+	display: none;
+	padding: 5px 5px 5px 180px;
 }
 
-ul#similar_messages_list {
-  margin: 2px;
-  list-style-type: none;
-  padding: 2px;
+div.dym ul {
+	margin: 2px;
+	list-style-type: none;
+	padding: 2px;
 }
 
-#similar_messages a {
-  cursor: hand;
+div.dym a {
+	cursor: pointer;
 }

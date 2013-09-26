@@ -54,6 +54,8 @@ en:
   lms: LMS
   pos: POS
   watchfolder: Watchfolder
+  with_software: "software v."
+  and_firmware: "firmware v."
 
   producer_url_label: "Producer URL"
   username_label: "Username"
