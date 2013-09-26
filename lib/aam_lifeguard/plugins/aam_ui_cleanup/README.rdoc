@@ -1,0 +1,1 @@
+Cleans up the UI of unwanted defaults
