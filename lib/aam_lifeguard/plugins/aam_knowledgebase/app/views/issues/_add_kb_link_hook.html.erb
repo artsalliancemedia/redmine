@@ -1,0 +1,13 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "issue", :plugin => 'aam_knowledgebase'  %>
+<% end %>
+
+<p id="make-kb">
+  <a href="#make-kb-add" nofollow><%= l(:article_make_from_issue) %></a>
+</p>
+
+<div id="make-kb-add" style="display: none">
+  <span><%= l(:label_topic) %> </span> 
+  <%= select_tag :board_id, options_for_select(@issue.project.boards.collect {|b| [b.name, b.id]}) %> 
+  <a id="make-kb-add-submit" data-url="<%= issue_path(@issue) %>"><%= l(:article_add) %> </a>
+</div>
