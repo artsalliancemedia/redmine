@@ -1,7 +1,13 @@
-<div id="similar_messages_root">
-  <div id="similar_messages" style="display: none;">
-    <b><%= l(:dym_similar_messages_caption) %> (<span id="messages_count">&nbsp;</span>)</b>
-    <ul id="similar_messages_list"></ul>
+<div id="similar_articles_root">
+  <div id="similar_articles" class="dym">
+    <b><%= l(:dym_similar_articles_caption) %> (<span id="articles_count">&nbsp;</span>)</b>
+    <ul id="similar_articles_list"></ul>
+  </div>
+</div>
+<div id="similar_issues_root">
+  <div id="similar_issues" class="dym">
+    <b><%= l(:dym_similar_issues_caption) %> (<span id="issues_count">&nbsp;</span>)</b>
+    <ul id="similar_issues_list"></ul>
   </div>
 </div>
 
@@ -11,10 +17,13 @@
 <% end %>
 
 <script type="text/javascript">
-  var dym_qa = {
-    label_more: "<%= l(:dym_more_issues) %>",
-    search_url: "<%= url_for(:action => 'index', :controller => 'search_messages') %>"
+  var dym_data = {
+	project_id: "<%= @project.id %>",
+	issue_id: "<%= @issue.id || '' %>",
+    issue_url: "<%= url_for(Issue.new) %>",
+	event_type: "<%= issues_didyoumean_qa_event_type %>",
+    search_url: "<%= url_for(:action => 'index', :controller => 'search_messages') %>",
+    label_more: "<%= l(:dym_more) %>"
   };
 </script>
-
-<%= javascript_tag "observeIssueSubjectField2('#{@project.id}', '#{issues_didyoumean_qa_event_type}');" %>
+<%= javascript_tag "onLoad();" %>

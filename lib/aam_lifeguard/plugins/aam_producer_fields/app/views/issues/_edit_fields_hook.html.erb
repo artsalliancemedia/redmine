@@ -26,7 +26,21 @@
   end
 %>
 
-<p><%= form.select :device_id,  devices.collect {|d| [t(d.category), d.id]}, {:include_blank => true},
+<%
+def check_blank(lead, trail)
+  return trail.blank? ? "" : lead + " " + trail
+end
+
+def full_device_name(d)
+  name = t(d.category)
+  details = d.manufacturer.to_s + " " + d.model.to_s + " " +
+	check_blank(l(:with_software), d.software_version.to_s) + " " + check_blank(l(:and_firmware), d.firmware_version.to_s)
+  full = details.blank? ? name : name + " - " + details
+  return full
+end
+%>
+
+<p><%= form.select :device_id,  devices.collect {|d| [full_device_name(d), d.id]}, {:include_blank => true},
                 {:onchange => "updateIssueFrom('#{escape_javascript project_issue_form_path(@project, :id => @issue, :format => 'js')}')"} %></p>
 <% end %>
 
