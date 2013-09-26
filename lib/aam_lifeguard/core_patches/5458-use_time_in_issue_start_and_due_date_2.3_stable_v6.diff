@@ -295,7 +295,7 @@ Index: config/locales/cs.yml
    field_text: Textové pole
    field_visible: Viditelný
 -
-+  field_use_datetime_for_issues: Použít u tiketů také čas
++  field_use_datetime_for_issues: Použít u tiketů také �?as
    setting_app_title: Název aplikace
    setting_app_subtitle: Podtitulek aplikace
    setting_welcome_text: Uvítací text
@@ -335,6 +335,21 @@ Index: config/locales/es.yml
    label_in_the_past_days: en los anteriores
    label_attribute_of_user: "%{name} del usuario"
    text_turning_multiple_off: Si desactiva los valores múltiples, éstos serán eliminados para dejar un único valor por elemento.
+Index: config/routes.rb
+===================================================================
+--- config/routes.rb	(revision 0)
++++ config/routes.rb	(working copy)
+@@ -14,9 +14,9 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program; if not, write to the Free Software
+ # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+ RedmineApp::Application.routes.draw do
+-  root :to => 'welcome#index', :as => 'home'
++  root :to => 'issues#index', :as => 'home'
+
+   match 'login', :to => 'account#login', :as => 'signin', :via => [:get, :post]
+   match 'logout', :to => 'account#logout', :as => 'signout', :via => [:get, :post]
 Index: db/migrate/20130531174459_add_time_to_issue_start_date_and_issue_due_date.rb
 ===================================================================
 --- db/migrate/20130531174459_add_time_to_issue_start_date_and_issue_due_date.rb	(revision 0)
