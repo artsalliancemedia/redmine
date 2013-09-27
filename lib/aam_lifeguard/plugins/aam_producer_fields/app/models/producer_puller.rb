@@ -105,16 +105,20 @@ class ProducerPuller
         end
 
         if(device_obj["monitoring_info"])
-          monitoring_info = ActiveSupport::JSON.decode(device_obj["monitoring_info"].gsub("\\\"", "\""))
-          if(monitoring_info["software_version"])
-            device.software_version = monitoring_info["software_version"]
-          end
-          if(monitoring_info["model"])
-            device.model = monitoring_info["model"]
-          end
-          if(monitoring_info["firmware_version"])
-            device.firmware_version = monitoring_info["firmware_version"]
-          end
+					begin
+						monitoring_info = ActiveSupport::JSON.decode(device_obj["monitoring_info"])
+						if(monitoring_info["software_version"])
+							device.software_version = monitoring_info["software_version"]
+						end
+						if(monitoring_info["model"])
+							device.model = monitoring_info["model"]
+						end
+						if(monitoring_info["firmware_version"])
+							device.firmware_version = monitoring_info["firmware_version"]
+						end
+					rescue
+						puts "Invalid JSON monitoring info for " + device.uuid
+					end
         end
 
         device.save
