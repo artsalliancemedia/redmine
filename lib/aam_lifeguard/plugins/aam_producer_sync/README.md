@@ -13,7 +13,9 @@ URL and Producer login details can be changed in the Lifeguard UI under admin->p
 
 run `rake lifeguard:producer_push`
 
-Only tasks added or modified since the last run will be synched.
+For extra debug logging, run `rake lifeguard:producer_push[true]`
+
+Only tasks added or modified since the last run will be synced
 
 
 
