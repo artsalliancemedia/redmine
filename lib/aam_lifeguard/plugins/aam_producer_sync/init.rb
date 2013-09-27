@@ -1,7 +1,7 @@
 Redmine::Plugin.register :aam_producer_sync do
   name 'Producer Ticket Sync plugin'
   author 'Arts Alliance Media'
-  description 'Sends recent slimmed-down Ticket data to Producer.'
+  description 'Syncs slimmed-down ticket data to Producer, as a manual Rake task.'
   version '0.0.1'
   author_url 'http://artsalliancemedia.com'
   
