@@ -36,6 +36,7 @@ class ProducerPusher
 		issues.each do |issue|
 			ticket_id = issue.id.to_s
 			issue_slimmed = { #compulsory or derived fields
+				subject: issue.subject,
 				complex_id: issue.cinema.external_id,
 				status: issue.status.name_raw,
 				sla_status: issue.sla_status_raw,
