@@ -105,10 +105,11 @@ class ProducerPusher
 		@@debugging = debug || false
 		puts "Running Producer ticket sync with debugging " + @@debugging.to_s
 
-		#Get now so tickets
+		#Get now so we don't miss (next time) any tickets modified/created during this sync
 		this_run_time = (Time.now + 1).to_s #Round up to prevent same ticket being sent again next time task runs
 		
-		last_run_path = "./plugins/aam_producer_sync/assets/lastrun.stor"
+		last_run_path = Rails.root.join('plugins', 'aam_producer_sync', 'assets', "lastrun.stor").to_s 
+
 		#default to several decades ago if not run before
 		last_run_time = File.exist?(last_run_path) ? File.read(last_run_path) : Time.now - 9999999999
 
