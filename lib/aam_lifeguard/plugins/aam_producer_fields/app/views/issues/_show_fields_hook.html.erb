@@ -1,6 +1,6 @@
 <%= issue_fields_rows do |rows|
   rows.left l(:field_cinema), h(@issue.cinema.name), :class => 'cinema'
-  rows.right l(:field_created_on), h(format_time(@issue.created_on, true)), :class => 'created_on'
+  rows.right l(:field_sla_status), h(@issue.sla_status), :class => 'sla_status'
   rows.left l(:field_screen), (h(@issue.screen.identifier) if @issue.screen), :class => 'screen'
   rows.right l(:field_closed_on), h(format_time(@issue.closed_on, true)), :class => 'closed_on'
   rows.left l(:field_device), (h(t(@issue.device.category)) if @issue.device), :class => 'device'
