@@ -100,18 +100,17 @@ Index: app/models/issue.rb
    validate :validate_issue, :validate_required_fields
  
    scope :visible, lambda {|*args|
-@@ -90,8 +93,8 @@
-     ids.any? ? where(:fixed_version_id => ids) : where('1=0')
+@@ -91,7 +94,8 @@
    }
  
--  before_create :default_assign
+   before_create :default_assign
 -  before_save :close_duplicates, :update_done_ratio_from_issue_status, :force_updated_on_change, :update_closed_on
-+  before_create :default_assign, :add_start_and_due_time
++  #Note very well - before_save runs for both updates AND creations (also, before_create is called after before_save)
 +  before_save :close_duplicates, :update_done_ratio_from_issue_status, :force_updated_on_change, :update_closed_on, :add_start_and_due_time
    after_save {|issue| issue.send :after_project_change if !issue.id_changed? && issue.project_id_changed?} 
    after_save :reschedule_following_issues, :update_nested_set_attributes, :update_parent_attributes, :create_journal
    # Should be after_create but would be called before previous after_save callbacks
-@@ -361,7 +364,9 @@
+@@ -361,7 +365,9 @@
      'subject',
      'description',
      'start_date',
@@ -121,7 +120,7 @@ Index: app/models/issue.rb
      'done_ratio',
      'estimated_hours',
      'custom_field_values',
-@@ -454,6 +459,21 @@
+@@ -454,6 +460,21 @@
  
      # mass-assignment security bypass
      assign_attributes attrs, :without_protection => true
@@ -143,7 +142,7 @@ Index: app/models/issue.rb
    end
  
    def disabled_core_fields
-@@ -1387,6 +1407,33 @@
+@@ -1388,6 +1409,33 @@
      end
    end
  
