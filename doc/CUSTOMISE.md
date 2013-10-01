@@ -8,9 +8,9 @@ A few tasks that should be done shortly after the installation is complete.
 
 ### Adding the Lifeguard Project
 
-* Login > Administration > Projects
+Run `rake lifeguard:data_modify`
 
-For a default installation there will be nothing in the database beyond the inital static data. We need to add a project first, Lifeguard is intended to only be used by a single project at a time. As a part of creating the new project you'll want to restrict the modules on display, we only use the "Issues" and "Forums" modules so please switch off the remainder.
+This adds the project and configures a few basic settings, as well as removing some unwanted redmine fluff from the db. Note well that Lifeguard is intended to only be used by a single project at a time.
 
 ### Changing the language
 
@@ -19,7 +19,7 @@ For a default installation there will be nothing in the database beyond the init
 
 ### Changing Issue Priorities/Statuses/Categories
 
-* Login > Administration > Enumerations
+* Login > Administration > Enumerations (make sure to set the SLA seconds for the priorities)
 * Login > Administration > **Issue Statuses**
 * Login > Settings (next to the Knowledge Base) > Issue Categories
 
