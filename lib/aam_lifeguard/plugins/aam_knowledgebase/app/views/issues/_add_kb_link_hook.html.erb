@@ -2,12 +2,29 @@
   <%= javascript_include_tag "issue", :plugin => 'aam_knowledgebase'  %>
 <% end %>
 
-<p id="make-kb">
-  <a href="#make-kb-add" nofollow><%= l(:article_make_from_issue) %></a>
-</p>
+<hr />
+<div id="related-kb">
+  
+  <p class="contextual" id="make-kb">
+	<!-- Can't use button because it breaks redmine, so follow redmine practice and use non-semantic anchor tag. -->
+	<a href="#make-kb-add" nofollow><%= l(:article_make_from_issue) %></a>
+  </p>
+  
+  <p>
+	<strong><%= l(:related_kb) %></strong>
+  </p>
+  <ul style="list-style-type: none; margin: 0.5em; padding: 0">
+	<% @issue.messages.each do |message| %>
+	<li><%= link_to message.subject,
+		{ controller: "messages", action: "show", id: message.id, board_id: message.board_id}
+	%></li>
+	<% end %>
+  </ul>
 
-<div id="make-kb-add" style="display: none">
-  <span><%= l(:label_topic) %> </span> 
-  <%= select_tag :board_id, options_for_select(@issue.project.boards.collect {|b| [b.name, b.id]}) %> 
-  <a id="make-kb-add-submit" data-url="<%= issue_path(@issue) %>"><%= l(:article_add) %> </a>
+  <div id="make-kb-add" style="display: none; margin: 1.2em">
+	<span><%= l(:label_topic) %> </span> 
+	<%= select_tag :board_id, options_for_select(@issue.project.boards.collect {|b| [b.name, b.id]}) %> 
+	<a id="make-kb-add-submit" data-url="<%= issue_path(@issue) %>"><%= l(:article_add) %> </a>
+  </div>
+  
 </div>
