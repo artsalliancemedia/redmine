@@ -92,6 +92,7 @@ class ProducerPuller
         device.ip_address = device_obj["ip_address"]
         device.identifier = device_obj["uuid"]
         device.uuid = device_obj["uuid"]
+		device.manufacturer = device_obj["type"]
 
         if(device_obj["screen_uuid"] && Screen.find_by_uuid(device_obj["screen_uuid"]))
           device.deviceable_id = Screen.find_by_uuid(device_obj["screen_uuid"]).id
