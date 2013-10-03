@@ -9,8 +9,8 @@ class ScreensController < ApplicationController
   before_filter :find_screen, :only => [:edit, :update, :destroy]
 
   def index
-    sort_init ['cinemas.name', 'identifier']
-    sort_update %w(identifier cinemas.name)
+    sort_init ['cinemas.name', 'identifier', 'title']
+    sort_update %w(title identifier cinemas.name)
     @screen_pages, @screens = paginate Screen.unscoped.includes(:cinema).order(sort_clause), :per_page => 25
   end
 
