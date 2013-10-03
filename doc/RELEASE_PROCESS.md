@@ -36,6 +36,14 @@ The any settings files that are modified are stored under `/home/redmine` and ar
 * The "thin" gem is required to be added to the Redmine Gemfile before it'll actually work as the web server for it. This is done as a part of build.sh.
 * Might need to run: `gem install pg -- --with-pg-lib=/usr/pgsql-9.3/lib --with-pg-config=/usr/pgsql-9.3/bin/pg_config` to get the lifeguard gem to install.
 
+## Live Releases
+
+1. Bump the version number in `.gemspec`.
+1. Tag the release: `git tag -a 1.2.3 -m "Archive 1.2.3 version of Redmine". Push the tag to GitHub: `git push upstream 1.2.3`.
+1. Run the "Redmine-GemBuild" task on Jenkins (aam-ci-1:8080) and download the archived .gem file.
+
+@todo More steps need to be defined.
+
 ## RPM Compilation
 
 @todo
