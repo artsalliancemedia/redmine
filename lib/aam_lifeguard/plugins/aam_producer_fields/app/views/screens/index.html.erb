@@ -11,15 +11,19 @@
 <table class="list">
   <tr>
     <%= sort_header_tag('cinemas.name', :caption => t(:complex)) %>
-    <%= sort_header_tag('identifier') %>
-    <th></th>
-    <th></th>
+    <%= sort_header_tag('identifier', :caption => t(:field_identifier)) %>
+    <%= sort_header_tag('title', :caption => t(:field_title)) %>
+	<% if Rails.env.development? %>
+	  <th></th>
+	  <th></th>
+    <% end %>
   </tr>
 
   <% @screens.each do |screen| %>
     <tr>
       <td><%= screen.cinema.name %></td>
       <td><%= screen.identifier %></td>
+      <td><%= screen.title %></td>
       <% if Rails.env.development? %>
         <td><%= link_to l(:button_update), edit_screen_path(screen), :class => 'icon icon-edit' %></td>
         <td><%= link_to l(:button_delete), screen_path(screen), :data => {:confirm => l(:text_screens_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>

@@ -4,6 +4,7 @@ en:
   label_cinema_new: "New cinema"
   label_cinema: "Cinema"
   cinema: "Cinema"
+  complex: "Complex"
   cinema_plural: "Cinemas"
   text_cinemas_destroy_confirmation: 'Are you sure you want to delete the selected cinema(s)?'
 
@@ -18,6 +19,7 @@ en:
   device: "Device"
   device_plural: "Devices"
   text_devices_destroy_confirmation: 'Are you sure you want to delete the selected device(s)?'
+  category: "Category"
 
   label_circuit_group_new: "New Circuit Group"
   label_circuit_group: "Circuit Group"
@@ -47,6 +49,7 @@ en:
   field_device_category: Device category
   field_device_model: Device model
   field_device_manufacturer: Device manufacturer
+  field_identifier: "Identifier"
 
   screen_server: Screen Server
   projector: Projector

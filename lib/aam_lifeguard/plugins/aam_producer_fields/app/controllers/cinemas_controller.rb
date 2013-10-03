@@ -9,8 +9,8 @@ class CinemasController < ApplicationController
   before_filter :find_cinema, :only => [:edit, :update, :destroy]
 
   def index
-    sort_init 'name'
-    sort_update %w(name)
+    sort_init ['name', 'city', 'ip_address']
+    sort_update %w(ip_address city name)
     @cinema_pages, @cinemas = paginate Cinema.unscoped.order(sort_clause), :per_page => 25
   end
 

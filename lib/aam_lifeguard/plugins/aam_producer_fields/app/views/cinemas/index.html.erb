@@ -10,14 +10,22 @@
 
 <table class="list">
   <tr>
-    <%= sort_header_tag('name') %>
-    <th></th>
+    <%= sort_header_tag('name', :caption => t(:complex)) %>
+    <%= sort_header_tag('city', :caption => t(:field_city)) %>
+    <%= sort_header_tag('ip_address', :caption => t(:field_ip_address)) %>
+    <% if Rails.env.development? %>
+	  <th></th>
+	  <th></th>
+    <% end %>
   </tr>
 
   <% @cinemas.each do |cinema| %>
     <tr>
-      <td><%= link_to cinema.name, edit_cinema_path(cinema) %></td>
+      <td><%= cinema.name %></td>
+      <td><%= cinema.city %></td>
+      <td><%= cinema.ip_address %></td>
       <% if Rails.env.development? %>
+		<td><%= link_to l(:button_update), edit_cinema_path(cinema), :class => 'icon icon-edit' %></td>
         <td><%= link_to l(:button_delete), cinema_path(cinema), :data => {:confirm => l(:text_cinemas_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>
       <% end %>
     </tr>
