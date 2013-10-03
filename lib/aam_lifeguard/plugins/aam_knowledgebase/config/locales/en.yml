@@ -31,6 +31,7 @@ en:
   categorisation: "Categorisation"
   article_add: "Add article"
   article_make_from_issue: "Make knowledgebase article from this issue"
+  related_kb: "Knowledge base articles that link to this issue"
   na: "n/a"
   
   label_topic: "Topic"
