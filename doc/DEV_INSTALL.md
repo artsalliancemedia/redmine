@@ -16,14 +16,14 @@ Please install:
 Please follow these steps in order:
 
 1. Download a copy of Redmine 2.3.x, follow the install instructions included to get a working installation.
-1. Copy across the `AAM` theme to the redmine installation directory. The theme can be found found under `/public/themes/AAM`.
+1. Copy across the themes to the redmine installation directory. The theme can be found found under `/public`.
   * Restart the redmine web server.
   * Then login to Redmine, navigate to *Administration* then to *Settings* and finally to *Display*.
   * On the *Display* page there is an option to change over the theme to `AAM`.
   * Click around and test the installation is still working correctly before proceeding.
-1. Copy across the `/patches` folder to the root of the redmine installation directory.
+1. Copy across the `/core_patches` folder to the root of the redmine installation directory.
   * Stop the redmine webserver.
-  * To apply the patch(es) correctly please run `patch -p0 -i <redmine_dir>/patches/patch_123.diff`. This will modify the code.
+  * To apply the patch(es) correctly please run `patch -p0 -i <redmine_dir>/core_patches/patch_123.diff`. This will modify the code.
   * Then run the command `rake db:migrate` in the root folder. This will modify the database.
   * Start the redmine webserver.
   * Login and test the installation is still working correctly before proceeding.
