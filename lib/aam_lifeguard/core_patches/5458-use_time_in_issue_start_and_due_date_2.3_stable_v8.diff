@@ -291,14 +291,14 @@ Index: config/locales/cs.yml
 --- config/locales/cs.yml	(revision 12160)
 +++ config/locales/cs.yml	(working copy)
 @@ -311,7 +311,7 @@
-   field_assigned_to_role: Role pÅ™iÅ™aditele
-   field_text: TextovÃ© pole
-   field_visible: ViditelnÃ½
+   field_assigned_to_role: Role přiřaditele
+   field_text: Textové pole
+   field_visible: Viditelný
 -
-+  field_use_datetime_for_issues: PouÅ¾Ã­t u tiketÅ¯ takÃ© Ä?as
-   setting_app_title: NÃ¡zev aplikace
++  field_use_datetime_for_issues: Použít u tiketů také čas
+   setting_app_title: Název aplikace
    setting_app_subtitle: Podtitulek aplikace
-   setting_welcome_text: UvÃ­tacÃ­ text
+   setting_welcome_text: Uvítací text
 Index: config/locales/en-GB.yml
 ===================================================================
 --- config/locales/en-GB.yml	(revision 12160)
@@ -329,12 +329,12 @@ Index: config/locales/es.yml
 +++ config/locales/es.yml	(working copy)
 @@ -1110,6 +1110,7 @@
    button_hide: Ocultar
-   setting_non_working_week_days: DÃ­as no laborables
-   label_in_the_next_days: en los prÃ³ximos
+   setting_non_working_week_days: Días no laborables
+   label_in_the_next_days: en los próximos
 +  field_use_datetime_for_issues: Usar hora en prog peticiones
    label_in_the_past_days: en los anteriores
    label_attribute_of_user: "%{name} del usuario"
-   text_turning_multiple_off: Si desactiva los valores mÃºltiples, Ã©stos serÃ¡n eliminados para dejar un Ãºnico valor por elemento.
+   text_turning_multiple_off: Si desactiva los valores múltiples, éstos serán eliminados para dejar un único valor por elemento.
 Index: db/migrate/20130531174459_add_time_to_issue_start_date_and_issue_due_date.rb
 ===================================================================
 --- db/migrate/20130531174459_add_time_to_issue_start_date_and_issue_due_date.rb	(revision 0)
