@@ -79,7 +79,6 @@ class ProducerPuller
   def insert_devices
     response = query_api('devices')
     devices_obj = ActiveSupport::JSON.decode(response.body)["data"]["devices"]
-
     @devices_saved = 0
     @devices_skipped = 0
 
@@ -105,9 +104,10 @@ class ProducerPuller
           next
         end
 
-        if(device_obj["monitoring_info"])
+        if(monitoring_info = device_obj["monitoring_info"])
 					begin
-						monitoring_info = ActiveSupport::JSON.decode(device_obj["monitoring_info"])
+						#Assume it's native JSON and not an embedded JSON string
+						#monitoring_info = ActiveSupport::JSON.decode(device_obj["monitoring_info"])
 						if(monitoring_info["software_version"])
 							device.software_version = monitoring_info["software_version"]
 						end
