@@ -30,10 +30,10 @@ Redmine::Plugin.register :aam_knowledgebase do
 	Message.safe_attributes 'model', 'manufacturer', 'software_version', 'firmware_version', 'issue_ids'
 	Issue.safe_attributes 'message_ids' 
 	
-  menu :top_menu, :questions, {:controller => 'questions', :action => 'index'}, 
-    :last => true,
-    :caption => :label_questions, 
-    :if => Proc.new {User.current.allowed_to?({:controller => 'questions', :action => 'index'}, nil, {:global => true})}    
+  # menu :top_menu, :questions, {:controller => 'questions', :action => 'index'}, 
+  #   :last => true,
+  #   :caption => :label_questions, 
+  #   :if => Proc.new {User.current.allowed_to?({:controller => 'questions', :action => 'index'}, nil, {:global => true})}    
 
   Redmine::AccessControl.map do |map|
     map.project_module :boards do |map|
