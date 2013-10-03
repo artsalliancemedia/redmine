@@ -13,8 +13,14 @@
     <%= sort_header_tag('cinema_name', :caption => t(:complex)) %>
     <%= sort_header_tag('screen_identifier', :caption => t(:screen)) %>
     <%= sort_header_tag('category', :caption => t(:category)) %>
-    <th></th>
-    <th></th>
+    <%= sort_header_tag('manufacturer', :caption => t(:field_manufacturer)) %>
+    <%= sort_header_tag('model', :caption => t(:field_model)) %>
+    <%= sort_header_tag('software_version', :caption => t(:field_software_version)) %>
+    <%= sort_header_tag('firmware_version', :caption => t(:field_firmware_version)) %>
+	<% if Rails.env.development? %>
+	  <th></th>
+	  <th></th>
+    <% end %>
   </tr>
 
   <% @devices.each do |device| %>
@@ -27,7 +33,12 @@
       <td><%= Screen.find_by_id(device.deviceable_id).identifier %></td>
     <% end %>
 
-    <td><%= t(device.category) %></td>
+    <td><%= device.category %></td>
+    <td><%= device.manufacturer %></td>
+    <td><%= device.model %></td>
+    <td><%= device.software_version %></td>
+    <td><%= device.firmware_version %></td>
+	
     <% if Rails.env.development? %>
       <td><%= link_to l(:button_update), edit_device_path(device), :class => 'icon icon-edit' %></td>
       <td><%= link_to l(:button_delete), device_path(device), :data => {:confirm => l(:text_devices_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>

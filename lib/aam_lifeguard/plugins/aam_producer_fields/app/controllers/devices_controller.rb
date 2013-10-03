@@ -12,7 +12,11 @@ class DevicesController < ApplicationController
     sort_init ['cinema_name', ['screen_identifier', 'desc']]
     sort_update 'category' => "devices.category",
                   'screen_identifier' => "screens.identifier",
-                  'cinema_name' => "COALESCE(cin.name, cinemas.name)"
+                  'cinema_name' => "COALESCE(cin.name, cinemas.name)",
+									'manufacturer' => "devices.manufacturer",
+									'model' => "devices.model",
+									'software_version' => "devices.software_version",
+									'firmware_version' => "devices.firmware_version"
     @device_pages, @devices = paginate Device.unscoped.joins("LEFT OUTER JOIN \"screens\" ON \"devices\".\"deviceable_id\" = \"screens\".\"id\" AND \"devices\".\"deviceable_type\" = 'Screen'
     LEFT OUTER JOIN \"cinemas\" as \"cin\" ON \"screens\".\"cinema_id\" = \"cin\".\"id\"
     LEFT OUTER JOIN \"cinemas\" ON \"devices\".\"deviceable_id\" = \"cinemas\".\"id\" AND \"devices\".\"deviceable_type\" = 'Cinema'
