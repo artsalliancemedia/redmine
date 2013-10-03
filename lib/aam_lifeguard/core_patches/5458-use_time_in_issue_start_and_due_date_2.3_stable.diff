@@ -1,6 +1,6 @@
 Index: app/controllers/issues_controller.rb
 ===================================================================
---- app/controllers/issues_controller.rb	(revision 12132)
+--- app/controllers/issues_controller.rb	(revision 12160)
 +++ app/controllers/issues_controller.rb	(working copy)
 @@ -406,7 +406,7 @@
        render_error l(:error_no_tracker_in_project)
@@ -13,9 +13,9 @@ Index: app/controllers/issues_controller.rb
      @priorities = IssuePriority.active
 Index: app/helpers/application_helper.rb
 ===================================================================
---- app/helpers/application_helper.rb	(revision 12132)
+--- app/helpers/application_helper.rb	(revision 12160)
 +++ app/helpers/application_helper.rb	(working copy)
-@@ -291,6 +291,41 @@
+@@ -291,6 +291,42 @@
      end
    end
  
@@ -24,7 +24,8 @@ Index: app/helpers/application_helper.rb
 +    if time.nil?
 +      selected = {:hour => '', :min => ''}
 +    else
-+      time = time.in_time_zone(User.current.time_zone)
++      zone = User.current.time_zone
++      time = zone ? time.in_time_zone(zone) : (time.utc? ? time.localtime : time)
 +      selected = {:hour => time.hour, :min => time.min}
 +    end
 +
@@ -59,7 +60,7 @@ Index: app/helpers/application_helper.rb
      project_tree(projects) do |project, level|
 Index: app/helpers/queries_helper.rb
 ===================================================================
---- app/helpers/queries_helper.rb	(revision 12132)
+--- app/helpers/queries_helper.rb	(revision 12160)
 +++ app/helpers/queries_helper.rb	(working copy)
 @@ -100,7 +100,12 @@
          h(value)
@@ -77,7 +78,7 @@ Index: app/helpers/queries_helper.rb
      when 'Fixnum'
 Index: app/models/issue.rb
 ===================================================================
---- app/models/issue.rb	(revision 12132)
+--- app/models/issue.rb	(revision 12160)
 +++ app/models/issue.rb	(working copy)
 @@ -61,6 +61,9 @@
    DONE_RATIO_OPTIONS = %w(issue_field issue_status)
@@ -178,7 +179,7 @@ Index: app/models/issue.rb
      if assigned_to.nil? && category && category.assigned_to
 Index: app/models/project.rb
 ===================================================================
---- app/models/project.rb	(revision 12132)
+--- app/models/project.rb	(revision 12160)
 +++ app/models/project.rb	(working copy)
 @@ -549,9 +549,9 @@
    # The earliest start date of a project, based on it's issues and versions
@@ -220,7 +221,7 @@ Index: app/models/project.rb
      'custom_fields',
 Index: app/models/version.rb
 ===================================================================
---- app/models/version.rb	(revision 12132)
+--- app/models/version.rb	(revision 12160)
 +++ app/models/version.rb	(working copy)
 @@ -100,7 +100,7 @@
      if completed_percent == 100
@@ -233,7 +234,7 @@ Index: app/models/version.rb
        false # No issues so it's not late
 Index: app/views/issues/_attributes.html.erb
 ===================================================================
---- app/views/issues/_attributes.html.erb	(revision 12132)
+--- app/views/issues/_attributes.html.erb	(revision 12160)
 +++ app/views/issues/_attributes.html.erb	(working copy)
 @@ -47,11 +47,18 @@
  <% end %>
@@ -258,7 +259,7 @@ Index: app/views/issues/_attributes.html.erb
  <% if @issue.safe_attribute? 'estimated_hours' %>
 Index: app/views/issues/show.html.erb
 ===================================================================
---- app/views/issues/show.html.erb	(revision 12132)
+--- app/views/issues/show.html.erb	(revision 12160)
 +++ app/views/issues/show.html.erb	(working copy)
 @@ -47,10 +47,10 @@
    end
@@ -275,7 +276,7 @@ Index: app/views/issues/show.html.erb
      rows.right l(:field_done_ratio), progress_bar(@issue.done_ratio, :width => '80px', :legend => "#{@issue.done_ratio}%"), :class => 'progress'
 Index: app/views/projects/_form.html.erb
 ===================================================================
---- app/views/projects/_form.html.erb	(revision 12132)
+--- app/views/projects/_form.html.erb	(revision 12160)
 +++ app/views/projects/_form.html.erb	(working copy)
 @@ -11,6 +11,7 @@
  <% end %></p>
@@ -287,20 +288,20 @@ Index: app/views/projects/_form.html.erb
      <p><%= label(:project, :parent_id, l(:field_parent)) %><%= parent_project_select_tag(@project) %></p>
 Index: config/locales/cs.yml
 ===================================================================
---- config/locales/cs.yml	(revision 12132)
+--- config/locales/cs.yml	(revision 12160)
 +++ config/locales/cs.yml	(working copy)
 @@ -311,7 +311,7 @@
    field_assigned_to_role: Role přiřaditele
    field_text: Textové pole
    field_visible: Viditelný
 -
-+  field_use_datetime_for_issues: Použít u tiketů také �?as
++  field_use_datetime_for_issues: Použít u tiketů také čas
    setting_app_title: Název aplikace
    setting_app_subtitle: Podtitulek aplikace
    setting_welcome_text: Uvítací text
 Index: config/locales/en-GB.yml
 ===================================================================
---- config/locales/en-GB.yml	(revision 12132)
+--- config/locales/en-GB.yml	(revision 12160)
 +++ config/locales/en-GB.yml	(working copy)
 @@ -311,6 +311,7 @@
    field_assigned_to_role: "Assignee's role"
@@ -312,7 +313,7 @@ Index: config/locales/en-GB.yml
    setting_app_title: Application title
 Index: config/locales/en.yml
 ===================================================================
---- config/locales/en.yml	(revision 12132)
+--- config/locales/en.yml	(revision 12160)
 +++ config/locales/en.yml	(working copy)
 @@ -314,6 +314,7 @@
    field_assigned_to_role: "Assignee's role"
@@ -324,7 +325,7 @@ Index: config/locales/en.yml
    field_is_private: Private
 Index: config/locales/es.yml
 ===================================================================
---- config/locales/es.yml	(revision 12132)
+--- config/locales/es.yml	(revision 12160)
 +++ config/locales/es.yml	(working copy)
 @@ -1110,6 +1110,7 @@
    button_hide: Ocultar
@@ -366,9 +367,24 @@ Index: db/migrate/20130531174549_add_use_datetime_for_issues_to_projects.rb
 +  end
 +
 +end
+Index: lib/redmine/helpers/calendar.rb
+===================================================================
+--- lib/redmine/helpers/calendar.rb	(revision 12160)
++++ lib/redmine/helpers/calendar.rb	(working copy)
+@@ -48,8 +48,8 @@
+       # Sets calendar events
+       def events=(events)
+         @events = events
+-        @ending_events_by_days = @events.group_by {|event| event.due_date}
+-        @starting_events_by_days = @events.group_by {|event| event.start_date}
++        @ending_events_by_days = @events.group_by {|event| (event.due_date.is_a?(Date) || event.due_date.nil? ? event.due_date : event.due_date.to_date) }
++        @starting_events_by_days = @events.group_by {|event| (event.start_date.is_a?(Date) || event.start_date.nil?  ? event.start_date : event.start_date.to_date) }
+       end
+ 
+       # Returns events for the given day
 Index: lib/redmine/helpers/gantt.rb
 ===================================================================
---- lib/redmine/helpers/gantt.rb	(revision 12132)
+--- lib/redmine/helpers/gantt.rb	(revision 12160)
 +++ lib/redmine/helpers/gantt.rb	(working copy)
 @@ -628,6 +628,9 @@
        private
@@ -391,7 +407,7 @@ Index: lib/redmine/helpers/gantt.rb
        # TODO: Sorts a collection of issues by start_date, due_date, id for gantt rendering
 Index: lib/redmine/i18n.rb
 ===================================================================
---- lib/redmine/i18n.rb	(revision 12132)
+--- lib/redmine/i18n.rb	(revision 12160)
 +++ lib/redmine/i18n.rb	(working copy)
 @@ -52,6 +52,14 @@
        ::I18n.t(str.to_s, :value => value, :locale => lang.to_s.gsub(%r{(.+)\-(.+)$}) { "#{$1}-#{$2.upcase}" })
@@ -410,7 +426,7 @@ Index: lib/redmine/i18n.rb
        options = {}
 Index: lib/redmine/utils.rb
 ===================================================================
---- lib/redmine/utils.rb	(revision 12132)
+--- lib/redmine/utils.rb	(revision 12160)
 +++ lib/redmine/utils.rb	(working copy)
 @@ -60,7 +60,7 @@
            weeks = days / 7
@@ -441,7 +457,7 @@ Index: lib/redmine/utils.rb
            days += 1
 Index: test/functional/issues_controller_test.rb
 ===================================================================
---- test/functional/issues_controller_test.rb	(revision 12132)
+--- test/functional/issues_controller_test.rb	(revision 12160)
 +++ test/functional/issues_controller_test.rb	(working copy)
 @@ -1582,7 +1582,7 @@
      assert_template 'new'
