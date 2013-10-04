@@ -4,6 +4,8 @@ Redmine::Plugin.register :aam_sla do
   description 'Assign a Service Level Agreement, (i.e. an expected due date) to issues per priority level.'
   version '0.0.1'
   author_url 'http://artsalliancemedia.com'
+
+  menu :admin_menu, :working_periods, { :controller => 'working_periods', :action => 'index' }, :caption => :working_period_plural
 end
 
 Rails.configuration.to_prepare do

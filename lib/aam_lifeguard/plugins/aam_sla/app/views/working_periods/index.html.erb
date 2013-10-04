@@ -1,0 +1,31 @@
+
+<div class="contextual">
+  <%= link_to l(:label_working_periods_new), {:controller => 'working_periods', :action => 'new'}, :class => 'icon icon-add' %>
+</div>
+
+<h2><%= t(:working_period_plural)%></h2>
+
+<h3>
+  <% if(@adjusted_working_periods.count > 0) %>
+    <%= 'Time Zone ' + @adjusted_working_periods.first[0].time_zone_string %>
+  <% end %>
+</h3>
+
+<table class="list">
+  <colgroup>
+     <col span="1" style="width: 10%;">
+     <col span="1" style="width: 10%;">
+     <col span="1" style="width: 70%;">
+     <col span="1" style="width: 10%;">
+  </colgroup>
+  <% @adjusted_working_periods.each do |adjusted_working_period| %>
+    <tr>
+      <td><b>Day:</b> <%= adjusted_working_period[0].day_string %></td>
+      <td><b>Start Time:</b> <%= adjusted_working_period[0].start_time_string %></td>
+      <td><b>End Time:</b> <%= adjusted_working_period[0].end_time_string %></td>
+      <td>
+        <%= link_to l(:button_delete), working_period_path(adjusted_working_period[1]), :data => {:confirm => l(:text_working_periods_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %>
+      </td>
+    </tr>
+  <% end %>
+</table>
