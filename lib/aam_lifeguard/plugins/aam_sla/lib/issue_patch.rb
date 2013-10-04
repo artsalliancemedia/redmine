@@ -23,8 +23,8 @@ module IssuePatch
     def in_breach?
       return false if due_date.nil?
 
-      breach = (!closed_on.nil? and closed_on > due_date)
-      breach ||= DateTime.now > due_date
+      breach = (!closed_on.nil? and closed_on > due_date) ||
+							 (closed_on.nil? and DateTime.now > due_date)
       breach
     end
 		
