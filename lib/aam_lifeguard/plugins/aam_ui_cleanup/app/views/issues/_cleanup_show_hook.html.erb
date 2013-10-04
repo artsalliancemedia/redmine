@@ -1,0 +1,6 @@
+<% unless @issue.tracker.core_fields.include?('parent_issue_id') #String is hard-coded in Redmine core (English) %>
+  <% content_for :header_tags do %>
+	<%= javascript_include_tag "cleanup_issue_show", :plugin => 'aam_ui_cleanup' %>
+  <% end %>
+  <%= javascript_tag "onLoadDoAamCleanupOfIssueShow();" %>
+<% end %>

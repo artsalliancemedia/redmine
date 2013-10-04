@@ -1,0 +1,2 @@
+<%# Make lifeguard 'project' menu available globally -%>
+<% (@project ||= Project.find(1)) if Project.exists? %>
