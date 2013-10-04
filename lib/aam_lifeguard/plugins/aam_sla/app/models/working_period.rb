@@ -71,8 +71,8 @@ class WorkingPeriod < ActiveRecord::Base
     
     prev_day = (self.day == 0) ? 6 : self.day - 1
     next_day = (self.day == 6) ? 0 : self.day + 1
-    if(adjusted_start_time.wday != adjusted_end_time.wday &&
-      (adjusted_end_time.hour != 0 && adjusted_end_time.min != 0)) # Crosses boundary, two WorkingPeriods needed
+    if(adjusted_start_time.wday != adjusted_end_time.wday && # Crosses boundary, two WorkingPeriods needed
+      !(adjusted_end_time.hour == 0 && adjusted_end_time.min == 0)) # Check to make sure it does not end on midnight
       if(adjusted_start_time.wday != self.start_time.wday) # Crosses boundary to previous day
         return [WorkingPeriod.new({:day => prev_day, :start_time => adjusted_start_time,
                                    :end_time => Time.parse('24:00'), :time_zone => self.time_zone}),
