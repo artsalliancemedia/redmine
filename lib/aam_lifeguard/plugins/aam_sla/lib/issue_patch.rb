@@ -4,8 +4,10 @@ module IssuePatch
   def self.included(base)
     base.send(:include, InstanceMethods)
 
-    Issue.class_eval do
+    base.class_eval do
+			unloadable
       before_save :sla_service
+			alias_method_chain :css_classes, :aam_css
     end
   end
 
@@ -46,5 +48,9 @@ module IssuePatch
     def sla_status
 			return l(sla_status_raw)
     end
+		
+		def css_classes_with_aam_css
+			return "sla-" + sla_status_raw.to_s + " " + css_classes_without_aam_css
+		end
   end
 end
