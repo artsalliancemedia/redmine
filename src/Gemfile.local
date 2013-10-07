@@ -1,0 +1,1 @@
+gem "thin", :path => File.join('vendor', 'cache', 'thin-1.5.1')
