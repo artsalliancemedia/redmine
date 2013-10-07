@@ -1,0 +1,13 @@
+tr.priority-1 {
+	background-color: #cac5f3;
+}
+tr.priority-2 {
+	background-color: #d5dafc;
+}
+
+tr.sla-breach {
+	background-color: #f7b2bd;
+}
+tr.sla-paused {
+	background-color: #fcffa9;
+}
