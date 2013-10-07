@@ -14,6 +14,7 @@ Redmine::Plugin.register :aam_ui_cleanup do
   delete_menu_item(:project_menu, :overview)
   delete_menu_item(:project_menu, :activity)
   delete_menu_item(:project_menu, :boards)
+  delete_menu_item(:project_menu, :settings)
 
   menu :project_menu, :boards, {:controller => 'boards', :action => 'index'}, :caption => :label_questions, :after => :new_issue, :param => :project_id
 end
