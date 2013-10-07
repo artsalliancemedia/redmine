@@ -9,10 +9,6 @@ class WorkingPeriod < ActiveRecord::Base
     days[self.day]
   end
 
-  def day_integer(day_str)
-    days.index(day_str)
-  end
-
   def day_list
   end
 
@@ -24,7 +20,7 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def start_time_string_new=(start_time_str)
-    self.start_time = Time.parse(start_time_str).strftime("%H:%M")
+    self.start_time = Time.parse(start_time_str)
   rescue ArgumentError
     @start_time_invalid = true
   end
@@ -33,7 +29,7 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def end_time_string_new=(end_time_str)
-    self.end_time = Time.parse(end_time_str).strftime("%H:%M")
+    self.end_time = Time.parse(end_time_str)
   rescue ArgumentError
     @end_time_invalid = true
   end

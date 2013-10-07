@@ -12,8 +12,8 @@ en:
   working_period: "Working Period"
   working_period_plural: "Working Periods"
   text_working_periods_destroy_confirmation: 'Are you sure you want to delete the selected working period(s)?'
-  error_no_start_time: "Error: Must enter a Start Time"
-  error_no_end_time: "Error: Must enter a End Time"
+  error_no_start_time: "Error: Must enter a valid Start Time"
+  error_no_end_time: "Error: Must enter a valid End Time"
   error_invalid_time_zone: "Error: Time zone must match current working periods"
   error_duration_not_positive: "Error: End Time must be greater than Start Time"
   error_working_period_overlap: "Error: Specified working period overlaps with another already created"

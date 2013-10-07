@@ -10,7 +10,7 @@ class WorkingPeriodsController < ApplicationController
     WorkingPeriod.all.each do |wp|
       adjusted_wps = wp.adjust_for_current_time_zone
       adjusted_wps.each do |adjusted_wp|
-        @adjusted_working_periods.push([adjusted_wp,wp])
+        @adjusted_working_periods.push([adjusted_wp,wp]) # Need to store original WorkingPeriod to get delete path
       end
     end
     puts @adjusted_working_periods.inspect
@@ -27,8 +27,7 @@ class WorkingPeriodsController < ApplicationController
 
     if(@working_period.start_time.blank?)
       raise l(:error_no_start_time)
-    end
-    if(@working_period.end_time.blank?)
+    elsif(@working_period.end_time.blank?)
       raise l(:error_no_end_time)
     end
     
