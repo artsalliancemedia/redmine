@@ -10,6 +10,7 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def day_list
+    # Empty getter needed for virtual attribute
   end
 
   def day_list=(day_str)
@@ -17,6 +18,7 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def start_time_string_new
+    # Empty getter needed for virtual attribute
   end
 
   def start_time_string_new=(start_time_str)
@@ -26,6 +28,7 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def end_time_string_new
+    # Empty getter needed for virtual attribute
   end
 
   def end_time_string_new=(end_time_str)
@@ -44,6 +47,7 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def start_time_string=()
+    # Empty setter needed for virtual attribute
   end
 
   def end_time_string
@@ -51,6 +55,7 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def end_time_string=()
+    # Empty setter needed for virtual attribute
   end
 
   def time_zone_string
@@ -58,6 +63,7 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def time_zone_string=()
+    # Empty setter needed for virtual attribute
   end
 
   def adjust_for_current_time_zone
