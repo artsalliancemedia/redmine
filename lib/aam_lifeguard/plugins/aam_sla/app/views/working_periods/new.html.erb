@@ -8,7 +8,7 @@
   <p><%= f.select :day_list, @working_period.days, :required => true, :size => 41 %></p>
   <p><%= f.text_field :start_time_string_new, :required => true, :size => 41 %></p>
   <p><%= f.text_field :end_time_string_new, :required => true, :size => 41 %></p>
-  <p><%= f.time_zone_select :time_zone, nil, :include_blank => true %> Leave blank to use user time zone</p>
+  <p><%= f.time_zone_select :time_zone, nil, :include_blank => true, :default => User.current.pref.time_zone %></p>
   </div>
 
   <%= submit_tag l(:button_create) %>
