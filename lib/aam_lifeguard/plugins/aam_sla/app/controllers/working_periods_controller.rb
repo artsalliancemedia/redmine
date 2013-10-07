@@ -13,9 +13,7 @@ class WorkingPeriodsController < ApplicationController
         @adjusted_working_periods.push([adjusted_wp,wp]) # Need to store original WorkingPeriod to get delete path
       end
     end
-    puts @adjusted_working_periods.inspect
     @adjusted_working_periods = @adjusted_working_periods.sort_by{|wp| [wp[0].day, wp[0].start_time.hour, wp[0].start_time.min]}
-    puts @adjusted_working_periods.inspect
   end
 
   def new
@@ -48,10 +46,15 @@ class WorkingPeriodsController < ApplicationController
 
     # Check for working period overlap
     WorkingPeriod.all.each do |wp|
+      # Need to parse times using Time.at as dates will screw up comparisons
+      wp1_start = Time.at(@working_period.start_time.hour * 60 * 60 + @working_period.start_time.min * 60 + @working_period.start_time.sec)
+      wp1_end = Time.at(@working_period.end_time.hour * 60 * 60 + @working_period.end_time.min * 60 + @working_period.end_time.sec)
+      wp2_start = Time.at(wp.start_time.hour * 60 * 60 + wp.start_time.min * 60 + wp.start_time.sec)
+      wp2_end = Time.at(wp.end_time.hour * 60 * 60 + wp.end_time.min * 60 + wp.end_time.sec)
       if @working_period.day == wp.day &&
-          (((@working_period.start_time < wp.end_time) && (@working_period.start_time > wp.start_time)) ||
-           ((@working_period.end_time < wp.end_time) && (@working_period.end_time > wp.start_time)) ||
-           ((@working_period.start_time == wp.start_time) && (@working_period.end_time == wp.end_time)))
+          (((wp1_start < wp2_end) && (wp1_start > wp2_start)) ||
+           ((wp1_end < wp2_end) && (wp1_end > wp2_start)) ||
+           (wp1_start == wp2_start) || (wp1_end == wp2_end))
         raise l(:error_working_period_overlap)
       end
     end
