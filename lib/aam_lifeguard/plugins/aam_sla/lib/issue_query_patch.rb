@@ -17,20 +17,23 @@ module IssueQueryPatch
         clauses = []
         value.each do |val|
           case val.to_sym
+          # Sadly have to mirror in_breach, paused?, ok? functions found in the issue_patch file.
           when :ok
-            clauses << "(#{Issue.table_name}.due_date IS NULL OR #{Issue.table_name}.due_date >= '#{DateTime.now.utc.to_s}')"
+            clauses << "(#{Issue.table_name}.due_date IS NULL OR #{Issue.table_name}.due_date >= '#{DateTime.now.to_s}'" +
+										"OR (#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on <= #{Issue.table_name}.due_date))"
           when :paused
-            # @todo
+            clauses << "FALSE" #TODO - pause feature not yet implemented
           when :breach
-            # Mirror in_breach? function found in the issue_patch file.
-            clause = "((#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on > #{Issue.table_name}.due_date)" +
-              "OR ('#{DateTime.now.utc.to_s}' > #{Issue.table_name}.due_date))"
+            clause = "(#{Issue.table_name}.due_date IS NOT NULL AND (" +
+										 "(#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on > #{Issue.table_name}.due_date)" +
+									 "OR (#{Issue.table_name}.closed_on IS NULL AND '#{DateTime.now.to_s}' > #{Issue.table_name}.due_date)) )"
 
             clauses << clause
           end
         end
 
-        sql = "(" + clauses.join(" OR ") + ")"
+				op = operator == "!" ? 'NOT ' : ''
+        sql = op + "(" + clauses.join(" OR ") + ")"
         sql
       end
     end
@@ -39,6 +42,9 @@ module IssueQueryPatch
   module InstanceMethods
     def available_filters_with_sla
       @available_filters = available_filters_without_sla
+			
+			#Remove (unwanted) tracker filter from the list
+			delete_available_filter "tracker_id"
 
       filters = {
         "sla_status" => {
