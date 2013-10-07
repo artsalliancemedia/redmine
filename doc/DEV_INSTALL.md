@@ -6,7 +6,7 @@ Hopefully shouldn't take too long!
 
 Please install:
 
-* Ruby 2.0.x (x86)
+* Ruby 2.0.x (x86 if windows, x86 or x64 if on unix)
 * Ruby Gems 2.0.x
 * Postgres 9.3.x (x86 or x64)
 * Ruby DevTools (if on windows)
@@ -15,19 +15,19 @@ Please install:
 
 Please follow these steps in order:
 
-1. Download a copy of Redmine 2.3.x, follow the install instructions included to get a working installation.
-1. Copy across the themes to the redmine installation directory. The theme can be found found under `/public`.
+1. Download a copy of Redmine 2.3.x, follow the install instructions included to get a working installation. (Or use the copy of Redmine found under /lib/redmine)
+1. Copy across the themes to the redmine installation directory. The theme can be found found under `/src/public`.
   * Restart the redmine web server.
   * Then login to Redmine, navigate to *Administration* then to *Settings* and finally to *Display*.
   * On the *Display* page there is an option to change over the theme to `AAM`.
   * Click around and test the installation is still working correctly before proceeding.
-1. Copy across the `/core_patches` folder to the root of the redmine installation directory.
+1. Copy across the `/src/core_patches` folder to the root of the redmine installation directory.
   * Stop the redmine webserver.
   * To apply the patch(es) correctly please run `patch -p0 -i <redmine_dir>/core_patches/patch_123.diff`. This will modify the code.
   * Then run the command `rake db:migrate` in the root folder. This will modify the database.
   * Start the redmine webserver.
   * Login and test the installation is still working correctly before proceeding.
-1. Copy across the plugins found within `/plugins` to the `/plugins` folder in the redmine installation directory.
+1. Copy across the plugins found within `/src/plugins` to the `/plugins` folder in the redmine installation directory.
   * Run the command `rake redmine:plugins:migrate` to safely apply any database changes that are required.
   * Restart the redmine web server.
   * Login and test again to make sure the installation is still working.
