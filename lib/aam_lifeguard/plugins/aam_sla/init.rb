@@ -22,4 +22,8 @@ Rails.configuration.to_prepare do
   unless IssueQuery.included_modules.include?(IssueQueryPatch)
     IssueQuery.send(:include, IssueQueryPatch)
   end
+	
+  unless User.included_modules.include?(TzUserPatch)
+    User.send(:include, TzUserPatch)
+  end
 end
