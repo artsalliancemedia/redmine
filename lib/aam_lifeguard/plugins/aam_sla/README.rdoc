@@ -1,0 +1,18 @@
+Working Periods
+---------------
+
+The Working Periods page is located in the Administration menu (underneath Devices)
+
+This page allows customers (probably a support team) to set their working times, which will cause their assigned issues to pause when they are not working (WIP).
+
+To create a new working period, simply click the "New working period" button, fill in the fields and click Create.
+
+A few requirements:
+
+Must input a valid Start Time and End Time (e.g. "12pm", "13:45", etc).
+If you leave the time zone field blank, the time zone will be taken from the user's preferences (found on the "my account" page). If this is also blank, the time zone will be grabbed from the Ruby Time.zone (most of the time this will be UTC).
+Working periods must not overlap (e.g. "Monday 2pm-5pm" and "Monday 4pm-7pm").
+The End Time must occur after the Start Time.
+Once the time zone for the first working period is selected, all other must match.
+If a user's specified time zone is different to that of the working periods they are viewing, the working periods will be modified accordingly.
+Also note that because of this, deleting a working period may delete another as well, as you may have one working period split up into two if it crosses over a day boundary (i.e. "Monday 9am-5pm" at GMT-10:00 becomes "Sunday 11pm-12am" and "Monday 12am-7am")
