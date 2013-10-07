@@ -7,12 +7,11 @@ This repository only has the additional code required to transform a standard Re
 ## Initial set-up
 
 * I followed [this tutorial](http://tecadmin.net/how-to-install-ruby-2-0-0-on-centos-6-using-rvm) to install Ruby 2.0.0, although >= 1.9.3 and rubygems should suffice.
-* `yum install postgresql93 postgresql93-devel postgresql93-libs nginx libxml2-devel libxslt-devel`
+* `yum install postgresql93 postgresql93-devel postgresql93-libs libxml2-devel libxslt-devel`
 * `service postgresql-9.3 start`
-* `service nginx start`
 * `vi /var/lib/pgsql/9.3/data/pg_hba.conf`, set localhost to trust or remember/reset the password from installation.
 * `psql -U postgres -c CREATE DATABASE redmine;`
-* `gem install thin`
+* `gem install thin bundler`
 
 ## Demo/Test Releases
 

@@ -1,0 +1,4 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "cleanup", :plugin => 'aam_ui_cleanup' %>
+<% end %>
+<%= javascript_tag "onLoadDoAamCleanup();" %>
