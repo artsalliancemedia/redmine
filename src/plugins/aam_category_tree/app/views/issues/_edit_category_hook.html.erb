@@ -1,0 +1,32 @@
+<script>
+  $(document).ready(function() {
+	//Hide the old category drop-down
+	//	but DO NOT remove/disable it as we use it to send the category to the issue ontroller
+	$("#issue_category_id").parent('p').hide();
+	
+	$("#category-tree select").change(function() {
+		var new_val = $(this).val();
+		if(new_val.length === 0) {
+		  //blank selected, get parent value
+		  new_val = $(this).prev('select').val();
+		}
+		$("#issue_category_id").val(new_val);
+		
+		updateIssueFrom("<%= escape_javascript project_issue_form_path(@project, :id => @issue, :format => 'js') %>");
+	});
+  });
+</script>
+
+<% if @issue.safe_attribute?('category_id') && @issue.project.issue_categories.any? %>
+<p id="category-tree">
+  <label for="category-root"><%= l(:category) %></label>
+<% category_tree_selects = drop_downs_for_category_tree(@issue.category)
+  category_tree_selects.each_with_index do |drop_down, i| %>
+	<%= select_tag drop_down[:label], options_for_select(drop_down[:options], drop_down[:selected]), :include_blank => true,
+					:class => "category-nest" %>
+	<% if (i+1) < category_tree_selects.count %>
+	  &gt;
+	<% end %>
+<% end %>
+</p>
+ <% end %>
