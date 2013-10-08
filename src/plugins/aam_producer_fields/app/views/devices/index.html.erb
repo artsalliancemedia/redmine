@@ -1,0 +1,49 @@
+<% if Rails.env.development? %>
+  <div class="contextual">
+    <%= link_to l(:label_device_new), {:controller => 'devices', :action => 'new'}, :class => 'icon icon-add' %>
+  </div>
+<% end %>
+
+<h2><%= t(:device_plural) %></h2>
+
+<p class="pagination"><%= pagination_links_full @device_pages %></p>
+
+<table class="list">
+  <tr>
+    <%= sort_header_tag('cinema_name', :caption => t(:complex)) %>
+    <%= sort_header_tag('screen_identifier', :caption => t(:screen)) %>
+    <%= sort_header_tag('category', :caption => t(:category)) %>
+    <%= sort_header_tag('manufacturer', :caption => t(:field_manufacturer)) %>
+    <%= sort_header_tag('model', :caption => t(:field_model)) %>
+    <%= sort_header_tag('software_version', :caption => t(:field_software_version)) %>
+    <%= sort_header_tag('firmware_version', :caption => t(:field_firmware_version)) %>
+	<% if Rails.env.development? %>
+	  <th></th>
+	  <th></th>
+    <% end %>
+  </tr>
+
+  <% @devices.each do |device| %>
+    <tr>
+    <% if device.deviceable_type == 'Cinema' %>
+      <td><%= Cinema.find_by_id(device.deviceable_id).name %></td>
+      <td></td>
+    <% else %>
+      <td><%= Screen.find_by_id(device.deviceable_id).cinema.name %></td>
+      <td><%= Screen.find_by_id(device.deviceable_id).identifier %></td>
+    <% end %>
+
+    <td><%= device.category %></td>
+    <td><%= device.manufacturer %></td>
+    <td><%= device.model %></td>
+    <td><%= device.software_version %></td>
+    <td><%= device.firmware_version %></td>
+	
+    <% if Rails.env.development? %>
+      <td><%= link_to l(:button_update), edit_device_path(device), :class => 'icon icon-edit' %></td>
+      <td><%= link_to l(:button_delete), device_path(device), :data => {:confirm => l(:text_devices_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>
+    <% end %>
+    </tr>
+  <% end %>
+</table>
+<p class="pagination"><%= pagination_links_full @device_pages %></p>

@@ -1,0 +1,17 @@
+<h2><%=l(:label_cinema_new)%></h2>
+
+<%= labelled_form_for @cinema do |f| %>
+  <%= error_messages_for 'cinema' %>
+
+  <div class="box tabular">
+  <!--[form:cinema]-->
+  <p><%= f.text_field :name, :required => true, :size => 60 %></p>
+  <p><%= f.text_field :telephone, :size => 60 %></p>
+  <p><%= f.text_field :city, :size => 60 %></p>
+  <p><%= f.text_field :postcode, :size => 60 %></p>
+  <p><%= f.text_field :ip_address, :size => 60 %></p>
+  <p><%= f.text_field :external_id, :size => 60 %></p>
+  </div>
+
+  <%= submit_tag l(:button_create) %>
+<% end %>

@@ -1,0 +1,47 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "producer_issue", :plugin => 'aam_producer_fields'  %>
+<% end %>
+
+<% if @issue.safe_attribute? 'cinema_id' %>
+<p><%= form.select :cinema_id, Cinema.all.collect {|c| [c.name, c.id]}, {:required => true, :include_blank => false},
+                :onchange => "updateIssueFrom('#{escape_javascript project_issue_form_path(@project, :id => @issue, :format => 'js')}')" %></p>
+<% end %>
+
+<% if @issue.safe_attribute? 'screen_id' %>
+
+<% screens = Screen.where(:cinema_id => @issue.cinema_id) %>
+<p><%= form.select :screen_id, screens.collect {|s| [s.identifier, s.id]}, {:include_blank => true},
+                {:onchange => "updateIssueFrom('#{escape_javascript project_issue_form_path(@project, :id => @issue, :format => 'js')}')"} %></p>
+<% end %>
+
+<% if @issue.safe_attribute? 'device_id' %>
+
+<%
+  if @issue.screen_id and screens.any? { |s| s.id == @issue.screen_id }
+    devices = Device.where({:deviceable_id => @issue.screen_id, :deviceable_type => 'Screen'})
+  elsif @issue.cinema_id
+    devices = Device.where({:deviceable_id => @issue.cinema_id, :deviceable_type => 'Cinema'})
+  else
+    devices = []
+  end
+%>
+
+<%
+def check_blank(lead, trail)
+  return trail.blank? ? "" : lead + " " + trail
+end
+
+def full_device_name(d)
+  name = t(d.category)
+  details = d.manufacturer.to_s + " " + d.model.to_s + " " +
+	check_blank(l(:with_software), d.software_version.to_s) + " " + check_blank(l(:and_firmware), d.firmware_version.to_s)
+  full = details.blank? ? name : name + " - " + details
+  return full
+end
+%>
+
+<p><%= form.select :device_id,  devices.collect {|d| [full_device_name(d), d.id]}, {:include_blank => true},
+                {:onchange => "updateIssueFrom('#{escape_javascript project_issue_form_path(@project, :id => @issue, :format => 'js')}')"} %></p>
+<% end %>
+
+<%= hidden_field_tag("issue-update_form-url", project_issue_form_path(@project, :id => @issue, :format => 'js'))  %>

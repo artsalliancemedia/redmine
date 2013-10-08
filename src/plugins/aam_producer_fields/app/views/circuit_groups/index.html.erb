@@ -1,0 +1,24 @@
+<div class="contextual">
+<%= link_to l(:label_circuit_group_new), {:controller => 'circuit_groups', :action => 'new'}, :class => 'icon icon-add' %>
+</div>
+
+<h2><%= t(:circuit_group_plural) %><%= @sort_c %></h2>
+
+<p class="pagination"><%= pagination_links_full @circuit_group_pages %></p>
+
+<table class="list">
+  <tr>
+    <%= sort_header_tag('name') %>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @circuit_groups.each do |circuit_group| %>
+    <tr>
+      <td><%= circuit_group.name %></td>
+      <td><%= link_to l(:button_update), edit_circuit_group_path(circuit_group), :class => 'icon icon-edit' %></td>
+      <td><%= link_to l(:button_delete), circuit_group_path(circuit_group), :data => {:confirm => l(:text_circuit_groups_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>
+    </tr>
+  <% end %>
+</table>
+<p class="pagination"><%= pagination_links_full @circuit_group_pages %></p>

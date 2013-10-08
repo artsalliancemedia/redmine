@@ -1,1 +1,4 @@
-*.gem
+/.bundle
+/src/.bundle
+/lib/redmine/.bundle
+

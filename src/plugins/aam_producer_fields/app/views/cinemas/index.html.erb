@@ -1,0 +1,34 @@
+<% if Rails.env.development? %>
+  <div class="contextual">
+    <%= link_to l(:label_cinema_new), {:controller => 'cinemas', :action => 'new'}, :class => 'icon icon-add' %>
+  </div>
+<% end %>
+
+<h2><%= t(:cinema_plural) %><%= @sort_c %></h2>
+
+<p class="pagination"><%= pagination_links_full @cinema_pages %></p>
+
+<table class="list">
+  <tr>
+    <%= sort_header_tag('name', :caption => t(:complex)) %>
+    <%= sort_header_tag('city', :caption => t(:field_city)) %>
+    <%= sort_header_tag('ip_address', :caption => t(:field_ip_address)) %>
+    <% if Rails.env.development? %>
+	  <th></th>
+	  <th></th>
+    <% end %>
+  </tr>
+
+  <% @cinemas.each do |cinema| %>
+    <tr>
+      <td><%= cinema.name %></td>
+      <td><%= cinema.city %></td>
+      <td><%= cinema.ip_address %></td>
+      <% if Rails.env.development? %>
+		<td><%= link_to l(:button_update), edit_cinema_path(cinema), :class => 'icon icon-edit' %></td>
+        <td><%= link_to l(:button_delete), cinema_path(cinema), :data => {:confirm => l(:text_cinemas_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+<p class="pagination"><%= pagination_links_full @cinema_pages %></p>
