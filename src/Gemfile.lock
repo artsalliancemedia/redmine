@@ -155,5 +155,5 @@ DEPENDENCIES
   rmagick (>= 2.0.0)
   ruby-openid (~> 2.2.3)
   shoulda (~> 3.3.2)
-  thin
+  thin (= 1.5.1)
   yard
