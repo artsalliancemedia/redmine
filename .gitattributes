@@ -14,3 +14,4 @@
 *.erb text eol=lf
 *.rdoc text eol=lf
 *.svg text eol=lf
+*.example text eol=lf
