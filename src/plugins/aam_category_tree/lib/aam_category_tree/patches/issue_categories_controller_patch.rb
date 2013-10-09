@@ -9,7 +9,7 @@ module AamCategoryTree
 
 				base.class_eval do
 					unloadable
-
+					alias_method_chain :new, :id_param
 					helper AamCategoryTree::IssueCategoryHelper
 				end
 			end
@@ -18,6 +18,12 @@ module AamCategoryTree
 			end
 
 			module InstanceMethods
+				
+				def new_with_id_param
+					@parent_category = IssueCategory.find(params[:id]) if params[:id]
+					new_without_id_param
+				end
+				
 			  def move_category
 			    categoryId = params[:id]
 			    direction = params[:direction]
