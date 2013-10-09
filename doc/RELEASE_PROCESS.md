@@ -4,16 +4,15 @@ We package up redmine into a .tar.gz archive file, this differs from our Python 
 
 ## Initial server set-up
 
-* I followed [this tutorial](http://tecadmin.net/how-to-install-ruby-2-0-0-on-centos-6-using-rvm) to install Ruby 2.0.0, although >= 1.9.3 and rubygems should suffice.
-* `yum install libxml2-devel libxslt-devel`
-* `gem install thin bundler`
-
-**If you need postgres then run too**
-
-* `yum install postgresql93 postgresql93-devel postgresql93-libs`
-* `service postgresql-9.3 start`
-* `vi /var/lib/pgsql/9.3/data/pg_hba.conf`, set localhost to trust or remember/reset the password from installation.
-* `psql -U postgres -c CREATE DATABASE redmine;`
+1. I followed [this tutorial](http://tecadmin.net/how-to-install-ruby-2-0-0-on-centos-6-using-rvm) to install Ruby 2.0.0, although >= 1.9.3 and rubygems should suffice.
+1. `yum install libxml2-devel libxslt-devel`
+1. `gem install thin bundler`
+1. **If you need postgres then run too**
+  * `yum install postgresql93 postgresql93-devel postgresql93-libs`
+  * `service postgresql-9.3 start`
+  * `vi /var/lib/pgsql/9.3/data/pg_hba.conf`, set localhost to trust or remember/reset the password from installation.
+  * `psql -U postgres -c CREATE DATABASE redmine;`
+1. Copy `config/database.yml.example` to `config/database.yml` and modify it to point at the redmine database.
 
 ## Release Archive
 
@@ -30,6 +29,7 @@ This process is controlled from our jenkins box (aam-ci-1:8080), in particular t
 1. Modify any settings files contained in `/home/redmine` if needed.
 1. Modify the `build.sh` file if the version number of the archive has changed.
 1. Run `/home/redmine/build.sh`, this will add in symlinks for the settings files to the appropriate location in the archive folder.
+1. Run `rake db:migrate` and `rake redmine:plugins:migrate` to update the database.
 1. Run `thin start -C /home/redmine/redmine-thin.yml` to get Redmine to pick up the new settings.
 1. Check `demo-redmine-1:3000` to make sure it's working :)
 1. Relax with a cold beverage.
