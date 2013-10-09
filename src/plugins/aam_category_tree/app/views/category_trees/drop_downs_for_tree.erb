@@ -1,0 +1,9 @@
+
+  <% category_tree_selects = drop_downs_for_category_tree(@category)
+  category_tree_selects.each_with_index do |drop_down, i| %>
+	<%= select_tag drop_down[:label], options_for_select(drop_down[:options], drop_down[:selected]), :include_blank => true,
+	  :class => "category-nest" %>
+	<% if (i+1) < category_tree_selects.count %>
+	  &gt;
+	<% end %>
+  <% end %>
