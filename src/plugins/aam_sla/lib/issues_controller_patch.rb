@@ -12,10 +12,9 @@ module IssuesControllerPatch
 
   module InstanceMethods
     def toggle_pause
-      message = @issue.toggle_pause
+      @issue.toggle_pause
 
       respond_to do |format|
-        flash[:success] = message
         format.html { redirect_to issue_path(@issue) }
         format.js
       end

@@ -36,6 +36,7 @@ module IssuePatch
               num_seconds_left -= wp_length
             else
               final_working_period = specific_wp # This is the working period the issue is estimated to finish in
+              num_seconds_left += (specific_wp.end_time - specific_wp.start_time) - wp_length # Need to account for pauses in final working period
               break
             end
           end
@@ -91,11 +92,9 @@ module IssuePatch
     def toggle_pause
       if self.paused?
         pauses.last.stop
-        l(:issue_unpaused)
       else
         # Make a new Pause
         pauses.push(Pause.new({:issue_id => id, :start_date => DateTime.now.utc}))
-        l(:issue_paused)
       end
     end
 
