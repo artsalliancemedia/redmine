@@ -120,7 +120,7 @@ module IssuePatch
     def get_all_utc_working_periods
       adjusted_working_periods = []
       WorkingPeriod.all.each do |wp|
-        wp.adjust_for_current_time_zone(false).each do |adjusted_wp|
+        wp.adjust_for_current_time_zone(0).each do |adjusted_wp|
           adjusted_working_periods.push(adjusted_wp)
         end
       end

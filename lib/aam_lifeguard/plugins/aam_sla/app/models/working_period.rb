@@ -67,11 +67,9 @@ class WorkingPeriod < ActiveRecord::Base
     # Empty setter needed for virtual attribute
   end
 
-  def adjust_for_current_time_zone(use_user_time_zone)
-    current_time_zone_offset = -get_time_zone_offset # Difference from UTC
-    if use_user_time_zone # Get difference between current user's time zone and working periods time zone
-      current_time_zone_offset += get_user_time_zone_offset
-    end
+  def adjust_for_current_time_zone(user_time_zone_offset)
+    # Get difference between current user's time zone and working periods time zone
+    current_time_zone_offset = user_time_zone_offset - get_time_zone_offset
     adjusted_start_time = self.start_time + current_time_zone_offset.seconds
     adjusted_end_time = self.end_time + current_time_zone_offset.seconds
     
@@ -123,10 +121,6 @@ class WorkingPeriod < ActiveRecord::Base
 
   def get_time_zone_offset
     ActiveSupport::TimeZone[self.time_zone].blank? ? 0 : ActiveSupport::TimeZone[self.time_zone].now.utc_offset
-  end
-
-  def get_user_time_zone_offset
-    User.current.time_zone.blank? ? Time.zone.now.utc_offset : User.current.time_zone.now.utc_offset
   end
 
   def specific_time(start_date, num_days, time_of_day)
