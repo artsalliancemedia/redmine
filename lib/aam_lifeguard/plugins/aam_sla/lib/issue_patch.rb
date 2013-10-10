@@ -104,15 +104,14 @@ module IssuePatch
         :breach
       elsif paused?
         :paused
-      elsif out_of_hours?
-        :out_of_hours
       else
         :ok
       end
     end
     
     def sla_status
-      return l(sla_status_raw)
+      out_of_hours_string = out_of_hours? ? (' (' + l(:out_of_hours) + ')') : ''
+      l(sla_status_raw) + out_of_hours_string
     end
 
     private
