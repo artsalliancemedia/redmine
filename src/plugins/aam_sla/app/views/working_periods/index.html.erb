@@ -11,7 +11,7 @@
     <%= 'Original Time Zone: ' + @adjusted_working_periods.first[0].time_zone_string %>
   </h3>
   <h3>
-    <%= 'Shown in: ' + User.current.time_zone.to_s %>
+    <%= 'Shown in: ' + (User.current.time_zone.blank? ? Time.zone.to_s : User.current.time_zone.to_s) %>
   </h3>
 <% end %>
 
