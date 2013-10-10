@@ -6,6 +6,7 @@ en:
   ok: Okay
   paused: Paused
   breach: Breach
+  out_of_hours: Out of working hours
   button_pause: Pause
   button_unpause: Unpause
   issue_paused: Issue paused
