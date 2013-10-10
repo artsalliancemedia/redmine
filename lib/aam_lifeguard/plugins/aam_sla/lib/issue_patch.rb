@@ -6,10 +6,48 @@ module IssuePatch
 
     Issue.class_eval do
       before_save :sla_service
+      has_many :pauses
     end
   end
 
   module InstanceMethods
+    def due_date
+      if estimated_hours.blank? || paused? || WorkingPeriod.blank? # Due date invalid
+        return
+      end
+
+      utc_working_periods = get_all_utc_working_periods
+      start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
+      days_index = start_day
+      num_seconds_left = estimated_hours * 3600
+      num_weeks = -1
+      final_working_period = nil
+      while final_working_period == nil do
+        while days_index < 7 do
+          # Need to keep track of weeks to calculate future working period dates
+          if days_index == start_day
+            num_weeks += 1
+          end
+          day_working_periods = utc_working_periods.select{|wp| wp.day == days_index} # Get working periods for this day of the week
+          day_working_periods.each do |wp|
+            specific_wp = wp.specific_working_period(start_date, num_weeks) # Get working period for a specific date
+            wp_length = get_working_period_length(specific_wp, start_date)
+            if wp_length < num_seconds_left # Issue not finished yet
+              num_seconds_left -= wp_length
+            else
+              final_working_period = specific_wp # This is the working period the issue is estimated to finish in
+              break
+            end
+          end
+          break unless final_working_period == nil
+          days_index += 1
+        end
+        days_index = 0
+      end
+
+      final_working_period.start_time + num_seconds_left
+    end
+
     def sla_service
       return if priority.nil?
 
@@ -27,24 +65,82 @@ module IssuePatch
       breach ||= DateTime.now > due_date
       breach
     end
-		
-		def paused?
-      # @todo: Add in paused status for ticket stops.
-			false
-		end
+    
+    def paused?
+      if pauses.count > 0
+        pauses.last.active?
+      else
+        false
+      end
+    end
+
+    def toggle_pause
+      if self.paused?
+        pauses.last.stop
+        l(:issue_unpaused)
+      else
+        # Make a new Pause
+        pauses.push(Pause.new({:issue_id => id, :start_date => DateTime.now.utc}))
+        l(:issue_paused)
+      end
+    end
 
     def sla_status_raw
       if in_breach?
         :breach
-			elsif paused?
-				:paused
-			else
-				:ok
+      elsif paused?
+        :paused
+      else
+        :ok
       end
     end
-		
+    
     def sla_status
-			return l(sla_status_raw)
+      return l(sla_status_raw)
+    end
+
+    private
+
+    def get_all_utc_working_periods
+      adjusted_working_periods = []
+      WorkingPeriod.all.each do |wp|
+        wp.adjust_for_current_time_zone(false).each do |adjusted_wp|
+          adjusted_working_periods.push(adjusted_wp)
+        end
+      end
+      adjusted_working_periods.sort_by{|wp| [wp.day, wp.start_time.hour, wp.start_time.min]}
+    end
+
+    def get_working_period_length(working_period, start_date)
+      wp_length = 0
+      if working_period.start_time > Time.now # No pauses possible
+        wp_length = working_period.end_time - working_period.start_time
+      elsif working_period.start_time < start_date && start_date < working_period.end_time # Issue started during current working period
+        working_period.set_start_time(start_date)
+        wp_length = true_working_period_length(working_period)
+      elsif start_date > working_period.end_time # Issue started after current working period
+        wp_length = 0
+      else # Need to take pauses into account
+        wp_length = true_working_period_length(working_period)
+      end
+      wp_length
+    end
+
+    def true_working_period_length(working_period) # Remove paused time
+      wp_length = working_period.end_time - working_period.start_time
+      pauses.each do |p|
+        if p.start_date <= working_period.start_time && p.end_date >= working_period.end_time # Paused for whole working period
+          wp_length = 0
+          break
+        elsif p.start_date < working_period.end_time && p.end_date >= working_period.end_time
+          wp_length -= working_period.end_time - p.start_date
+        elsif p.start_date <= working_period.start_time && p.end_date < working_period.end_time
+          wp_length -= p.end_date - working_period.start_time
+        elsif p.start_date >= working_period.start_time && p.end_date <= working_period.end_time
+          wp_length -= p.end_date - p.start_date
+        end
+      end
+      wp_length
     end
   end
 end

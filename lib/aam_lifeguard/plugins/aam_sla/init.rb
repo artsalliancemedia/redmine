@@ -6,6 +6,10 @@ Redmine::Plugin.register :aam_sla do
   author_url 'http://artsalliancemedia.com'
 
   menu :admin_menu, :working_periods, { :controller => 'working_periods', :action => 'index' }, :caption => :working_period_plural
+
+  project_module :issue_tracking do
+    permission :issue_toggle_pause, :issues => :toggle_pause
+  end
 end
 
 Rails.configuration.to_prepare do
@@ -19,6 +23,10 @@ Rails.configuration.to_prepare do
 
   unless Issue.included_modules.include?(IssuePatch)
     Issue.send(:include, IssuePatch)
+  end
+
+  unless IssuesController.included_modules.include?(IssuesControllerPatch)
+    IssuesController.send(:include, IssuesControllerPatch)
   end
 
   unless IssueQuery.included_modules.include?(IssueQueryPatch)

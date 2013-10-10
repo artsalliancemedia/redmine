@@ -5,11 +5,15 @@
 
 <h2><%= t(:working_period_plural)%></h2>
 
-<h3>
-  <% if(@adjusted_working_periods.count > 0) %>
-    <%= 'Time Zone ' + @adjusted_working_periods.first[0].time_zone_string %>
-  <% end %>
-</h3>
+
+<% if(@adjusted_working_periods.count > 0) %>
+  <h3>
+    <%= 'Original Time Zone: ' + @adjusted_working_periods.first[0].time_zone_string %>
+  </h3>
+  <h3>
+    <%= 'Shown in: ' + User.current.time_zone.to_s %>
+  </h3>
+<% end %>
 
 <table class="list">
   <colgroup>
