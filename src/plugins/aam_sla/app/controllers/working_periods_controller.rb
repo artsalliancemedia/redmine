@@ -8,7 +8,7 @@ class WorkingPeriodsController < ApplicationController
   def index
     @adjusted_working_periods = []
     WorkingPeriod.all.each do |wp|
-      wp.adjust_for_current_time_zone(true).each do |adjusted_wp|
+      wp.adjust_for_current_time_zone(get_user_time_zone_offset).each do |adjusted_wp|
         @adjusted_working_periods.push([adjusted_wp,wp]) # Need to store original WorkingPeriod to get delete path
       end
     end
@@ -88,6 +88,10 @@ class WorkingPeriodsController < ApplicationController
     @working_period = WorkingPeriod.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render_404
+  end
+
+  def get_user_time_zone_offset
+    User.current.time_zone.blank? ? Time.zone.now.utc_offset : User.current.time_zone.now.utc_offset
   end
 
   def normalise_time(time)
