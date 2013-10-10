@@ -1,5 +1,9 @@
-form .attributes select.category-nest {
+select.category-nest {
 	width: auto;
+}
+
+fieldset#filters td.values select.category-nest {
+	min-width: 0;
 }
 
 #all-show {

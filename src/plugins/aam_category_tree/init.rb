@@ -41,13 +41,20 @@ ActionDispatch::Callbacks.to_prepare do
     ReportsController.send(:include, AamCategoryTree::Patches::ReportsControllerPatch)
   end
 
-	require_dependency 'queries_helper'
-	unless QueriesHelper.included_modules.include?(AamCategoryTree::Patches::QueriesHelperPatch)
-		QueriesHelper.send(:include, AamCategoryTree::Patches::QueriesHelperPatch)
-	end
+	#This patch changes the Category column on the issues list to a tree view - but we probably
+	#don't want this as it looks messy when the tree is large.
+#	require_dependency 'queries_helper'
+#	unless QueriesHelper.included_modules.include?(AamCategoryTree::Patches::QueriesHelperPatch)
+#		QueriesHelper.send(:include, AamCategoryTree::Patches::QueriesHelperPatch)
+#	end
 
 	require_dependency 'issues_helper'
 	unless IssuesHelper.included_modules.include?(AamCategoryTree::Patches::IssuesHelperPatch)
 		IssuesHelper.send(:include, AamCategoryTree::Patches::IssuesHelperPatch)
+	end
+	
+	require_dependency 'query'
+	unless IssuesHelper.included_modules.include?(AamCategoryTree::Patches::QueryPatch)
+		Query.send(:include, AamCategoryTree::Patches::QueryPatch)
 	end
 end
