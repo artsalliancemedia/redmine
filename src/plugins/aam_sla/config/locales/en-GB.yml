@@ -6,6 +6,10 @@ en-GB:
   ok: Okay
   paused: Paused
   breach: Breach
+  button_pause: Pause
+  button_unpause: Unpause
+  issue_paused: Issue paused
+  issue_unpaused: Issue unpaused
 
   label_working_periods_new: "New working period"
   label_working_period: "Working Period"

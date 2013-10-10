@@ -1,6 +1,3 @@
-require "redmine"
-require_dependency 'sla_hooks'
-
 Redmine::Plugin.register :aam_sla do
   name 'AAM SLA plugin'
   author 'Arts Alliance Media'
@@ -9,6 +6,10 @@ Redmine::Plugin.register :aam_sla do
   author_url 'http://artsalliancemedia.com'
 
   menu :admin_menu, :working_periods, { :controller => 'working_periods', :action => 'index' }, :caption => :working_period_plural
+
+  project_module :issue_tracking do
+    permission :issue_toggle_pause, :issues => :toggle_pause
+  end
 end
 
 Rails.configuration.to_prepare do
@@ -24,10 +25,14 @@ Rails.configuration.to_prepare do
     Issue.send(:include, IssuePatch)
   end
 
+  unless IssuesController.included_modules.include?(IssuesControllerPatch)
+    IssuesController.send(:include, IssuesControllerPatch)
+  end
+
   unless IssueQuery.included_modules.include?(IssueQueryPatch)
     IssueQuery.send(:include, IssueQueryPatch)
   end
-	
+
   unless User.included_modules.include?(TzUserPatch)
     User.send(:include, TzUserPatch)
   end
