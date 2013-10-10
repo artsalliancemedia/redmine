@@ -12,14 +12,14 @@ module IssuePatch
 
   module InstanceMethods
     def due_date
-      if estimated_hours.blank? || paused? || WorkingPeriod.blank? # Due date invalid
+      if priority.nil? || priority.sla_priority.nil? || paused? || WorkingPeriod.blank? # Due date invalid
         return
       end
 
       utc_working_periods = get_all_utc_working_periods
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
       days_index = start_day
-      num_seconds_left = estimated_hours * 3600
+      num_seconds_left = priority.sla_priority.seconds
       num_weeks = -1
       final_working_period = nil
       while final_working_period == nil do
