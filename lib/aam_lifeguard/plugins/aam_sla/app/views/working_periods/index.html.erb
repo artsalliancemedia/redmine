@@ -6,7 +6,7 @@
 <h2><%= t(:working_period_plural)%></h2>
 
 
-<% if(@adjusted_working_periods.count > 0) %>
+<% unless(@adjusted_working_periods.blank?) %>
   <h3>
     <%= 'Original Time Zone: ' + @adjusted_working_periods.first[0].time_zone_string %>
   </h3>

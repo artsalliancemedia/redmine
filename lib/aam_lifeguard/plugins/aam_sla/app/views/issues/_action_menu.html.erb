@@ -1,6 +1,7 @@
 <div class="contextual">
 <%= link_to l(:button_pause), issue_toggle_pause_path(@issue), :method => :put if !@issue.paused? %>
-<%= link_to l(:button_unpause), issue_toggle_pause_path(@issue), :method => :put if @issue.paused? %>
+<%= link_to l(:button_unpause), issue_toggle_pause_path(@issue), :method => :put if @issue.paused? %> |
+<%= link_to l(:button_pause_list), issue_pauses_path(@issue) %>
 <%= link_to l(:button_update), edit_issue_path(@issue), :onclick => 'showAndScrollTo("update", "issue_notes"); return false;', :class => 'icon icon-edit', :accesskey => accesskey(:edit) if @issue.editable? %>
 <%= link_to l(:button_log_time), new_issue_time_entry_path(@issue), :class => 'icon icon-time-add' if User.current.allowed_to?(:log_time, @project) %>
 <%= watcher_link(@issue, User.current) %>
