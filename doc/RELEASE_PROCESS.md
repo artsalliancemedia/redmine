@@ -57,6 +57,7 @@ Make sure that the steps prefixed by *1st Installation* are only run the **first
 1. *System Update:* Run `tar -cfz aam_lifeguard-redmine.\`date "+%Y%m%dT%H%M"\`.tar.gz aam_lifeguard-redmine/` to backup the old installation, then remove it `rm -rf aam_lifeguard-redmine/`.
 1. Extract the ".tar.gz" release archive file to a place on the filesystem.
 1. *1st Installation:* Copy `config/database.yml.example` to `config/database.yml` and modify it to point at the redmine database.
+1. *1st Installation:* Copy `config/additional_environment.rb.example` to `config/additional_environment.rb` and modify it to set the logging requirements. See Logging section below for help.
 1. Run `bundle install --deployment --without rmagick` to install the gem dependencies that come with the archive.
 1. Run `rake db:migrate` from the root folder of the archive. Also run `rake redmine:plugins:migrate`, after these are complete the database schema should be up to date.
 1. *1st Installation:* Run `rake redmine:load_default_data` to load Redmine's default dataset and then `rake lifeguard:data_modify` to modify it for lifeguards requirements.
@@ -65,6 +66,16 @@ Make sure that the steps prefixed by *1st Installation* are only run the **first
 1. Run `bundle exec thin start -C deploy/redmine-thin.yml` to get Redmine to pick up the new settings. Modify that file if you need to change the default deploy settings (you probably do).
 1. Check `localhost:3000` to make sure it's working :)
 1. Relax with a cold beverage.
+
+### Logging
+
+These lines are required, if you want to have redmine handle log rotation, in the `additional_environment.rb` file to successfully capture debug output.
+
+```
+config.log_level = :debug
+config.logger = Logger.new('/var/log/aam_lifeguard-redmine.app.log', 5, 104857600) # Logger.new(PATH,NUM_FILES_TO_ROTATE,FILE_SIZE)
+config.logger.level = :debug
+```
 
 ## RPM Compilation
 
