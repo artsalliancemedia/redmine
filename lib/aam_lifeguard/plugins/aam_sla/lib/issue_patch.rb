@@ -17,6 +17,7 @@ module IssuePatch
       end
 
       utc_working_periods = get_all_utc_working_periods
+      return if utc_working_periods.blank? # return if no working periods set up yet
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
       days_index = start_day
       num_seconds_left = priority.sla_priority.seconds
