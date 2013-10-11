@@ -79,12 +79,12 @@ module IssuePatch
     end
 
     def out_of_hours?
-      time_now = Time.now
+      time_now = Time.now.utc
       current_day = ((time_now.wday - 1) % 7) # Get weekday starting from Monday
       get_all_utc_working_periods.each do |wp|
         if current_day == wp.day
           wp_today = wp.specific_working_period(time_now, 0) # Get today's working period
-          if time_now > wp_today.start_time && time_now < wp_today.end_time # Are we currently in a working period
+          if time_now >= wp_today.start_time && time_now <= wp_today.end_time # Are we currently in a working period
             return false
           end
         end
