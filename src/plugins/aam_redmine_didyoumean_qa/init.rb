@@ -22,5 +22,4 @@ end
 
 ActionDispatch::Callbacks.to_prepare do
   require 'redmine_didyoumean_qa/hooks/didyoumean_qa_hooks'
-  IssuesHelper.send :include, RedmineDidyoumeanQa::Patches::SearchIssuesHelperPatch
 end

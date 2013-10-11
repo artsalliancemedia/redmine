@@ -16,12 +16,16 @@
   <%= javascript_include_tag 'didyoumean_qa', :plugin => 'aam_redmine_didyoumean_qa' %>
 <% end %>
 
+<%
+dym_event_type = Setting.plugin_aam_redmine_didyoumean_qa['start_search_when'] == "1" ? "keyup" : "change"
+%>
+
 <script type="text/javascript">
   var dym_data = {
 	project_id: "<%= @project.id %>",
 	issue_id: "<%= @issue.id || '' %>",
     issue_url: "<%= url_for(Issue.new) %>",
-	event_type: "<%= issues_didyoumean_qa_event_type %>",
+	event_type: "<%= dym_event_type %>",
     search_url: "<%= url_for(:action => 'index', :controller => 'search_messages') %>",
     label_more: "<%= l(:dym_more) %>"
   };
