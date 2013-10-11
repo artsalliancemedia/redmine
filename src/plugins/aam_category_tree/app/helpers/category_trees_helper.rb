@@ -1,21 +1,22 @@
 module CategoryTreesHelper
 	#Prepare drop-down object for easier use by rails form_helper
-	def prepare_drop_down(values, chosen, name)
+	def prepare_drop_down(values, chosen, name, reject)
 		return {
-			options: values.collect{ |cat| [cat.name, cat.id] },
+			options: values.reject{ |val| !reject.nil? && val.name == reject.name }
+											.collect{ |cat| [cat.name, cat.id] },
 			selected: chosen,
 			label: "category-" + name
 		}
 	end
 		
 	#Get an array of drop-down objects representing each node in the category tree
-	def drop_downs_for_category_tree(category)
+	def drop_downs_for_category_tree(category, ignored_category)
 		drop_downs = []
 			
 		if category.nil?
-			drop_downs << prepare_drop_down(IssueCategory.roots, 0, "root")
+			drop_downs << prepare_drop_down(IssueCategory.roots, 0, "root", ignored_category)
 		else #get child category options
-			drop_downs << prepare_drop_down(category.children, 0, "level-end") if !category.leaf?
+			drop_downs << prepare_drop_down(category.children, 0, "level-end", ignored_category) if !category.leaf?
 				
 			level = 0
 			#Traverse the tree to the root category
@@ -28,7 +29,7 @@ module CategoryTreesHelper
 					name = "level-" + level.to_s
 				end
 
-				drop_downs << prepare_drop_down(values, category.id, name)
+				drop_downs << prepare_drop_down(values, category.id, name, ignored_category)
 				category = category.parent
 				level += 1
 			end

@@ -20,7 +20,7 @@
 	<% cat_parent_id = category.parent ? category.parent.id : 0 %>
   <tr class="issue_category <%= cycle 'odd', 'even' %> <%= level > 0 ? "idnt idnt-#{level}" : "root" %>"
 	  data-parent="<%= cat_parent_id %>" data-id="<%= category.id %>" data-isleaf="<%= (category.children.count == 0).to_s %>"
-	  data-isopen="false" data-level="<%= level %>">
+	  data-level="<%= level %>">
     <td class="name">
 	  <span class="tree-status"><%= category.children.count > 0 ? "+" : "" %></span>
 	  <span><%=h(category.name) %></span>

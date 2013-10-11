@@ -1,9 +1,16 @@
-function handle_dynamic_category_tree_now(category_element_name, parent_element_block_type, no_blank_at_root) {
+function handle_dynamic_category_tree_now(category_element_name, parent_element_block_type, no_blank_at_root, reject_id) {
 	var category_tree = $("#category-tree-dropdowns");
 
 	function load_category_tree(category) {
-		var blank_option = no_blank_at_root ? '?no_blank=y' : '';
-		category_tree.load("/category_trees/drop_downs/" + (category || 0) + blank_option);
+		var params = {};
+		if(no_blank_at_root) {
+			params['no_blank'] = 'y';
+		}
+		if(reject_id) {
+			params['id_ignore'] = reject_id; 
+		}
+		var q_str = "?" + $.param(params);
+		category_tree.load("/category_trees/drop_downs/" + (category || 0) + q_str);
 	}
 
 	var parent_category = $("#" + category_element_name);
@@ -25,6 +32,11 @@ function handle_dynamic_category_tree_now(category_element_name, parent_element_
 	});
 }
 
+function handle_dynamic_category_tree_with_reject(cat_el_name, reject_id) {
+	$(document).ready(function() {
+		handle_dynamic_category_tree_now(cat_el_name, 'p', false, reject_id);
+	});
+}
 
 function handle_dynamic_category_tree(category_element_name) {
 	$(document).ready(function() {
@@ -42,12 +54,17 @@ function handle_category_tree_visual() {
 		}
 
 		$('tr.issue_category[data-isleaf="false"]').on("click", function() {
-			var direct_descendants = $(this).siblings('tr[data-parent="' + $(this).attr('data-id') + '"]');
+			var node = $(this);
+			var direct_descendants = node.siblings('tr[data-parent="' + node.attr('data-id') + '"]');
 
 			var status = "";
 			if (direct_descendants.is(":visible")) {
 				//Hide entire sub-tree and reset the open/closed status of any branches
-				var sub_tree = $(this).nextUntil("tr[data-level='" + $(this).attr('data-level') + "']");
+				var sub_tree = node.nextUntil("tr[data-level='" + $(this).attr('data-level') + "']")
+									.filter(function(i) {
+									  //make sure to cast to int
+									  return +$(this).attr("data-level") > +node.attr('data-level');
+									});
 				sub_tree.hide();
 				flip_status(sub_tree, true);
 
