@@ -60,7 +60,7 @@ class WorkingPeriodsController < ApplicationController
 
     if request.post? && @working_period.save
       flash[:notice] = l(:notice_successful_create)
-      redirect_to working_periods_path
+      redirect_to :action => 'new'
     else
       @working_periods = WorkingPeriod.all
       render :action => 'new'
