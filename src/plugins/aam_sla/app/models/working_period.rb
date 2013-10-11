@@ -47,24 +47,12 @@ class WorkingPeriod < ActiveRecord::Base
     self.start_time.strftime("%I:%M%P")
   end
 
-  def start_time_string=()
-    # Empty setter needed for virtual attribute
-  end
-
   def end_time_string
     self.end_time.strftime("%I:%M%P")
   end
 
-  def end_time_string=()
-    # Empty setter needed for virtual attribute
-  end
-
   def time_zone_string
     "(GMT" + ActiveSupport::TimeZone[self.time_zone].now.strftime("%:z") + ") " + ActiveSupport::TimeZone[self.time_zone].name
-  end
-
-  def time_zone_string=()
-    # Empty setter needed for virtual attribute
   end
 
   def adjust_for_current_time_zone(user_time_zone_offset)
