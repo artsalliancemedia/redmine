@@ -1,3 +1,6 @@
+require "redmine"
+require_dependency 'sla_hooks'
+
 Redmine::Plugin.register :aam_sla do
   name 'AAM SLA plugin'
   author 'Arts Alliance Media'
