@@ -1,0 +1,11 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "category_tree", :plugin => 'aam_category_tree' %>
+<% end %>
+<%= javascript_tag "handle_dynamic_category_tree('issue_category_id')" %>
+
+<% if @issue.safe_attribute?('category_id') && @issue.project.issue_categories.any? %>
+<p id="category-tree">
+  <label for="category-root"><%= l(:category) %></label>
+  <span id="category-tree-dropdowns"></span>
+</p>
+ <% end %>
