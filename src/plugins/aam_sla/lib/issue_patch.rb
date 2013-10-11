@@ -14,14 +14,15 @@ module IssuePatch
 
   module InstanceMethods
     def due_date
-      if estimated_hours.blank? || paused? || WorkingPeriod.blank? # Due date invalid
+      if priority.nil? || priority.sla_priority.nil? || paused? || WorkingPeriod.blank? # Due date invalid
         return
       end
 
       utc_working_periods = get_all_utc_working_periods
+      return if utc_working_periods.blank? # return if no working periods set up yet
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
       days_index = start_day
-      num_seconds_left = estimated_hours * 3600
+      num_seconds_left = priority.sla_priority.seconds
       num_weeks = -1
       final_working_period = nil
       while final_working_period == nil do
@@ -38,6 +39,7 @@ module IssuePatch
               num_seconds_left -= wp_length
             else
               final_working_period = specific_wp # This is the working period the issue is estimated to finish in
+              num_seconds_left += (specific_wp.end_time - specific_wp.start_time) - wp_length # Need to account for pauses in final working period
               break
             end
           end
@@ -76,14 +78,26 @@ module IssuePatch
       end
     end
 
+    def out_of_hours?
+      time_now = Time.now
+      current_day = ((time_now.wday - 1) % 7) # Get weekday starting from Monday
+      get_all_utc_working_periods.each do |wp|
+        if current_day == wp.day
+          wp_today = wp.specific_working_period(time_now, 0) # Get today's working period
+          if time_now > wp_today.start_time && time_now < wp_today.end_time # Are we currently in a working period
+            return false
+          end
+        end
+      end
+      return true
+    end
+
     def toggle_pause
       if self.paused?
         pauses.last.stop
-        l(:issue_unpaused)
       else
         # Make a new Pause
         pauses.push(Pause.new({:issue_id => id, :start_date => DateTime.now.utc}))
-        l(:issue_paused)
       end
     end
 
@@ -98,7 +112,8 @@ module IssuePatch
     end
     
     def sla_status
-      return l(sla_status_raw)
+      out_of_hours_string = out_of_hours? ? (' (' + l(:out_of_hours) + ')') : ''
+      l(sla_status_raw) + out_of_hours_string
     end
 
     def css_classes_with_aam_css
@@ -110,7 +125,7 @@ module IssuePatch
     def get_all_utc_working_periods
       adjusted_working_periods = []
       WorkingPeriod.all.each do |wp|
-        wp.adjust_for_current_time_zone(false).each do |adjusted_wp|
+        wp.adjust_for_current_time_zone(0).each do |adjusted_wp|
           adjusted_working_periods.push(adjusted_wp)
         end
       end
