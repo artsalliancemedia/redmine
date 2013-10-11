@@ -16,21 +16,23 @@ We package up redmine into a .tar.gz archive file, this differs from our Python 
 
 ## Release Archive
 
-This process is controlled from our jenkins box (aam-ci-1:8080), in particular the "Redmine-GemBuild" task.
+This process is controlled from our jenkins box (aam-ci-1:8080), in particular the "Redmine-ArchiveBuild" task.
 
-1. If you need to update the gem dependencies prior to a release use the `bundle pack` command to download a copy to `/vendor/cache`. This will then be read from `bundle install` in the future.
-1. Run the task, it will spit out a ".tar.gz" file at the end.
+1. First update the `version.txt` file found in the redmine repo under `src`.
+1. If you need to update the gem dependencies prior to a release use the `bundle pack` command to download a copy to `/vendor/cache`. This will then be read from `bundle install` during deployment.
+1. Run the "Redmine-ArchiveBuild" task, it will spit out a ".tar.gz" file at the end.
+1. Each ".tar.gz" file is archived alongside the build number.
 
 ## Demo/Test Releases
 
-1. Run `thin stop -C /home/redmine/redmine-thin.yml`
+1. Run `bundle exec thin stop -C /home/redmine/redmine-thin.yml`
 1. `SCP` or `wget` the aam_lifeguard archive onto the `demo-redmine-1` box. (I've been copying to `/home/redmine`)
 1. Extract it using `tar -xf aam_lifeguard-redmine-1.0.0.tar.gz /home/redmine/aam_lifeguard-redmine`.
 1. Modify any settings files contained in `/home/redmine` if needed.
 1. Modify the `build.sh` file if the version number of the archive has changed.
 1. Run `/home/redmine/build.sh`, this will add in symlinks for the settings files to the appropriate location in the archive folder.
 1. Run `rake db:migrate` and `rake redmine:plugins:migrate` to update the database.
-1. Run `thin start -C /home/redmine/redmine-thin.yml` to get Redmine to pick up the new settings.
+1. Run `bundle exec thin start -C /home/redmine/redmine-thin.yml` to get Redmine to pick up the new settings.
 1. Check `demo-redmine-1:3000` to make sure it's working :)
 1. Relax with a cold beverage.
 
@@ -45,12 +47,24 @@ The any settings files that are modified are stored under `/home/redmine` and ar
 
 ## Live Releases
 
+Make sure that the steps prefixed by *1st Installation* are only run the **first time** an installation occurs, NOT subsequent updates!
+
 1. Bump the version number in `/src/version.txt` file.
 1. Tag the release: `git tag -a 1.2.3 -m "Archive 1.2.3 version of Redmine".
 1. Push the tag to GitHub: `git push upstream 1.2.3`.
 1. See the section entitled "Release Archive".
-
-@todo More steps need to be defined.
+1. *System Update:* Run `bundle exec thin stop -C deploy/redmine-thin.yml`.
+1. *System Update:* Run `tar -cfz aam_lifeguard-redmine.\`date "+%Y%m%dT%H%M"\`.tar.gz aam_lifeguard-redmine/` to backup the old installation, then remove it `rm -rf aam_lifeguard-redmine/`.
+1. Extract the ".tar.gz" release archive file to a place on the filesystem.
+1. *1st Installation:* Copy `config/database.yml.example` to `config/database.yml` and modify it to point at the redmine database.
+1. Run `bundle install --deployment --without rmagick` to install the gem dependencies that come with the archive.
+1. Run `rake db:migrate` from the root folder of the archive. Also run `rake redmine:plugins:migrate`, after these are complete the database schema should be up to date.
+1. *1st Installation:* Run `rake redmine:load_default_data` to load Redmine's default dataset and then `rake lifeguard:data_modify` to modify it for lifeguards requirements.
+1. *1st Installation:* Install the producer pull task to run once an hour. `0 * * * * <user> /bin/bash -l -c 'cd /path/aam_lifeguard-redmine/ && RAILS_ENV=production rake lifeguard:producer_pull >> /var/log/producer_pull.log'`
+1. *1st Installation:* Install the producer push task to run every 5 minutes. `0/5 * * * * <user> /bin/bash -l -c 'cd /path/aam_lifeguard-redmine/ && RAILS_ENV=production rake lifeguard:producer_push >> /var/log/producer_push.log'`
+1. Run `bundle exec thin start -C deploy/redmine-thin.yml` to get Redmine to pick up the new settings. Modify that file if you need to change the default deploy settings (you probably do).
+1. Check `localhost:3000` to make sure it's working :)
+1. Relax with a cold beverage.
 
 ## RPM Compilation
 
