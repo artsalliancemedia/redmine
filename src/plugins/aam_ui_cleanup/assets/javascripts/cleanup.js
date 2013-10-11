@@ -1,5 +1,4 @@
 function onLoadDoAamCleanup(debugging) {
-	//var production = !debugging;
 	$(document).ready(function() {
 		 $("#issue_tracker_id").parent('p').hide(); //always 'support'
 		 $("#issue_due_date").parent('p').hide(); //auto-set by SLA-linked priority
