@@ -11,7 +11,9 @@
     <%= 'Original Time Zone: ' + @adjusted_working_periods.first[0].time_zone_string %>
   </h3>
   <h3>
-    <%= 'Shown in: ' + (User.current.time_zone.blank? ? Time.zone.to_s : User.current.time_zone.to_s) %>
+    <% shown_time_zone = (User.current.time_zone.blank? ? Time.zone : User.current.time_zone) %>
+    <% shown_time_zone_string = "(GMT" + shown_time_zone.now.strftime("%:z") + ") " + shown_time_zone.name %>
+    <%= 'Shown in: ' + shown_time_zone_string %>
   </h3>
 <% end %>
 
