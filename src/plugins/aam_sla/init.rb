@@ -39,4 +39,18 @@ Rails.configuration.to_prepare do
   unless User.included_modules.include?(TzUserPatch)
     User.send(:include, TzUserPatch)
   end
+
+  IssuesHelper.module_eval do
+    alias_method :old_show_detail, :show_detail
+
+    def show_detail(detail, no_html=false, options={})
+      if detail.property == 'pause'
+        l(:text_journal_paused)
+      elsif detail.property == 'unpause'
+        l(:text_journal_unpaused)
+      else
+        old_show_detail(detail, no_html, options)
+      end
+    end
+  end
 end

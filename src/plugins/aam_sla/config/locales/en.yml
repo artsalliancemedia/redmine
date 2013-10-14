@@ -31,3 +31,6 @@ en:
   field_end_time_new: "End Time"
   field_start_time_string_new: "Start Time"
   field_end_time_string_new: "End Time"
+
+  text_journal_paused: Issue paused
+  text_journal_unpaused: Issue unpaused
