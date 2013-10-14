@@ -21,7 +21,6 @@ class WorkingPeriodsController < ApplicationController
 
   def create
     @working_period = WorkingPeriod.new(params[:working_period])
-    @working_period.time_stamp = DateTime.now.utc
 
     if(@working_period.start_time.blank?)
       raise l(:error_no_start_time)
