@@ -99,6 +99,17 @@ module IssuePatch
         # Make a new Pause
         pauses.push(Pause.new({:issue_id => id, :start_date => DateTime.now.utc}))
       end
+      create_pauses_journal
+    end
+
+    def create_pauses_journal
+      @current_pauses_journal ||= Journal.new(:journalized => self, :user => User.current)
+      if self.paused?
+        @current_pauses_journal.details << JournalDetail.new(:property => 'pause')
+      else
+        @current_pauses_journal.details << JournalDetail.new(:property => 'unpause')
+      end
+      @current_pauses_journal.save
     end
 
     def sla_status_raw
