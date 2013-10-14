@@ -60,6 +60,7 @@ class WorkingPeriodsController < ApplicationController
 
     if request.post? && @working_period.save
       flash[:notice] = l(:notice_successful_create)
+      update_issue_due_dates
       redirect_to :action => 'new'
     else
       @working_periods = WorkingPeriod.all
@@ -71,11 +72,9 @@ class WorkingPeriodsController < ApplicationController
     redirect_to :action => 'new'
   end
 
-  def update
-  end
-
   def destroy
     @working_period.destroy
+    update_issue_due_dates
     redirect_to working_periods_path
   rescue
     flash[:error] =  l(:error_can_not_remove_working_periods)
@@ -96,5 +95,13 @@ class WorkingPeriodsController < ApplicationController
 
   def normalise_time(time)
     Time.at(time.hour * 60 * 60 + time.min * 60 + time.sec)
+  end
+
+  def update_issue_due_dates
+    Issue.all.each do |issue|
+      unless issue.status.is_closed
+        issue.save_due_date
+      end
+    end
   end
 end

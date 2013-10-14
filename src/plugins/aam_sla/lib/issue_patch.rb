@@ -6,20 +6,20 @@ module IssuePatch
 
     base.class_eval do
       unloadable
-      before_save :sla_service
       alias_method_chain :css_classes, :aam_css
       has_many :pauses
     end
   end
 
   module InstanceMethods
-    def due_date
-      if priority.nil? || priority.sla_priority.nil? || paused? || WorkingPeriod.blank? # Due date invalid
+    def save_due_date
+      utc_working_periods = get_all_utc_working_periods
+      if priority.nil? || priority.sla_priority.nil? || paused? || utc_working_periods.blank? # Due date invalid
+        self.due_date = nil
+        self.save
         return
       end
-
-      utc_working_periods = get_all_utc_working_periods
-      return if utc_working_periods.blank? # return if no working periods set up yet
+      
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
       days_index = start_day
       num_seconds_left = priority.sla_priority.seconds
@@ -49,17 +49,8 @@ module IssuePatch
         days_index = 0
       end
 
-      final_working_period.start_time + num_seconds_left
-    end
-
-    def sla_service
-      return if priority.nil?
-
-      if priority.sla_priority.nil?
-        self.due_date = nil
-      else
-        self.due_date = start_date + priority.sla_priority.seconds
-      end
+      self.due_date = final_working_period.start_time + num_seconds_left
+      self.save
     end
 
     def in_breach?
@@ -100,6 +91,7 @@ module IssuePatch
         pauses.push(Pause.new({:issue_id => id, :start_date => DateTime.now.utc}))
       end
       create_pauses_journal
+      save_due_date
     end
 
     def create_pauses_journal
