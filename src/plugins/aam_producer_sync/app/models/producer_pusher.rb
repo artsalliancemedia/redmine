@@ -28,13 +28,24 @@ class ProducerPusher
 		return http.request(req)
   end
 	
-	def send_tickets(last_sent_time)
-		issues = Issue.where("updated_on > ?", last_sent_time)
+	def send_tickets(last_sent_time, curr_time)
+		#If an issue is closed, updated_on will change,
+		#	what we need to watch is open issues edging silently into breach by passing their due date.
+		#	Rarely (working periods change or issue_priority->sla_seconds change),
+		#	 the due dates of multiple tickets will change dramatically so we will want to re-sync all open tickets for safety
+		dramatic_sla_change_path = Rails.root.join('plugins', 'aam_sla', 'assets', "changetime.stor").to_s
+		dramatic_sla_change = File.exist?(dramatic_sla_change_path) && File.read(dramatic_sla_change_path) >= last_sent_time 
+		issues = (dramatic_sla_change) ?
+			Issue.where("updated_on > ? OR closed_on IS NULL", last_sent_time) :
+			Issue.where("updated_on > ? OR (closed_on IS NULL AND due_date BETWEEN ? AND ?)", last_sent_time, last_sent_time, curr_time)
+		
 		@@ticket_count = issues.length.to_s
 		puts "Attempting to sync " + @@ticket_count + " tickets"
-
+			
 		issues.each do |issue|
 			ticket_id = issue.id.to_s
+			puts "Processing ticket #" + ticket_id if @@debugging
+						
 			issue_slimmed = { #compulsory or derived fields
 				subject: issue.subject,
 				complex_id: issue.cinema.external_id,
@@ -81,16 +92,6 @@ class ProducerPusher
 					WHERE id=#{ticket_id}
 				")
 				puts execute_sql if @@debugging
-				#Don't do this now, do above raw SQL execution instead
-#				issue.uuid = uuid
-#				was_success = issue.save
-#
-#				if was_success
-#					puts "#{ticket_id_info} sent successfully"
-#				else
-#					puts "#{ticket_id_info} sending failed due to Redmine error."
-#					pp issue.errors if @@debugging
-#				end
 			else
 				puts "#{ticket_id_info} not sent due to Producer error."
 				error = response["messages"][0]["msg"] || "Unknown"
@@ -116,7 +117,7 @@ class ProducerPusher
 		puts "Looking for tickets added/modified between #{last_run_time} and #{this_run_time}"
 		
 		@@success_count = 0
-		succesful = send_tickets last_run_time
+		succesful = send_tickets( last_run_time, this_run_time )
 
 		if succesful
 			file = open(last_run_path, 'w')
