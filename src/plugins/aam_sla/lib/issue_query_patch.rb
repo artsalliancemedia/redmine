@@ -13,22 +13,23 @@ module IssueQueryPatch
       # Used to override the SQL generated for the issue filter field.
       def sql_for_sla_status_field(field, operator, value)
         value = value.kind_of?(Array) ? value : [value]
+				
+				clause_breach = "(#{Issue.table_name}.due_date IS NOT NULL AND (" +
+										 "(#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on > #{Issue.table_name}.due_date)" +
+									 "OR (#{Issue.table_name}.closed_on IS NULL AND '#{DateTime.now.to_s}' > #{Issue.table_name}.due_date)) )"
+								 
+				clause_paused = "(#{Issue.table_name}.is_paused)"
 
         clauses = []
         value.each do |val|
           case val.to_sym
           # Sadly have to mirror in_breach, paused?, ok? functions found in the issue_patch file.
-          when :ok
-            clauses << "(#{Issue.table_name}.due_date IS NULL OR #{Issue.table_name}.due_date >= '#{DateTime.now.to_s}'" +
-										"OR (#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on <= #{Issue.table_name}.due_date))"
-          when :paused
-            clauses << "FALSE" #TODO - pause feature not yet implemented
           when :breach
-            clause = "(#{Issue.table_name}.due_date IS NOT NULL AND (" +
-										 "(#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on > #{Issue.table_name}.due_date)" +
-									 "OR (#{Issue.table_name}.closed_on IS NULL AND '#{DateTime.now.to_s}' > #{Issue.table_name}.due_date)) )"
-
-            clauses << clause
+            clauses << clause_breach
+          when :paused
+            clauses << clause_paused
+          when :ok
+            clauses << "(NOT #{clause_breach} AND NOT #{clause_paused})"
           end
         end
 

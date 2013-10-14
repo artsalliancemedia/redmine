@@ -105,5 +105,13 @@ class WorkingPeriodsController < ApplicationController
     Issue.find_all_by_status_id(open_status_ids).each do |issue|
       issue.save_due_date
     end
+		notify_change
   end
+	
+	def notify_change
+		save_path = Rails.root.join('plugins', 'aam_sla', 'assets', "changetime.stor").to_s 
+		file = open(save_path, 'w')
+		file.write Time.now.to_s
+		file.close
+	end
 end
