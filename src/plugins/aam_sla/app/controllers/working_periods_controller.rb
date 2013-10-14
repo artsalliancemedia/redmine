@@ -8,8 +8,7 @@ class WorkingPeriodsController < ApplicationController
   def index
     @adjusted_working_periods = []
     WorkingPeriod.all.each do |wp|
-      adjusted_wps = wp.adjust_for_current_time_zone
-      adjusted_wps.each do |adjusted_wp|
+      wp.adjust_for_current_time_zone(get_user_time_zone_offset).each do |adjusted_wp|
         @adjusted_working_periods.push([adjusted_wp,wp]) # Need to store original WorkingPeriod to get delete path
       end
     end
@@ -37,7 +36,7 @@ class WorkingPeriodsController < ApplicationController
       end
     end
     if WorkingPeriod.count != 0 && (WorkingPeriod.first.time_zone != @working_period.time_zone)
-      raise l(:error_invalid_time_zone)
+      raise l(:error_invalid_time_zone) + " - " + WorkingPeriod.first.time_zone_string
     end
 
     if @working_period.start_time >= @working_period.end_time
@@ -45,12 +44,12 @@ class WorkingPeriodsController < ApplicationController
     end
 
     # Check for working period overlap
+    # Need to normalise times to same date as different dates will screw up comparisons
+    wp1_start = normalise_time(@working_period.start_time)
+    wp1_end = normalise_time(@working_period.end_time)
     WorkingPeriod.all.each do |wp|
-      # Need to parse times using Time.at as dates will screw up comparisons
-      wp1_start = Time.at(@working_period.start_time.hour * 60 * 60 + @working_period.start_time.min * 60 + @working_period.start_time.sec)
-      wp1_end = Time.at(@working_period.end_time.hour * 60 * 60 + @working_period.end_time.min * 60 + @working_period.end_time.sec)
-      wp2_start = Time.at(wp.start_time.hour * 60 * 60 + wp.start_time.min * 60 + wp.start_time.sec)
-      wp2_end = Time.at(wp.end_time.hour * 60 * 60 + wp.end_time.min * 60 + wp.end_time.sec)
+      wp2_start = normalise_time(wp.start_time)
+      wp2_end = normalise_time(wp.end_time)
       if @working_period.day == wp.day &&
           (((wp1_start < wp2_end) && (wp1_start > wp2_start)) ||
            ((wp1_end < wp2_end) && (wp1_end > wp2_start)) ||
@@ -61,7 +60,8 @@ class WorkingPeriodsController < ApplicationController
 
     if request.post? && @working_period.save
       flash[:notice] = l(:notice_successful_create)
-      redirect_to working_periods_path
+      update_issue_due_dates
+      redirect_to :action => 'new'
     else
       @working_periods = WorkingPeriod.all
       render :action => 'new'
@@ -72,11 +72,9 @@ class WorkingPeriodsController < ApplicationController
     redirect_to :action => 'new'
   end
 
-  def update
-  end
-
   def destroy
     @working_period.destroy
+    update_issue_due_dates
     redirect_to working_periods_path
   rescue
     flash[:error] =  l(:error_can_not_remove_working_periods)
@@ -89,5 +87,23 @@ class WorkingPeriodsController < ApplicationController
     @working_period = WorkingPeriod.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render_404
+  end
+
+  def get_user_time_zone_offset
+    User.current.time_zone.blank? ? Time.zone.now.utc_offset : User.current.time_zone.now.utc_offset
+  end
+
+  def normalise_time(time)
+    Time.at(time.hour * 60 * 60 + time.min * 60 + time.sec)
+  end
+
+  def update_issue_due_dates
+    open_status_ids = []
+    IssueStatus.where('is_closed' => false).each do |status|
+      open_status_ids.push(status.id)
+    end
+    Issue.find_all_by_status_id(open_status_ids).each do |issue|
+      issue.save_due_date
+    end
   end
 end

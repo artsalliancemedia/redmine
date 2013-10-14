@@ -1,3 +1,4 @@
+
 class WorkingPeriod < ActiveRecord::Base
   validates :day, :start_time, :end_time, :time_zone, :presence => true
 
@@ -43,31 +44,20 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def start_time_string
-    self.start_time.strftime("%I:%M%P")
-  end
-
-  def start_time_string=()
-    # Empty setter needed for virtual attribute
+    format_time(self.start_time, false)
   end
 
   def end_time_string
-    self.end_time.strftime("%I:%M%P")
-  end
-
-  def end_time_string=()
-    # Empty setter needed for virtual attribute
+    format_time(self.end_time, false)
   end
 
   def time_zone_string
-    ActiveSupport::TimeZone[self.time_zone].to_s
+    "(GMT" + ActiveSupport::TimeZone[self.time_zone].now.strftime("%:z") + ") " + ActiveSupport::TimeZone[self.time_zone].name
   end
 
-  def time_zone_string=()
-    # Empty setter needed for virtual attribute
-  end
-
-  def adjust_for_current_time_zone
-    current_time_zone_offset = get_current_time_zone_offset
+  def adjust_for_current_time_zone(user_time_zone_offset)
+    # Get difference between current user's time zone and working periods time zone
+    current_time_zone_offset = user_time_zone_offset - get_time_zone_offset
     adjusted_start_time = self.start_time + current_time_zone_offset.seconds
     adjusted_end_time = self.end_time + current_time_zone_offset.seconds
     
@@ -102,14 +92,27 @@ class WorkingPeriod < ActiveRecord::Base
     end
   end
 
+  def specific_working_period(start_date, num_weeks)
+    start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
+    day_diff = (self.day - start_day) % 7 # Get day difference between working period and issue start date
+    total_days = day_diff + num_weeks * 7
+    new_start_time = specific_time(start_date, total_days, self.start_time)
+    new_end_time = specific_time(start_date, total_days, self.end_time)
+    WorkingPeriod.new({:day => self.day, :start_time => new_start_time, :end_time => new_end_time, :time_zone => self.time_zone})
+  end
+
+  def set_start_time(time)
+    self.start_time = time
+  end
+
   private
 
-  def get_current_time_zone_offset
-    self_time_zone_offset = ActiveSupport::TimeZone[self.time_zone].blank? ? 0 : ActiveSupport::TimeZone[self.time_zone].utc_offset
-    if User.current.time_zone.blank?
-      Time.zone.utc_offset - self_time_zone_offset
-    else
-      User.current.time_zone.utc_offset - self_time_zone_offset
-    end
+  def get_time_zone_offset
+    ActiveSupport::TimeZone[self.time_zone].blank? ? 0 : ActiveSupport::TimeZone[self.time_zone].now.utc_offset
+  end
+
+  def specific_time(start_date, num_days, time_of_day)
+    new_time = start_date + num_days * 86400 # Get correct date
+    new_time.change({:hour => time_of_day.hour, :min => time_of_day.min, :sec => time_of_day.sec}) # Get correct time
   end
 end
