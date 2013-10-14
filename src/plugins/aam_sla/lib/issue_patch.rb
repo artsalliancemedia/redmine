@@ -155,7 +155,7 @@ module IssuePatch
           break
         elsif p.start_date < working_period.end_time && p.end_date >= working_period.end_time
           wp_length -= working_period.end_time - p.start_date
-        elsif p.start_date <= working_period.start_time && p.end_date < working_period.end_time
+        elsif p.start_date <= working_period.start_time && p.end_date > working_period.start_time
           wp_length -= p.end_date - working_period.start_time
         elsif p.start_date >= working_period.start_time && p.end_date <= working_period.end_time
           wp_length -= p.end_date - p.start_date
