@@ -5,11 +5,17 @@
 
 <h2><%= t(:working_period_plural)%></h2>
 
-<h3>
-  <% if(@adjusted_working_periods.count > 0) %>
-    <%= 'Time Zone ' + @adjusted_working_periods.first[0].time_zone_string %>
-  <% end %>
-</h3>
+
+<% unless(@adjusted_working_periods.blank?) %>
+  <h3>
+    <%= 'Original Time Zone: ' + @adjusted_working_periods.first[0].time_zone_string %>
+  </h3>
+  <h3>
+    <% shown_time_zone = (User.current.time_zone.blank? ? Time.zone : User.current.time_zone) %>
+    <% shown_time_zone_string = "(GMT" + shown_time_zone.now.strftime("%:z") + ") " + shown_time_zone.name %>
+    <%= 'Shown in: ' + shown_time_zone_string %>
+  </h3>
+<% end %>
 
 <table class="list">
   <colgroup>
@@ -18,13 +24,17 @@
      <col span="1" style="width: 70%;">
      <col span="1" style="width: 10%;">
   </colgroup>
+  <% actual_working_period = nil %>
   <% @adjusted_working_periods.each do |adjusted_working_period| %>
-    <tr>
+    <tr style="height:22px;">
       <td><b>Day:</b> <%= adjusted_working_period[0].day_string %></td>
       <td><b>Start Time:</b> <%= adjusted_working_period[0].start_time_string %></td>
       <td><b>End Time:</b> <%= adjusted_working_period[0].end_time_string %></td>
       <td>
-        <%= link_to l(:button_delete), working_period_path(adjusted_working_period[1]), :data => {:confirm => l(:text_working_periods_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %>
+        <% if(adjusted_working_period[1] != actual_working_period) # If on a new actual record, add a delete command %>
+          <% actual_working_period = adjusted_working_period[1] %>
+          <%= link_to l(:button_delete), working_period_path(actual_working_period), :data => {:confirm => l(:text_working_periods_destroy_confirmation)}, :method => :delete, :class => 'icon icon-del' %>
+        <% end %>
       </td>
     </tr>
   <% end %>
