@@ -6,6 +6,7 @@ module IssuePatch
 
     base.class_eval do
       unloadable
+      after_save :save_due_date
       alias_method_chain :css_classes, :aam_css
       has_many :pauses
     end
@@ -15,8 +16,7 @@ module IssuePatch
     def save_due_date
       utc_working_periods = get_all_utc_working_periods
       if priority.nil? || priority.sla_priority.nil? || paused? || utc_working_periods.blank? # Due date invalid
-        self.due_date = nil
-        self.save
+        update_column(:due_date, nil)
         return
       end
       
@@ -49,8 +49,7 @@ module IssuePatch
         days_index = 0
       end
 
-      self.due_date = final_working_period.start_time + num_seconds_left
-      self.save
+      update_column(:due_date, final_working_period.start_time + num_seconds_left)
     end
 
     def in_breach?
@@ -62,11 +61,7 @@ module IssuePatch
     end
     
     def paused?
-      if pauses.count > 0
-        pauses.last.active?
-      else
-        false
-      end
+      self.is_paused
     end
 
     def out_of_hours?
@@ -86,9 +81,13 @@ module IssuePatch
     def toggle_pause
       if self.paused?
         pauses.last.stop
+        self.is_paused = false
+        self.save
       else
         # Make a new Pause
         pauses.push(Pause.new({:issue_id => id, :start_date => DateTime.now.utc}))
+        self.is_paused = true
+        self.save
       end
       create_pauses_journal
       save_due_date
