@@ -7,7 +7,7 @@ module IssuePriorityPatch
     IssuePriority.class_eval do
       default_scope :include => :sla_priority
       has_one :sla_priority # Give us a way of reference the priority if we already have the enumeration.
-      before_save :update_issue_due_dates
+      before_save :update_issue_due_dates, :notify_change
     end
   end
 
@@ -21,5 +21,12 @@ module IssuePriorityPatch
         issue.save_due_date
       end
     end
+		
+		def notify_change
+			save_path = Rails.root.join('plugins', 'aam_sla', 'assets', "changetime.stor").to_s 
+			file = open(save_path, 'w')
+			file.write Time.now.to_s
+			file.close
+		end
   end
 end
