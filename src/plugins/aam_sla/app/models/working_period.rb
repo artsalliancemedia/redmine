@@ -44,11 +44,11 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def start_time_string
-    self.start_time.strftime("%I:%M%P")
+    format_time(self.start_time, false)
   end
 
   def end_time_string
-    self.end_time.strftime("%I:%M%P")
+    format_time(self.end_time, false)
   end
 
   def time_zone_string
