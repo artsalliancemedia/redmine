@@ -12,7 +12,7 @@ class Device < ActiveRecord::Base
   validates_presence_of :uuid
   
   def to_s
-    l(category)
+    I18n.t(category, default: category)
   end
 
 end
