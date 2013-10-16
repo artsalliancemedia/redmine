@@ -7,6 +7,7 @@ class CircuitGroupsController < ApplicationController
   include SortHelper
 
   before_filter :find_circuit_group, :only => [:edit, :update, :destroy]
+	before_filter :require_admin
 
   def index
     sort_init 'name'
