@@ -7,6 +7,7 @@ class CinemasController < ApplicationController
   include SortHelper
 
   before_filter :find_cinema, :only => [:edit, :update, :destroy]
+	before_filter :require_admin
 
   def index
     sort_init ['name', 'city', 'ip_address']

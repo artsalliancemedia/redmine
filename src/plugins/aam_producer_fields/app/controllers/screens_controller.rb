@@ -7,6 +7,7 @@ class ScreensController < ApplicationController
   include SortHelper
 
   before_filter :find_screen, :only => [:edit, :update, :destroy]
+	before_filter :require_admin
 
   def index
     sort_init ['cinemas.name', 'identifier', 'title']
