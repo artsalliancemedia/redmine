@@ -1,6 +1,14 @@
 
 class WorkingPeriod < ActiveRecord::Base
   validates :day, :start_time, :end_time, :time_zone, :presence => true
+	after_commit :update_issue_due_dates
+	
+	def update_issue_due_dates
+		Issue.where('closed_on IS NULL AND NOT is_paused').each do |issue|
+			issue.save_due_date
+		end
+		Issue.notify_mass_due_dates_change
+	end
 
   def days
     ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']

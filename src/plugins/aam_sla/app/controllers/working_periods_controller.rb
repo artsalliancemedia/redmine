@@ -60,7 +60,6 @@ class WorkingPeriodsController < ApplicationController
 
     if request.post? && @working_period.save
       flash[:notice] = l(:notice_successful_create)
-      update_issue_due_dates
       redirect_to :action => 'new'
     else
       @working_periods = WorkingPeriod.all
@@ -74,7 +73,6 @@ class WorkingPeriodsController < ApplicationController
 
   def destroy
     @working_period.destroy
-    update_issue_due_dates
     redirect_to working_periods_path
   rescue
     flash[:error] =  l(:error_can_not_remove_working_periods)
@@ -96,22 +94,4 @@ class WorkingPeriodsController < ApplicationController
   def normalise_time(time)
     Time.at(time.hour * 60 * 60 + time.min * 60 + time.sec)
   end
-
-  def update_issue_due_dates
-    open_status_ids = []
-    IssueStatus.where('is_closed' => false).each do |status|
-      open_status_ids.push(status.id)
-    end
-    Issue.find_all_by_status_id(open_status_ids).each do |issue|
-      issue.save_due_date
-    end
-		notify_change
-  end
-	
-	def notify_change
-		save_path = Rails.root.join('plugins', 'aam_sla', 'assets', "changetime.stor").to_s 
-		file = open(save_path, 'w')
-		file.write Time.now.to_s
-		file.close
-	end
 end

@@ -9,6 +9,13 @@ module IssuePatch
       after_save :save_due_date
       alias_method_chain :css_classes, :aam_css
       has_many :pauses
+			
+			def self.notify_mass_due_dates_change
+				save_path = Rails.root.join('plugins', 'aam_sla', 'assets', "changetime.stor").to_s 
+				file = Kernel.open(save_path, 'w')
+				file.write Time.now.to_s
+				file.close
+			end
     end
   end
 
@@ -49,6 +56,9 @@ module IssuePatch
         days_index = 0
       end
 
+			dd = final_working_period.start_time + num_seconds_left
+			File.open('ddbug.txt','a') {|file| file.puts("#{Time.now} \t Due date for ##{self.id}: #{dd} \t SLA-secs #{priority.sla_priority.seconds}")}
+			
       update_column(:due_date, final_working_period.start_time + num_seconds_left)
     end
 
