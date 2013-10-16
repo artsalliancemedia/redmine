@@ -16,7 +16,10 @@ module IssuesControllerPatch
 		
 		def build_new_issue_from_params_with_copy_start_date_fix
 			build_new_issue_from_params_without_copy_start_date_fix
-			@issue.start_date = DateTime.now if Setting.default_issue_start_date_to_creation_date?
+			if params[:copy_from] && Setting.default_issue_start_date_to_creation_date?
+				@issue.start_date = DateTime.now 
+				@issue.due_date = nil
+			end
 		end
 		
     def toggle_pause
