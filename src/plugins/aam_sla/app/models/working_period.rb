@@ -3,7 +3,7 @@ class WorkingPeriod < ActiveRecord::Base
   validates :day, :start_time, :end_time, :time_zone, :presence => true
 
   def days
-    ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    [l(:monday), l(:tuesday), l(:wednesday), l(:thursday), l(:friday), l(:saturday), l(:sunday)]
   end
   
   def day_string
