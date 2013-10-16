@@ -21,8 +21,6 @@ module IssuePatch
          utc_working_periods.blank?
         update_column(:due_date, nil)
         return
-      elsif paused? && in_breach? # Keep current due date if paused whilst in breach
-        return
       end
       
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
@@ -54,7 +52,11 @@ module IssuePatch
         days_index = 0
       end
 
-      update_column(:due_date, final_working_period.start_time + num_seconds_left)
+      temp_due_date = final_working_period.start_time + num_seconds_left
+      if temp_due_date < Time.now.utc # If in breach, need to add on pauses since calculated due date
+        temp_due_date = add_extra_pauses(temp_due_date)
+      end
+      update_column(:due_date, temp_due_date)
     end
 
     def in_breach?
@@ -86,16 +88,13 @@ module IssuePatch
     def toggle_pause
       if self.paused?
         pauses.last.stop
-        self.is_paused = false
-        self.save
+        update_attribute(:is_paused, false)
       else
         # Make a new Pause
         pauses.push(Pause.new({:issue_id => id, :start_date => DateTime.now.utc}))
-        self.is_paused = true
-        self.save
+        update_attribute(:is_paused, true)
       end
       create_pauses_journal
-      save_due_date
     end
 
     def create_pauses_journal
@@ -162,6 +161,9 @@ module IssuePatch
     def true_working_period_length(working_period) # Remove paused time
       wp_length = working_period.end_time - working_period.start_time
       pauses.each do |p|
+        if p.end_date == nil # In case paused and in breach
+          next
+        end
         if p.start_date <= working_period.start_time && p.end_date >= working_period.end_time # Paused for whole working period
           wp_length = 0
           break
@@ -174,6 +176,17 @@ module IssuePatch
         end
       end
       wp_length
+    end
+
+    def add_extra_pauses(current_due_date)
+      final_due_date = current_due_date
+      pauses.each do |p|
+        puts p.inspect
+        if (p.start_date > current_due_date) && (p.end_date != nil)
+          final_due_date += (p.end_date - p.start_date)
+        end
+      end
+      final_due_date
     end
   end
 end
