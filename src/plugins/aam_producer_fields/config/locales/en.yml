@@ -54,9 +54,11 @@ en:
   screen_server: Screen Server
   projector: Projector
   ftp_folder: FTP
+  local_folder: Local Folder
   lms: LMS
   pos: POS
   watchfolder: Watchfolder
+  
   with_software: "software v."
   and_firmware: "firmware v."
 
