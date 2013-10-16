@@ -1,0 +1,22 @@
+<h2><%= t(:pause_list_title) + @issue.id.to_s %></h2>
+
+<% unless(@pauses.blank?) %>
+  <h3>
+    <%= 'Time Zone shown in: ' + (User.current.time_zone.blank? ? Time.zone.to_s : User.current.time_zone.to_s) %>
+  </h3>
+<% end %>
+
+<table class="list">
+  <colgroup>
+     <col span="1" style="width: 15%;">
+     <col span="1" style="width: 85%;">
+  </colgroup>
+  <% @pauses.each do |pause| %>
+    <tr>
+      <td><b>Start Time:</b> <%= pause.start_date_string %></td>
+      <td><b>End Time:</b> <%= pause.end_date_string %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= link_to l(:button_back), issue_path(@issue) %>

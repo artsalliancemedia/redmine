@@ -6,6 +6,14 @@ en:
   ok: Okay
   paused: Paused
   breach: Breach
+  out_of_hours: Out of working hours
+  button_pause: Pause
+  button_unpause: Unpause
+  button_pause_list: Pause List
+  issue_paused: Issue paused
+  issue_unpaused: Issue unpaused
+  pause_list_title: "Pauses for Issue #"
+  still_paused: Still paused
 
   label_working_periods_new: "New working period"
   label_working_period: "Working Period"
@@ -23,3 +31,14 @@ en:
   field_end_time_new: "End Time"
   field_start_time_string_new: "Start Time"
   field_end_time_string_new: "End Time"
+
+  text_journal_paused: Issue paused
+  text_journal_unpaused: Issue unpaused
+
+  monday: Monday
+  tuesday: Tuesday
+  wednesday: Wednesday
+  thursday: Thursday
+  friday: Friday
+  saturday: Saturday
+  sunday: Sunday
