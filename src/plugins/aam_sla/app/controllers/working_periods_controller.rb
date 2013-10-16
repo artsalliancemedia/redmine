@@ -60,6 +60,7 @@ class WorkingPeriodsController < ApplicationController
 
     if request.post? && @working_period.save
       flash[:notice] = l(:notice_successful_create)
+
       redirect_to :action => 'new'
     else
       @working_periods = WorkingPeriod.all
@@ -94,4 +95,6 @@ class WorkingPeriodsController < ApplicationController
   def normalise_time(time)
     Time.at(time.hour * 60 * 60 + time.min * 60 + time.sec)
   end
+end
+
 end

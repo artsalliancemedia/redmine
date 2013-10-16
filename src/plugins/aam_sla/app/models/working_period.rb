@@ -11,7 +11,7 @@ class WorkingPeriod < ActiveRecord::Base
 	end
 
   def days
-    ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    [l(:monday), l(:tuesday), l(:wednesday), l(:thursday), l(:friday), l(:saturday), l(:sunday)]
   end
   
   def day_string
