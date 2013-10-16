@@ -5,6 +5,7 @@ class WorkingPeriodsController < ApplicationController
   layout 'admin'
 
   before_filter :find_working_period, :only => [:edit, :update, :destroy]
+	before_filter :require_admin
 
   def index
     @adjusted_working_periods = []

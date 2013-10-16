@@ -7,6 +7,7 @@ class DevicesController < ApplicationController
   include SortHelper
 
   before_filter :find_device, :only => [:edit, :update, :destroy]
+	before_filter :require_admin
 
   def index
     sort_init ['cinema_name', ['screen_identifier', 'desc']]
