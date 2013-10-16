@@ -15,8 +15,13 @@ module IssuePatch
   module InstanceMethods
     def save_due_date
       utc_working_periods = get_all_utc_working_periods
-      if priority.nil? || priority.sla_priority.nil? || paused? || utc_working_periods.blank? # Due date invalid
+      if priority.nil? ||
+         priority.sla_priority.nil? ||
+         (paused? && !in_breach?) ||
+         utc_working_periods.blank?
         update_column(:due_date, nil)
+        return
+      elsif paused? && in_breach? # Keep current due date if paused whilst in breach
         return
       end
       
@@ -114,8 +119,13 @@ module IssuePatch
     end
     
     def sla_status
-      out_of_hours_string = out_of_hours? ? (' (' + l(:out_of_hours) + ')') : ''
-      l(sla_status_raw) + out_of_hours_string
+      sla_status_symbol = sla_status_raw
+      paused_string = ''
+      if (sla_status_symbol == :breach) && paused?
+        paused_string = '/' + l(:paused)
+      end
+      out_of_hours_string = out_of_hours? ? ('/' + l(:out_of_hours)) : ''
+      l(sla_status_symbol) + paused_string + out_of_hours_string
     end
 
     def css_classes_with_aam_css
