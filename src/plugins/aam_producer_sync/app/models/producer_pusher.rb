@@ -51,8 +51,10 @@ class ProducerPusher
 				complex_id: issue.cinema.external_id,
 				status: issue.status.name_raw,
 				sla_status: issue.sla_status_raw,
-				url: Setting["protocol"] + "://" + Setting["host_name"] + "/issues/" + ticket_id #derived
+				url: Setting["protocol"] + "://" + Setting["host_name"] + "/issues/" + ticket_id, #derived
+				opened_on: issue.created_on.to_i
 			}
+			issue_slimmed["closed_on"] = issue.closed_on.to_i if issue.closed_on
 			#Add optional fields, if present
 			if issue.screen
 				issue_slimmed["screen_uuid"] = issue.screen.uuid
