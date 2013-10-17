@@ -7,6 +7,7 @@ module IssuePatch
     base.class_eval do
       unloadable
       after_save :save_due_date
+      alias_method_chain :create_journal, :no_due_date
       alias_method_chain :css_classes, :aam_css
       has_many :pauses
     end
@@ -105,6 +106,62 @@ module IssuePatch
         @current_pauses_journal.details << JournalDetail.new(:property => 'unpause')
       end
       @current_pauses_journal.save
+    end
+
+    # Have to monkey patch this whole method to remove due dates from journal
+    def create_journal_with_no_due_date
+      if @current_journal
+        # attributes changes
+        if @attributes_before_change
+          # Added due date to removed columns
+          (Issue.column_names - %w(id root_id lft rgt lock_version created_on updated_on closed_on due_date)).each {|c|
+            before = @attributes_before_change[c]
+            after = send(c)
+            next if before == after || (before.blank? && after.blank?)
+            @current_journal.details << JournalDetail.new(:property => 'attr',
+                                                          :prop_key => c,
+                                                          :old_value => before,
+                                                          :value => after)
+          }
+        end
+        if @custom_values_before_change
+          # custom fields changes
+          custom_field_values.each {|c|
+            puts c
+            before = @custom_values_before_change[c.custom_field_id]
+            after = c.value
+            next if before == after || (before.blank? && after.blank?)
+
+            if before.is_a?(Array) || after.is_a?(Array)
+              before = [before] unless before.is_a?(Array)
+              after = [after] unless after.is_a?(Array)
+
+              # values removed
+              (before - after).reject(&:blank?).each do |value|
+                @current_journal.details << JournalDetail.new(:property => 'cf',
+                                                              :prop_key => c.custom_field_id,
+                                                              :old_value => value,
+                                                              :value => nil)
+              end
+              # values added
+              (after - before).reject(&:blank?).each do |value|
+                @current_journal.details << JournalDetail.new(:property => 'cf',
+                                                              :prop_key => c.custom_field_id,
+                                                              :old_value => nil,
+                                                              :value => value)
+              end
+            else
+              @current_journal.details << JournalDetail.new(:property => 'cf',
+                                                            :prop_key => c.custom_field_id,
+                                                            :old_value => before,
+                                                            :value => after)
+            end
+          }
+        end
+        @current_journal.save
+        # reset current journal
+        init_journal @current_journal.user, @current_journal.notes
+      end
     end
 
     def sla_status_raw
