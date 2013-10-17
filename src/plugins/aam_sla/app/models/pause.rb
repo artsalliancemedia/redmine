@@ -11,8 +11,7 @@ class Pause < ActiveRecord::Base
   end
 
   def date_to_s(date)
-    time_zone = (User.current.time_zone.blank? ? Time.zone : User.current.time_zone)
-    format_time(date.in_time_zone(time_zone))
+    format_time(date)
   end
   
 	def active?
