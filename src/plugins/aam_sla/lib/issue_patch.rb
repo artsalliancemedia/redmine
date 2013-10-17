@@ -6,7 +6,7 @@ module IssuePatch
 
     base.class_eval do
       unloadable
-      after_save :save_due_date
+      after_save :save_due_date, :check_for_reopen
       alias_method_chain :create_journal, :no_due_date
       alias_method_chain :css_classes, :aam_css
       has_many :pauses
@@ -243,6 +243,12 @@ module IssuePatch
         end
       end
       final_due_date
+    end
+
+    def check_for_reopen # Make sure closed_on in nil if issue is open
+      unless self.status.is_closed
+        update_column(:closed_on, nil)
+      end
     end
   end
 end
