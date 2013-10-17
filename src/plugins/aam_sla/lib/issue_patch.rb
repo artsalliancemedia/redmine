@@ -181,7 +181,6 @@ module IssuePatch
     def add_extra_pauses(current_due_date)
       final_due_date = current_due_date
       pauses.each do |p|
-        puts p.inspect
         if (p.start_date > current_due_date) && (p.end_date != nil)
           final_due_date += (p.end_date - p.start_date)
         end
