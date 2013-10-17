@@ -7,6 +7,7 @@ module IssuePatch
     base.class_eval do
       unloadable
       after_save :save_due_date
+      alias_method_chain :create_journal, :no_due_date
       alias_method_chain :css_classes, :aam_css
       has_many :pauses
     end
@@ -15,7 +16,10 @@ module IssuePatch
   module InstanceMethods
     def save_due_date
       utc_working_periods = get_all_utc_working_periods
-      if priority.nil? || priority.sla_priority.nil? || paused? || utc_working_periods.blank? # Due date invalid
+      if priority.nil? ||
+         priority.sla_priority.nil? ||
+         (paused? && !in_breach?) ||
+         utc_working_periods.blank?
         update_column(:due_date, nil)
         return
       end
@@ -49,7 +53,11 @@ module IssuePatch
         days_index = 0
       end
 
-      update_column(:due_date, final_working_period.start_time + num_seconds_left)
+      temp_due_date = final_working_period.start_time + num_seconds_left
+      if temp_due_date < Time.now.utc # If in breach, need to add on pauses since calculated due date
+        temp_due_date = add_extra_pauses(temp_due_date)
+      end
+      update_column(:due_date, temp_due_date)
     end
 
     def in_breach?
@@ -81,16 +89,13 @@ module IssuePatch
     def toggle_pause
       if self.paused?
         pauses.last.stop
-        self.is_paused = false
-        self.save
+        update_attribute(:is_paused, false)
       else
         # Make a new Pause
         pauses.push(Pause.new({:issue_id => id, :start_date => DateTime.now.utc}))
-        self.is_paused = true
-        self.save
+        update_attribute(:is_paused, true)
       end
       create_pauses_journal
-      save_due_date
     end
 
     def create_pauses_journal
@@ -101,6 +106,62 @@ module IssuePatch
         @current_pauses_journal.details << JournalDetail.new(:property => 'unpause')
       end
       @current_pauses_journal.save
+    end
+
+    # Have to monkey patch this whole method to remove due dates from journal
+    def create_journal_with_no_due_date
+      if @current_journal
+        # attributes changes
+        if @attributes_before_change
+          # Added due date to removed columns
+          (Issue.column_names - %w(id root_id lft rgt lock_version created_on updated_on closed_on due_date)).each {|c|
+            before = @attributes_before_change[c]
+            after = send(c)
+            next if before == after || (before.blank? && after.blank?)
+            @current_journal.details << JournalDetail.new(:property => 'attr',
+                                                          :prop_key => c,
+                                                          :old_value => before,
+                                                          :value => after)
+          }
+        end
+        if @custom_values_before_change
+          # custom fields changes
+          custom_field_values.each {|c|
+            puts c
+            before = @custom_values_before_change[c.custom_field_id]
+            after = c.value
+            next if before == after || (before.blank? && after.blank?)
+
+            if before.is_a?(Array) || after.is_a?(Array)
+              before = [before] unless before.is_a?(Array)
+              after = [after] unless after.is_a?(Array)
+
+              # values removed
+              (before - after).reject(&:blank?).each do |value|
+                @current_journal.details << JournalDetail.new(:property => 'cf',
+                                                              :prop_key => c.custom_field_id,
+                                                              :old_value => value,
+                                                              :value => nil)
+              end
+              # values added
+              (after - before).reject(&:blank?).each do |value|
+                @current_journal.details << JournalDetail.new(:property => 'cf',
+                                                              :prop_key => c.custom_field_id,
+                                                              :old_value => nil,
+                                                              :value => value)
+              end
+            else
+              @current_journal.details << JournalDetail.new(:property => 'cf',
+                                                            :prop_key => c.custom_field_id,
+                                                            :old_value => before,
+                                                            :value => after)
+            end
+          }
+        end
+        @current_journal.save
+        # reset current journal
+        init_journal @current_journal.user, @current_journal.notes
+      end
     end
 
     def sla_status_raw
@@ -114,8 +175,13 @@ module IssuePatch
     end
     
     def sla_status
-      out_of_hours_string = out_of_hours? ? (' (' + l(:out_of_hours) + ')') : ''
-      l(sla_status_raw) + out_of_hours_string
+      sla_status_symbol = sla_status_raw
+      paused_string = ''
+      if (sla_status_symbol == :breach) && paused?
+        paused_string = '/' + l(:paused)
+      end
+      out_of_hours_string = out_of_hours? ? ('/' + l(:out_of_hours)) : ''
+      l(sla_status_symbol) + paused_string + out_of_hours_string
     end
 
     def css_classes_with_aam_css
@@ -152,6 +218,9 @@ module IssuePatch
     def true_working_period_length(working_period) # Remove paused time
       wp_length = working_period.end_time - working_period.start_time
       pauses.each do |p|
+        if p.end_date == nil # In case paused and in breach
+          next
+        end
         if p.start_date <= working_period.start_time && p.end_date >= working_period.end_time # Paused for whole working period
           wp_length = 0
           break
@@ -164,6 +233,16 @@ module IssuePatch
         end
       end
       wp_length
+    end
+
+    def add_extra_pauses(current_due_date)
+      final_due_date = current_due_date
+      pauses.each do |p|
+        if (p.start_date > current_due_date) && (p.end_date != nil)
+          final_due_date += (p.end_date - p.start_date)
+        end
+      end
+      final_due_date
     end
   end
 end

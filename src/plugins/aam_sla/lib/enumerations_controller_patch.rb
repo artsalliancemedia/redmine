@@ -7,8 +7,8 @@ module EnumerationsControllerPatch
     base.send(:include, InstanceMethods)
 
     EnumerationsController.class_eval do
-      after_filter :sla_seconds, :update_issue_due_dates, :only => [:create, :update]
-      after_filter :update_issue_due_dates, :only => :index # Bit of a bodge, as the updates redirect to the index page
+      after_filter :sla_seconds, :only => [:create, :update]
+      after_filter :update_issue_due_dates, :only => [:create, :update, :index] # Bit of a bodge, as the updates redirect to the index page
     end
   end
 

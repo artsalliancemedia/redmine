@@ -41,16 +41,16 @@ Rails.configuration.to_prepare do
   end
 
   IssuesHelper.module_eval do
-    alias_method :old_show_detail, :show_detail
-
-    def show_detail(detail, no_html=false, options={})
+    def show_detail_with_pause_details(detail, no_html=false, options={})
       if detail.property == 'pause'
         l(:text_journal_paused)
       elsif detail.property == 'unpause'
         l(:text_journal_unpaused)
       else
-        old_show_detail(detail, no_html, options)
+        show_detail_without_pause_details(detail, no_html, options)
       end
     end
+
+    alias_method_chain :show_detail, :pause_details
   end
 end

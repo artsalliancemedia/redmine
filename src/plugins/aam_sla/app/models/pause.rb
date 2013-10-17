@@ -22,7 +22,6 @@ class Pause < ActiveRecord::Base
 
 	def stop
 		# Set the end_date of the pause
-		self.end_date = DateTime.now.utc
-    self.save
+    update_attribute(:end_date, DateTime.now.utc)
 	end
 end
