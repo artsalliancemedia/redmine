@@ -44,11 +44,11 @@ class WorkingPeriod < ActiveRecord::Base
   end
 
   def start_time_string
-    format_time(self.start_time, false)
+    format_time_no_time_zone_change(self.start_time)
   end
 
   def end_time_string
-    format_time(self.end_time, false)
+    format_time_no_time_zone_change(self.end_time)
   end
 
   def time_zone_string
@@ -114,5 +114,13 @@ class WorkingPeriod < ActiveRecord::Base
   def specific_time(start_date, num_days, time_of_day)
     new_time = start_date + num_days * 86400 # Get correct date
     new_time.change({:hour => time_of_day.hour, :min => time_of_day.min, :sec => time_of_day.sec}) # Get correct time
+  end
+
+  def format_time_no_time_zone_change(time)
+      options = {}
+      options[:format] = (Setting.time_format.blank? ? :time : Setting.time_format)
+      options[:locale] = User.current.language unless User.current.language.blank?
+      time = time.to_time if time.is_a?(String)
+      ::I18n.l(time, options)
   end
 end
