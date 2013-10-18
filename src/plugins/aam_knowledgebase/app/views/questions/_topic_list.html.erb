@@ -11,10 +11,12 @@
           <%= link_to h(topic.subject), { :controller => 'messages', :action => 'show', :board_id => topic.board, :id => topic } %>
         </h3>
         <p><%= truncate(topic.content.gsub(/\r\n/, ' ').strip , :length => 100) %></p>
-        <ul class="meta">
+		<% if false #hide replies count %>
+		<ul class="meta">
             <!--<li class="votes icon icon-vote"><%= l(:label_questions_votes, :count => topic.cached_votes_up - topic.cached_votes_down ) %></li>-->
             <li class="answers icon icon-comment"><%= l(:label_questions_answers, :count => topic.replies_count) %></li>
-        </ul>        
+        </ul>
+		<% end %>
       </div>
     <% end %>
 
