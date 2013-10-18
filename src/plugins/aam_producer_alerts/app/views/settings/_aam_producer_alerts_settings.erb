@@ -1,0 +1,26 @@
+<fieldset>
+<p>
+<label><%= l(:producer_alerts_url_label)%></label>
+<%= text_field_tag('settings[producer_alerts_url]',
+                   @settings['producer_alerts_url'],
+                   :type => 'text',
+				   :size => 60)
+%>
+</p>
+<p>
+<label><%= l(:username_label)%></label>
+<%= text_field_tag('settings[username]',
+                   @settings['username'],
+                   :type => 'text',
+				   :size => 20)
+%>
+</p>
+<p>
+<label><%= l(:password_label)%></label>
+<%= text_field_tag('settings[password]',
+                   @settings['password'],
+                   :type => 'password',
+				   :size => 20)
+%>
+</p>
+</fieldset>
