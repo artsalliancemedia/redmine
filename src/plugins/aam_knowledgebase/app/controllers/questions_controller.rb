@@ -46,8 +46,6 @@ class QuestionsController < ApplicationController
     message.board = board
     message.subject = issue.subject
     message.content = issue.description.blank? ? issue.subject : issue.description
-    message.watchers = issue.watchers
-    message.add_watcher(issue.author)
     message.attachments = issue.attachments
 		
 		if issue.device
@@ -58,19 +56,21 @@ class QuestionsController < ApplicationController
 		end
 		message.issues << issue
 		
-    issue.journals.select{|j| !j.notes.blank?}.each do |journal|
-      reply = Message.new
-      reply.author = journal.user
-      reply.created_on = journal.created_on
-      reply.subject = "Re: #{message.subject}"
-      reply.content = journal.notes
-      reply.board = board
-      message.children << reply
-    end
+		copy_notes = false #Just ignore them
+		if copy_notes
+			issue.journals.select{|j| !j.notes.blank?}.each do |journal|
+				reply = Message.new
+				reply.author = journal.user
+				reply.created_on = journal.created_on
+				reply.subject = "Re: #{message.subject}"
+				reply.content = journal.notes
+				reply.board = board
+				message.children << reply
+			end
+		end
     if message.save
-      issue.destroy if params[:destroy]
-      redirect_to board_message_path(board, message)
-    else
+			redirect_to board_message_path(board, message)
+		else
       redirect_back_or_default({:controller => 'issues', :action => 'show', :id => issue})
     end
 
