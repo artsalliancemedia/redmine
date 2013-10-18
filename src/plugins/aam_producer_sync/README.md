@@ -1,6 +1,7 @@
 #Producer Sync Plugin
 
 Synchronises ticket data with Producer (by exposing a Rake task). Only fields required by Producer are sent.
+The UUIDs of deleted tickets are also sent, so Producer can delete them at their end
 
 ##Setup
 

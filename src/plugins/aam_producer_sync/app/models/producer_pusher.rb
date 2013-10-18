@@ -76,6 +76,7 @@ class ProducerPusher
 			ticket_id_info = "#{ticket_type} ticket ##{ticket_id}"
 
 			if (status != '200')
+				#Server or auth error, don't bother continuing
 				puts status + " Error. Terminating task now."
 				return false
 			end
@@ -95,6 +96,10 @@ class ProducerPusher
 				")
 				puts execute_sql if @@debugging
 			else
+				#If a ticket can't be sent, it is usually because Producer doesn't have a record of the
+				#screen, device or cinema of the ticket. Because we pull this data from Producer, this should
+				#only happen when Producer deletes some of this data (whereas we keep legacy screens/devices/cinemas)
+				#Therefore, it is safe to ignore tickets which couldn't be sent, and not bother trying to re-send them.
 				puts "#{ticket_id_info} not sent due to Producer error."
 				error = response["messages"][0]["msg"] || "Unknown"
 				puts error if @@debugging
@@ -102,6 +107,13 @@ class ProducerPusher
 			puts "" if @@debugging
 		end
 		return true
+	end
+	
+	def delete_deleted_tickets
+		#Pending info from Producer Team
+		
+		#sync ticket uuid
+		#clear table
 	end
   
 	def push(debug)
@@ -120,14 +132,15 @@ class ProducerPusher
 		
 		@@success_count = 0
 		succesful = send_tickets( last_run_time, this_run_time )
+		
+		delete_deleted_tickets
 
 		if succesful
 			file = open(last_run_path, 'w')
 			file.write this_run_time
 			file.close
 		end
-		puts "Task completed at " + Time.now.to_s
-		puts "#{@@success_count} out of #{@@ticket_count} tickets were synced"
+		puts "#{Time.now.to_s}  #{@@success_count} out of #{@@ticket_count} tickets were synced"
 	end
   
 end
