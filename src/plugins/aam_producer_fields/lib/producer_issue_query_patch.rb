@@ -6,9 +6,10 @@ module ProducerIssueQueryPatch
 
     base.class_eval do
       unloadable
-      base.add_available_column(QueryColumn.new(:cinema, :sortable => "#{Cinema.table_name}.name", :groupable => true))
+      # Commented out sorting for cinemas and devices for now because we were seeing a strange SQL error
+      base.add_available_column(QueryColumn.new(:cinema))#, :sortable => "#{Cinema.table_name}.name", :groupable => true))
       base.add_available_column(QueryColumn.new(:screen))
-      base.add_available_column(QueryColumn.new(:device, :sortable => "#{Device.table_name}.category"))
+      base.add_available_column(QueryColumn.new(:device))#, :sortable => "#{Device.table_name}.category"))
 
       alias_method_chain :available_filters, :producer_fields
       alias_method_chain :issues, :producer_fields
