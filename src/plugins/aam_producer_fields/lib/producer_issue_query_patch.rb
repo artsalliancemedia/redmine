@@ -8,7 +8,7 @@ module ProducerIssueQueryPatch
       unloadable
       base.add_available_column(QueryColumn.new(:cinema, :sortable => "#{Cinema.table_name}.name", :groupable => true))
       base.add_available_column(QueryColumn.new(:screen))
-      base.add_available_column(QueryColumn.new(:device, :sortable => "#{Device.table_name}.identifier", :groupable => true))
+      base.add_available_column(QueryColumn.new(:device, :sortable => "#{Device.table_name}.category"))
 
       alias_method_chain :available_filters, :producer_fields
       alias_method_chain :issues, :producer_fields
