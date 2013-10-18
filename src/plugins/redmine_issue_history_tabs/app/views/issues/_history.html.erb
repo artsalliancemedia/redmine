@@ -7,7 +7,11 @@
         {:label => :label_history_tab_comments, :name => 'history_comments'},
         {:label => :label_history_tab_all, :name => 'history_all'},
         ] %>
-<% selected_tab = params[:tab] ? params[:tab].to_s : 'history_comments' %>
+<% if params[:tab] %>
+  <% selected_tab = params[:tab].to_s %>
+<% else %>
+  <% selected_tab = journals.count > 25 ? 'history_comments' : 'history_all' %>
+<% end %>
 
 <div class="tabs">
 <ul>
