@@ -59,6 +59,7 @@ Make sure that the steps prefixed by *1st Installation* are only run the **first
 1. *1st Installation:* Copy `config/database.yml.example` to `config/database.yml` and modify it to point at the redmine database.
 1. *1st Installation:* Copy `config/additional_environment.rb.example` to `config/additional_environment.rb` and modify it to set the logging requirements. See Logging section below for help.
 1. Run `bundle install --deployment --without rmagick` to install the gem dependencies that come with the archive.
+1. Run `rake generate_secret_token` to create a session validation token unique to this instance.
 1. Run `rake db:migrate` from the root folder of the archive. Also run `rake redmine:plugins:migrate`, after these are complete the database schema should be up to date.
 1. *1st Installation:* Run `rake redmine:load_default_data` to load Redmine's default dataset and then `rake lifeguard:data_modify` to modify it for lifeguards requirements.
 1. *1st Installation:* Install the producer pull task to run once an hour. `0 * * * * <user> /bin/bash -l -c 'cd /path/aam_lifeguard-redmine/ && RAILS_ENV=production rake lifeguard:producer_pull >> /var/log/producer_pull.log'`
@@ -74,7 +75,7 @@ These lines are required, if you want to have redmine handle log rotation, in th
 ```
 config.log_level = :debug
 config.logger = Logger.new('/var/log/aam_lifeguard-redmine.app.log', 5, 104857600) # Logger.new(PATH,NUM_FILES_TO_ROTATE,FILE_SIZE)
-config.logger.level = :debug
+config.logger.level = 0
 ```
 
 ## RPM Compilation
