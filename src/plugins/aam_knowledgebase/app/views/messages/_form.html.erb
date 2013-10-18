@@ -3,7 +3,6 @@
 
 <% content_for :header_tags do %>
   <%= javascript_include_tag "article", :plugin => 'aam_knowledgebase'  %>
-  <%= stylesheet_link_tag "articles", :plugin => 'aam_knowledgebase'  %>
 <% end %>
 
 <div class="box">
@@ -71,15 +70,16 @@
 <%= javascript_tag "observeAutocompleteField(
   'message-related-issues-search',
   '#{escape_javascript auto_complete_issues_path}',
-  { 
+  {
 	select: function(event, ui) {
 		addRelatedIssue(ui.item.id, ui.item.label);
 		return false;
 	},
     focus: function(event, ui) {
-        $('#message-related-issues-search').val(ui.item.label);
+        //$('#message-related-issues-search').val(ui.item.label);
         return false;
-    }
+    },
+	autoFocus: true
   }
 )" %>
 
