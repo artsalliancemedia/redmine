@@ -14,8 +14,8 @@ Redmine::Plugin.register :aam_producer_sync do
 
 end
 
-#Rails.configuration.to_prepare do
-#  unless Issue.included_modules.include?(AamProducerSyncIssuePatch)
-#    Issue.send(:include, AamProducerSyncIssuePatch)
-#  end
-#end
+Rails.configuration.to_prepare do
+ unless Issue.included_modules.include?(AamProducerSyncIssuePatch)
+   Issue.send(:include, AamProducerSyncIssuePatch)
+ end
+end
