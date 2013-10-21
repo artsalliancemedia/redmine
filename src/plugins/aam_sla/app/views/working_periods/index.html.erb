@@ -5,7 +5,6 @@
 
 <h2><%= t(:working_period_plural)%></h2>
 
-
 <% unless(@adjusted_working_periods.blank?) %>
   <h3>
     <%= 'Original Time Zone: ' + @adjusted_working_periods.first[0].time_zone_string %>
@@ -24,12 +23,21 @@
      <col span="1" style="width: 70%;">
      <col span="1" style="width: 10%;">
   </colgroup>
+  <thead>
+    <tr>
+      <th><%= l(:column_day) %></th>
+      <th><%= l(:column_start_time) %></th>
+      <th><%= l(:column_end_time) %></th>
+      <th><%= l(:column_delete) %></th>
+    </tr>
+  </thead>
+  <tbody>
   <% actual_working_period = nil %>
   <% @adjusted_working_periods.each do |adjusted_working_period| %>
     <tr style="height:22px;">
-      <td><b>Day:</b> <%= adjusted_working_period[0].day_string %></td>
-      <td><b>Start Time:</b> <%= adjusted_working_period[0].start_time_string %></td>
-      <td><b>End Time:</b> <%= adjusted_working_period[0].end_time_string %></td>
+      <td><%= adjusted_working_period[0].day_string %></td>
+      <td><%= adjusted_working_period[0].start_time_string %></td>
+      <td><%= adjusted_working_period[0].end_time_string %></td>
       <td>
         <% if(adjusted_working_period[1] != actual_working_period) # If on a new actual record, add a delete command %>
           <% actual_working_period = adjusted_working_period[1] %>
@@ -38,4 +46,5 @@
       </td>
     </tr>
   <% end %>
+  </tbody>
 </table>

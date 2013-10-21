@@ -26,6 +26,10 @@ en:
   error_duration_not_positive: "Error: End Time must be greater than Start Time"
   error_working_period_overlap: "Error: Specified working period overlaps with another already created"
 
+  column_day: Day
+  column_start_time: Start Time
+  column_end_time: End Time
+  column_delete: ""
   field_day_list: "Day"
   field_start_time_new: "Start Time"
   field_end_time_new: "End Time"
