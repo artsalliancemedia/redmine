@@ -57,13 +57,13 @@ Make sure that the steps prefixed by *1st Installation* are only run the **first
 1. *System Update:* Run `tar -cfz aam_lifeguard-redmine.\`date "+%Y%m%dT%H%M"\`.tar.gz aam_lifeguard-redmine/` to backup the old installation, then remove it `rm -rf aam_lifeguard-redmine/`.
 1. Extract the ".tar.gz" release archive file to a place on the filesystem.
 1. *1st Installation:* Copy `config/database.yml.example` to `config/database.yml` and modify it to point at the redmine database.
-1. *1st Installation:* Copy `config/additional_environment.rb.example` to `config/additional_environment.rb` and modify it to set the logging requirements. See Logging section below for help.
+1. *1st Installation:* Copy `config/configuration.yml.example` to `config/configuration.yml` and modify it to set up the email configuration.
+1. *1st Installation:* Copy `config/additional_environment.rb.example` to `config/additional_environment.rb` and modify it to set the logging requirements. See the "Logging" section below for help.
 1. Run `bundle install --deployment --without rmagick` to install the gem dependencies that come with the archive.
 1. Run `rake generate_secret_token` to create a session validation token unique to this instance.
 1. Run `rake db:migrate` from the root folder of the archive. Also run `rake redmine:plugins:migrate`, after these are complete the database schema should be up to date.
 1. *1st Installation:* Run `rake redmine:load_default_data` to load Redmine's default dataset and then `rake lifeguard:data_modify` to modify it for lifeguards requirements.
-1. *1st Installation:* Install the producer pull task to run once an hour. `0 * * * * <user> /bin/bash -l -c 'cd /path/aam_lifeguard-redmine/ && RAILS_ENV=production rake lifeguard:producer_pull >> /var/log/producer_pull.log'`
-1. *1st Installation:* Install the producer push task to run every 5 minutes. `0/5 * * * * <user> /bin/bash -l -c 'cd /path/aam_lifeguard-redmine/ && RAILS_ENV=production rake lifeguard:producer_push >> /var/log/producer_push.log'`
+1. *1st Installation:* Install the cron tasks, see the "Cron Tasks" section below for more details.
 1. Run `bundle exec thin start -C deploy/redmine-thin.yml` to get Redmine to pick up the new settings. Modify that file if you need to change the default deploy settings (you probably do).
 1. Check `localhost:3000` to make sure it's working :)
 1. Relax with a cold beverage.
@@ -78,6 +78,12 @@ config.logger = Logger.new('/var/log/aam_lifeguard-redmine.app.log', 5, 10485760
 config.logger.level = 0
 ```
 
-## RPM Compilation
+### Cron Tasks
 
-@todo
+Ensure these entries are in the cron scheduler (normally `/etc/crontab`). Change the value of `<user>` to the user you wish to run the task under.
+
+```
+0 * * * * <user> /bin/bash -l -c 'cd /path/aam_lifeguard-redmine/ && RAILS_ENV=production rake lifeguard:producer_pull >> /var/log/producer_pull.log'
+0/5 * * * * <user> /bin/bash -l -c 'cd /path/aam_lifeguard-redmine/ && RAILS_ENV=production rake lifeguard:producer_push >> /var/log/producer_push.log'
+0/5 * * * * <user> /bin/bash -l -c 'cd /path/aam_lifeguard-redmine/ && RAILS_ENV=production rake lifeguard:producer_alerts >> /var/log/producer_alerts.log'
+```
