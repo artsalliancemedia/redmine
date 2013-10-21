@@ -1,7 +1,20 @@
-<%= issue_fields_rows do |rows|
-  rows.left l(:field_cinema), h(@issue.cinema.name), :class => 'cinema'
-  rows.right l(:field_sla_status), h(@issue.sla_status), :class => 'sla_status'
-  rows.left l(:field_screen), (h(@issue.screen.identifier) if @issue.screen), :class => 'screen'
-  rows.right l(:field_closed_on), h(format_time(@issue.closed_on, true)), :class => 'closed_on'
-  rows.left l(:field_device), (h(t(@issue.device.category)) if @issue.device), :class => 'device'
-end %>
+<tr>
+  <th class="cinema"><%= l(:field_cinema) %></th>
+  <td class="cinema"><%= h(@issue.cinema.name) %></td>
+  <th class="sla_status"><%= l(:field_sla_status) %></th>
+  <% if @issue.out_of_hours? && !@issue.in_breach? %>
+    <td title="<%= l(:out_of_hours) + l(:out_of_hours_details) %>" class="icon icon-out-of-hours"><%= h(@issue.sla_status) %></td>
+  <% else %>
+    <td class="sla_status"><%= h(@issue.sla_status) %></td>
+  <% end %>
+</tr>
+<tr>
+  <th class="screen"><%= l(:field_screen) %></th>
+  <td class="screen"><%= h(@issue.screen.identifier) if @issue.screen %></td>
+  <th class="closed_on"><%= l(:field_closed_on) %></th>
+  <td class="closed_on"><%= h(format_time(@issue.closed_on, true)) %></td>
+</tr>
+<tr>
+  <th class="device"><%= l(:field_device) %></th>
+  <td class="device"><%= h(t(@issue.device.category)) if @issue.device %></td>
+</tr>

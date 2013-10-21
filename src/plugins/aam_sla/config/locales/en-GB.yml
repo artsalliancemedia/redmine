@@ -7,6 +7,7 @@ en-GB:
   paused: Paused
   breach: Breach
   out_of_hours: Out of working hours
+  out_of_hours_details: " - Check Working Periods for more details"
   button_pause: Pause
   button_unpause: Unpause
   button_pause_list: Pause List
