@@ -28,7 +28,7 @@ en:
   field_kb_device_firmware_version: "Device Firmware Version"
   field_kb_device_software_version: "Device Software Version"
 
-  categorisation: "Categorisation"
+  categorisation: "Categorization"
   article_add: "Add article"
   article_make_from_issue: "Make knowledgebase article from this issue"
   related_kb: "Knowledge base articles that link to this issue"
