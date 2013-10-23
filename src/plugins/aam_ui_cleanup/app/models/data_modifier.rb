@@ -17,6 +17,7 @@ class DataModifier
 		unless Project.find_by_identifier(unique_project_identifier)
 			lifeguard = Project.new
 			lifeguard.name = I18n.t(:lifeguard)
+			lifeguard.is_public = false
 			lifeguard.identifier = unique_project_identifier
 			lifeguard.use_datetime_for_issues = true
 			lifeguard.enabled_module_names = [:issue_tracking, :boards]
