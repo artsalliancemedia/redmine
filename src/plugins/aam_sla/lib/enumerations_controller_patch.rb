@@ -15,10 +15,11 @@ module EnumerationsControllerPatch
   module InstanceMethods
     def sla_seconds
       # Only save the seconds if we have a valid enumeration!
-      return if not @enumeration.id or params[:seconds].nil?
+      return if not @enumeration.id or params[:seconds].nil? or params[:near_breach_seconds].nil?
 
       sla_priority = @enumeration.sla_priority || SlaPriority.new(:issue_priority_id => @enumeration.id)
       sla_priority.seconds = params[:seconds]
+      sla_priority.near_breach_seconds = params[:near_breach_seconds]
       sla_priority.save
     end
   end
