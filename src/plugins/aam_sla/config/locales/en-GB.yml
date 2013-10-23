@@ -32,7 +32,9 @@ en-GB:
   column_delete: ""
   field_day_list: "Day"
   field_start_time_new: "Start Time"
+  field_start_time_tip: "(e.g. 9:00 or 9am)"
   field_end_time_new: "End Time"
+  field_end_time_tip: "(e.g. 17:00 or 5pm)"
   field_start_time_string_new: "Start Time"
   field_end_time_string_new: "End Time"
 
