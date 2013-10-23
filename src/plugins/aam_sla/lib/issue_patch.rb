@@ -18,17 +18,24 @@ module IssuePatch
       utc_working_periods = get_all_utc_working_periods
       if priority.nil? ||
          priority.sla_priority.nil? ||
-         (paused? && !in_breach?) ||
+         (paused? && !in_breach? && !near_breach?) ||
          utc_working_periods.blank?
         update_column(:due_date, nil)
+        update_column(:near_breach_date, nil)
         return
       end
       
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
       days_index = start_day
       num_seconds_left = priority.sla_priority.seconds
+      if priority.sla_priority.near_breach_seconds.nil?
+        num_near_breach_seconds_left = priority.sla_priority.seconds
+      else
+        num_near_breach_seconds_left = priority.sla_priority.seconds - priority.sla_priority.near_breach_seconds
+      end
       num_weeks = -1
       final_working_period = nil
+      near_breach_working_period = nil
       while final_working_period == nil do
         while days_index < 7 do
           # Need to keep track of weeks to calculate future working period dates
@@ -39,11 +46,17 @@ module IssuePatch
           day_working_periods.each do |wp|
             specific_wp = wp.specific_working_period(start_date, num_weeks) # Get working period for a specific date
             wp_length = get_working_period_length(specific_wp, start_date)
+            if wp_length < num_near_breach_seconds_left
+              num_near_breach_seconds_left -= wp_length
+            elsif near_breach_working_period.nil?
+              near_breach_working_period = specific_wp # This is the working period the issue is estimated to finish in
+              num_near_breach_seconds_left += specific_wp.duration - wp_length # Need to account for pauses in final working period
+            end
             if wp_length < num_seconds_left # Issue not finished yet
               num_seconds_left -= wp_length
             else
               final_working_period = specific_wp # This is the working period the issue is estimated to finish in
-              num_seconds_left += (specific_wp.end_time - specific_wp.start_time) - wp_length # Need to account for pauses in final working period
+              num_seconds_left += specific_wp.duration - wp_length # Need to account for pauses in final working period
               break
             end
           end
@@ -58,6 +71,7 @@ module IssuePatch
         temp_due_date = add_extra_pauses(temp_due_date)
       end
       update_column(:due_date, temp_due_date)
+      update_column(:near_breach_date, near_breach_working_period.start_time + num_near_breach_seconds_left)
     end
 
     def in_breach?
@@ -66,6 +80,12 @@ module IssuePatch
       breach = (!closed_on.nil? and closed_on > due_date) ||
                (closed_on.nil? and DateTime.now > due_date)
       breach
+    end
+
+    def near_breach?
+      return false if in_breach? or near_breach_date.nil? or !closed_on.nil?
+
+      return DateTime.now > near_breach_date
     end
     
     def paused?
@@ -167,6 +187,8 @@ module IssuePatch
     def sla_status_raw
       if in_breach?
         :breach
+      elsif near_breach?
+        :near_breach
       elsif paused?
         :paused
       else
@@ -177,7 +199,7 @@ module IssuePatch
     def sla_status
       sla_status_symbol = sla_status_raw
       paused_string = ''
-      if (sla_status_symbol == :breach) && paused?
+      if (sla_status_symbol == :breach or sla_status_symbol == :near_breach) && paused?
         paused_string = '/' + l(:paused)
       end
       l(sla_status_symbol) + paused_string
@@ -202,7 +224,7 @@ module IssuePatch
     def get_working_period_length(working_period, start_date)
       wp_length = 0
       if working_period.start_time > Time.now # No pauses possible
-        wp_length = working_period.end_time - working_period.start_time
+        wp_length = working_period.duration
       elsif working_period.start_time < start_date && start_date < working_period.end_time # Issue started during current working period
         working_period.set_start_time(start_date)
         wp_length = true_working_period_length(working_period)
@@ -215,7 +237,7 @@ module IssuePatch
     end
 
     def true_working_period_length(working_period) # Remove paused time
-      wp_length = working_period.end_time - working_period.start_time
+      wp_length = working_period.duration
       pauses.each do |p|
         if p.end_date == nil # In case paused and in breach
           next

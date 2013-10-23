@@ -93,6 +93,14 @@ class WorkingPeriod < ActiveRecord::Base
     self.start_time = time
   end
 
+  def duration
+    self.end_time - self.start_time # returns in seconds
+  end
+
+  def to_s
+    day.to_s + ": " + start_time.to_s + "-" + end_time.to_s
+  end
+
   private
 
   def get_time_zone_offset

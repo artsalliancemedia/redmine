@@ -1,7 +1,8 @@
 class SlaPriority < ActiveRecord::Base
 
   belongs_to :enumeration
-  validates_presence_of :seconds
+  validates :seconds, :presence => true, :numericality => { :greater_than_or_equal_to => 0 }
+  validates :near_breach_seconds, :presence => true, :numericality => { :greater_than_or_equal_to => 0 }
 
   def common_identifier
     "#{seconds}"
