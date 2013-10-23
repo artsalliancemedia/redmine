@@ -18,17 +18,24 @@ module IssuePatch
       utc_working_periods = get_all_utc_working_periods
       if priority.nil? ||
          priority.sla_priority.nil? ||
-         (paused? && !in_breach?) ||
+         (paused? && !in_breach? && !near_breach?) ||
          utc_working_periods.blank?
         update_column(:due_date, nil)
+        update_column(:near_breach_date, nil)
         return
       end
       
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
       days_index = start_day
       num_seconds_left = priority.sla_priority.seconds
+      if priority.sla_priority.near_breach_seconds.nil?
+        num_near_breach_seconds_left = priority.sla_priority.seconds
+      else
+        num_near_breach_seconds_left = priority.sla_priority.seconds - priority.sla_priority.near_breach_seconds
+      end
       num_weeks = -1
       final_working_period = nil
+      near_breach_working_period = nil
       while final_working_period == nil do
         while days_index < 7 do
           # Need to keep track of weeks to calculate future working period dates
@@ -39,11 +46,17 @@ module IssuePatch
           day_working_periods.each do |wp|
             specific_wp = wp.specific_working_period(start_date, num_weeks) # Get working period for a specific date
             wp_length = get_working_period_length(specific_wp, start_date)
+            if wp_length < num_near_breach_seconds_left
+              num_near_breach_seconds_left -= wp_length
+            elsif near_breach_working_period.nil?
+              near_breach_working_period = specific_wp # This is the working period the issue is estimated to finish in
+              num_near_breach_seconds_left += specific_wp.duration - wp_length # Need to account for pauses in final working period
+            end
             if wp_length < num_seconds_left # Issue not finished yet
               num_seconds_left -= wp_length
             else
               final_working_period = specific_wp # This is the working period the issue is estimated to finish in
-              num_seconds_left += (specific_wp.end_time - specific_wp.start_time) - wp_length # Need to account for pauses in final working period
+              num_seconds_left += specific_wp.duration - wp_length # Need to account for pauses in final working period
               break
             end
           end
@@ -58,6 +71,7 @@ module IssuePatch
         temp_due_date = add_extra_pauses(temp_due_date)
       end
       update_column(:due_date, temp_due_date)
+      update_column(:near_breach_date, near_breach_working_period.start_time + num_near_breach_seconds_left)
     end
 
     def in_breach?
@@ -69,10 +83,9 @@ module IssuePatch
     end
 
     def near_breach?
-      return false if due_date.nil? or !closed_on.nil?
+      return false if in_breach? or near_breach_date.nil? or !closed_on.nil?
 
-      # If there are less seconds to the due date than those defined in the near_breach_seconds threshold then we must be in a nearly breached state.
-      return (seconds_to_due_date - self.priority.sla_priority.near_breach_seconds) < 0
+      return DateTime.now > near_breach_date
     end
     
     def paused?
@@ -174,10 +187,10 @@ module IssuePatch
     def sla_status_raw
       if in_breach?
         :breach
-      elsif paused?
-        :paused
       elsif near_breach?
         :near_breach
+      elsif paused?
+        :paused
       else
         :ok
       end
@@ -186,7 +199,7 @@ module IssuePatch
     def sla_status
       sla_status_symbol = sla_status_raw
       paused_string = ''
-      if (sla_status_symbol == :breach) && paused?
+      if (sla_status_symbol == :breach or sla_status_symbol == :near_breach) && paused?
         paused_string = '/' + l(:paused)
       end
       out_of_hours_string = out_of_hours? ? ('/' + l(:out_of_hours)) : ''
@@ -212,7 +225,7 @@ module IssuePatch
     def get_working_period_length(working_period, start_date)
       wp_length = 0
       if working_period.start_time > Time.now # No pauses possible
-        wp_length = working_period.end_time - working_period.start_time
+        wp_length = working_period.duration
       elsif working_period.start_time < start_date && start_date < working_period.end_time # Issue started during current working period
         working_period.set_start_time(start_date)
         wp_length = true_working_period_length(working_period)
@@ -225,7 +238,7 @@ module IssuePatch
     end
 
     def true_working_period_length(working_period) # Remove paused time
-      wp_length = working_period.end_time - working_period.start_time
+      wp_length = working_period.duration
       pauses.each do |p|
         if p.end_date == nil # In case paused and in breach
           next
@@ -258,48 +271,6 @@ module IssuePatch
       unless self.status.is_closed
         update_column(:closed_on, nil)
       end
-    end
-
-    # Should find the number of seconds (up to a weeks worth, will break after that unfortunately) from the current_time to the due_date
-    def seconds_to_due_date(current_datetime=DateTime.now)
-      current_time = current_datetime.to_time.change(:month => 1, :day => 1, :year => 2000) # I kid you not, this is the best solution. FML.
-
-      utc_working_periods = get_all_utc_working_periods
-      utc_working_periods.each { |wp| # Convert the wday values into the same format used by Ruby (i.e. Sunday == 0, who the fuck does that.)
-        wp.day = (wp.day == 6 ) ? 0 : wp.day + 1
-      }
-      utc_working_periods.sort_by! { |wp| [wp.day, wp.start_time] }
-
-      # Rotate the working periods so that the first element is the closest period to the current time.
-      num_rotates = 0
-      utc_working_periods.each_with_index { |wp, index|
-        if wp.day < current_datetime.wday || (wp.day == current_datetime.wday && current_time >= wp.end_time)
-          num_rotates = index + 1 # Make sure we don't succumb to out by one errors.
-        end
-      }
-      utc_working_periods.rotate!(num_rotates)
-
-      # Sum the working period durations to get the seconds to the due_date
-      due_time = self.due_date.to_time.change(:month => 1, :day => 1, :year => 2000) # I kid you not, this is the best solution. FML.
-      seconds = 0
-      utc_working_periods.each { |wp|
-        if wp.day == self.due_date.wday && due_time >= wp.start_time && due_time < wp.end_time
-          if wp.day == current_datetime.wday && current_time >= wp.start_time && current_time < due_time
-            # If the current time is within this working period, we must be close to the due date!
-            seconds += (due_time - current_time)
-          else
-            # If the due date falls within another working period.
-            seconds += (due_time - wp.start_time)
-          end
-
-          break # Both scenarios are terminating, i.e. this working period is the closest to the due date.
-        else
-          # Just add the full duration until we get to the working period the due_date falls into.
-          seconds += wp.duration
-        end
-      }
-
-      seconds
     end
   end
 end
