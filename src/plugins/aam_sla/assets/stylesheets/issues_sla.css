@@ -8,6 +8,9 @@ tr.priority-2 {
 tr.sla-breach {
 	background-color: #f7b2bd;
 }
+tr.sla-near_breach {
+	background-color: #ff9955;
+}
 tr.sla-paused {
 	background-color: #fcffa9;
 }

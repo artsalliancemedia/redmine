@@ -27,6 +27,7 @@ module IssuePatch
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
       days_index = start_day
       num_seconds_left = priority.sla_priority.seconds
+      num_near_breach_seconds_left = priority.sla_priority.seconds - priority.sla_priority.near_breach_seconds
       num_weeks = -1
       final_working_period = nil
       while final_working_period == nil do
@@ -185,11 +186,14 @@ module IssuePatch
     
     def sla_status
       sla_status_symbol = sla_status_raw
-      paused_string = ''
-      if (sla_status_symbol == :breach) && paused?
-        paused_string = '/' + l(:paused)
+      extra_string = ''
+      if sla_status_symbol == :breach && paused?
+        extra_string = '/' + l(:paused)
+      elsif sla_status_symbol == :paused && near_breach?
+        extra_string = '/' + l(:near_breach)
       end
-      l(sla_status_symbol) + paused_string
+      out_of_hours_string = out_of_hours? ? ('/' + l(:out_of_hours)) : ''
+      l(sla_status_symbol) + extra_string + out_of_hours_string
     end
 
     def css_classes_with_aam_css
