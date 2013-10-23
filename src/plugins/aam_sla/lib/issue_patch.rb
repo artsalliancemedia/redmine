@@ -183,10 +183,10 @@ module IssuePatch
     def sla_status_raw
       if in_breach?
         :breach
-      elsif near_breach?
-        :near_breach
       elsif paused?
         :paused
+      elsif near_breach?
+        :near_breach
       else
         :ok
       end
