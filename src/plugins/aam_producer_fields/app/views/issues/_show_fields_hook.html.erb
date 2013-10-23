@@ -3,7 +3,7 @@
   <td class="cinema"><%= h(@issue.cinema.name) %></td>
   <th class="sla_status"><%= l(:field_sla_status) %></th>
   <% if @issue.out_of_hours? && !@issue.status.is_closed? %>
-    <td title="<%= l(:out_of_hours) + l(:out_of_hours_details) %>" class="icon icon-out-of-hours"><%= h(@issue.sla_status) %></td>
+    <td title="<%= l(:out_of_hours) %>" class="icon icon-out-of-hours"><%= h(@issue.sla_status) %></td>
   <% else %>
     <td class="sla_status"><%= h(@issue.sla_status) %></td>
   <% end %>
