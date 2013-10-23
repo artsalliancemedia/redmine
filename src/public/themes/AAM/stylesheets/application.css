@@ -123,6 +123,12 @@ margin-left:5px;
 .board.details .contextual .icon-add::before {
 content: '\e042';
 }
+
+/** Hourglass icon only temporary, will get unique icon for out of hours soon **/
+.icon-out-of-hours {
+background-image: url(../../../images/hourglass.png);
+}
+
 /**
 MAIN HEADER
 **/

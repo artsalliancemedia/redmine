@@ -180,8 +180,7 @@ module IssuePatch
       if (sla_status_symbol == :breach) && paused?
         paused_string = '/' + l(:paused)
       end
-      out_of_hours_string = out_of_hours? ? ('/' + l(:out_of_hours)) : ''
-      l(sla_status_symbol) + paused_string + out_of_hours_string
+      l(sla_status_symbol) + paused_string
     end
 
     def css_classes_with_aam_css
