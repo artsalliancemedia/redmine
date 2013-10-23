@@ -1,3 +1,8 @@
+## 0.9.1
+
+* Working periods bug fixes and refinements.
+* Raising new issues in Redmine from alerts created in Producer.
+
 ## 0.9.0
 
 * AAM Theme
