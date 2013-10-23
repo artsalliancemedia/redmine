@@ -5,34 +5,30 @@ class WorkingPeriod < ActiveRecord::Base
   def days
     [l(:monday), l(:tuesday), l(:wednesday), l(:thursday), l(:friday), l(:saturday), l(:sunday)]
   end
-  
-  def day_string
-    days[self.day]
-  end
 
   def day_list
-    # Empty getter needed for virtual attribute
+    days[self.day] unless self.day.nil?
   end
 
   def day_list=(day_str)
     self.day = days.index(day_str)
   end
 
-  def start_time_string_new
-    # Empty getter needed for virtual attribute
+  def start_time_string
+    format_time_no_time_zone_change(self.start_time) unless self.start_time.nil?
   end
 
-  def start_time_string_new=(start_time_str)
+  def start_time_string=(start_time_str)
     self.start_time = Time.parse(start_time_str)
   rescue ArgumentError
     @start_time_invalid = true
   end
 
-  def end_time_string_new
-    # Empty getter needed for virtual attribute
+  def end_time_string
+    format_time_no_time_zone_change(self.end_time) unless self.end_time.nil?
   end
 
-  def end_time_string_new=(end_time_str)
+  def end_time_string=(end_time_str)
     self.end_time = Time.parse(end_time_str)
   rescue ArgumentError
     @end_time_invalid = true
@@ -41,14 +37,6 @@ class WorkingPeriod < ActiveRecord::Base
   def validate
     errors.add(:start_time, "is invalid") if @start_time_invalid
     errors.add(:end_time, "is invalid") if @end_time_invalid
-  end
-
-  def start_time_string
-    format_time_no_time_zone_change(self.start_time)
-  end
-
-  def end_time_string
-    format_time_no_time_zone_change(self.end_time)
   end
 
   def time_zone_string

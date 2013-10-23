@@ -71,7 +71,7 @@ class WorkingPeriodsController < ApplicationController
     
   rescue Exception => e
     flash[:error] = e.message
-    redirect_to :action => 'new'
+    render :action => 'new'
   end
 
   def destroy
