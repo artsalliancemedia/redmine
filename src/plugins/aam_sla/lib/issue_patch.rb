@@ -175,6 +175,8 @@ module IssuePatch
     def sla_status_raw
       if in_breach?
         :breach
+      elsif nearly_breached?
+        :near_breach
       elsif paused?
         :paused
       elsif near_breach?
@@ -261,6 +263,48 @@ module IssuePatch
       unless self.status.is_closed
         update_column(:closed_on, nil)
       end
+    end
+
+    # Should find the number of seconds (up to a weeks worth, will break after that unfortunately) from the current_time to the due_date
+    def seconds_to_due_date(current_datetime=DateTime.now)
+      current_time = current_datetime.to_time.change(:month => 1, :day => 1, :year => 2000) # I kid you not, this is the best solution. FML.
+
+      utc_working_periods = get_all_utc_working_periods
+      utc_working_periods.each { |wp| # Convert the wday values into the same format used by Ruby (i.e. Sunday == 0, who the fuck does that.)
+        wp.day = (wp.day == 6 ) ? 0 : wp.day + 1
+      }
+      utc_working_periods.sort_by! { |wp| [wp.day, wp.start_time] }
+
+      # Rotate the working periods so that the first element is the closest period to the current time.
+      num_rotates = 0
+      utc_working_periods.each_with_index { |wp, index|
+        if wp.day < current_datetime.wday || (wp.day == current_datetime.wday && current_time >= wp.end_time)
+          num_rotates = index + 1 # Make sure we don't succumb to out by one errors.
+        end
+      }
+      utc_working_periods.rotate!(num_rotates)
+
+      # Sum the working period durations to get the seconds to the due_date
+      due_time = self.due_date.to_time.change(:month => 1, :day => 1, :year => 2000) # I kid you not, this is the best solution. FML.
+      seconds = 0
+      utc_working_periods.each { |wp|
+        if wp.day == self.due_date.wday && due_time >= wp.start_time && due_time < wp.end_time
+          if wp.day == current_datetime.wday && current_time >= wp.start_time && current_time < due_time
+            # If the current time is within this working period, we must be close to the due date!
+            seconds += (due_time - current_time)
+          else
+            # If the due date falls within another working period.
+            seconds += (due_time - wp.start_time)
+          end
+
+          break # Both scenarios are terminating, i.e. this working period is the closest to the due date.
+        else
+          # Just add the full duration until we get to the working period the due_date falls into.
+          seconds += wp.duration
+        end
+      }
+
+      seconds
     end
   end
 end

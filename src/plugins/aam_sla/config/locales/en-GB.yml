@@ -5,6 +5,7 @@ en-GB:
   sla_status: SLA Status
   ok: Okay
   paused: Paused
+  near_breach: Near Breach
   breach: Breach
   out_of_hours: Out of working hours
   button_pause: Pause
