@@ -68,7 +68,7 @@ module IssuePatch
       breach
     end
 
-    def nearly_breached?
+    def near_breach?
       return false if due_date.nil? or !closed_on.nil?
 
       # If there are less seconds to the due date than those defined in the near_breach_seconds threshold then we must be in a nearly breached state.
@@ -174,10 +174,10 @@ module IssuePatch
     def sla_status_raw
       if in_breach?
         :breach
-      elsif nearly_breached?
-        :near_breach
       elsif paused?
         :paused
+      elsif near_breach?
+        :near_breach
       else
         :ok
       end
