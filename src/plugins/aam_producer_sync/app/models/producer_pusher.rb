@@ -30,14 +30,15 @@ class ProducerPusher
 	
 	def send_tickets(last_sent_time, curr_time)
 		#If an issue is closed, updated_on will change,
-		#	what we need to watch is open issues edging silently into breach by passing their due date.
+		#	what we need to watch is open issues edging silently into breach by passing their due date (or near-breach date).
 		#	Rarely (working periods change or issue_priority->sla_seconds change),
 		#	 the due dates of multiple tickets will change dramatically so we will want to re-sync all open tickets for safety
 		dramatic_sla_change_path = Rails.root.join('plugins', 'aam_sla', 'assets', "changetime.stor").to_s
 		dramatic_sla_change = File.exist?(dramatic_sla_change_path) && File.read(dramatic_sla_change_path) >= last_sent_time 
 		issues = (dramatic_sla_change) ?
 			Issue.where("updated_on > ? OR closed_on IS NULL", last_sent_time) :
-			Issue.where("updated_on > ? OR (closed_on IS NULL AND ( (due_date BETWEEN ? AND ?) OR uuid IS NULL ) )", last_sent_time, last_sent_time, curr_time)
+			Issue.where("updated_on > ? OR (closed_on IS NULL AND (due_date BETWEEN ? AND ? OR near_breach_date BETWEEN ? AND ? OR uuid IS NULL))",
+				last_sent_time, last_sent_time, curr_time, last_sent_time, curr_time)
 		
 		@@ticket_count = issues.length.to_s
 		puts "Attempting to sync " + @@ticket_count + " tickets"

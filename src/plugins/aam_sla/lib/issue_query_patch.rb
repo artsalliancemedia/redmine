@@ -14,26 +14,30 @@ module IssueQueryPatch
       def sql_for_sla_status_field(field, operator, value)
         value = value.kind_of?(Array) ? value : [value]
 				
-				clause_breach = "(#{Issue.table_name}.due_date IS NOT NULL AND (" +
-										 "(#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on > #{Issue.table_name}.due_date)" +
-									 "OR (#{Issue.table_name}.closed_on IS NULL AND '#{DateTime.now.to_s}' > #{Issue.table_name}.due_date)) )"
-								 
-				clause_paused = "(#{Issue.table_name}.is_paused)"
+		clause_breach = "(#{Issue.table_name}.due_date IS NOT NULL AND (" +
+						 "(#{Issue.table_name}.closed_on IS NOT NULL AND #{Issue.table_name}.closed_on > #{Issue.table_name}.due_date)" +
+						 "OR (#{Issue.table_name}.closed_on IS NULL AND '#{DateTime.now.to_s}' > #{Issue.table_name}.due_date)) )"
+
+		clause_nrbreach = "(#{Issue.table_name}.closed_on IS NULL AND '#{DateTime.now.to_s}' > #{Issue.table_name}.near_breach_date)"
+
+		clause_paused = "(#{Issue.table_name}.is_paused)"
 
         clauses = []
         value.each do |val|
           case val.to_sym
-          # Sadly have to mirror in_breach, paused?, ok? functions found in the issue_patch file.
+          # Sadly have to mirror sla_based functions found in the issue_patch file.
           when :breach
             clauses << clause_breach
+		  when :near_breach
+			clauses << "(NOT #{clause_breach} AND #{clause_nrbreach})"
           when :paused
             clauses << clause_paused
           when :ok
-            clauses << "(NOT #{clause_breach} AND NOT #{clause_paused})"
+            clauses << "(NOT #{clause_breach} AND NOT #{clause_paused} AND NOT #{clause_nrbreach})"
           end
         end
 
-				op = operator == "!" ? 'NOT ' : ''
+		op = operator == "!" ? 'NOT ' : ''
         sql = op + "(" + clauses.join(" OR ") + ")"
         sql
       end
@@ -44,15 +48,15 @@ module IssueQueryPatch
     def available_filters_with_sla
       @available_filters = available_filters_without_sla
 			
-			#Remove (unwanted) tracker filter from the list
-			delete_available_filter "tracker_id"
+		#Remove (unwanted) tracker filter from the list
+		delete_available_filter "tracker_id"
 
       filters = {
         "sla_status" => {
           :name => l(:sla_status),
           :order => 16,
           :type => :list,
-          :values => [[l(:ok), :ok], [l(:paused), :paused], [l(:breach), :breach]]
+          :values => [[l(:ok), :ok], [l(:paused), :paused], [l(:breach), :breach], [l(:near_breach), :near_breach]]
         }
       }
 
