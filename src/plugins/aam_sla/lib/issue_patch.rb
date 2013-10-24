@@ -200,7 +200,6 @@ module IssuePatch
       elsif sla_status_symbol == :paused && near_breach?
         extra_string = '/' + l(:near_breach)
       end
-      out_of_hours_string = out_of_hours? ? ('/' + l(:out_of_hours)) : ''
       l(sla_status_symbol) + extra_string + out_of_hours_string
     end
 
