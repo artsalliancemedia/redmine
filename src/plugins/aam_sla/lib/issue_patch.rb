@@ -200,7 +200,7 @@ module IssuePatch
       elsif sla_status_symbol == :paused && near_breach?
         extra_string = '/' + l(:near_breach)
       end
-      l(sla_status_symbol) + extra_string + out_of_hours_string
+      l(sla_status_symbol) + extra_string
     end
 
     def css_classes_with_aam_css
