@@ -37,7 +37,7 @@ class ProducerPusher
 		dramatic_sla_change = File.exist?(dramatic_sla_change_path) && File.read(dramatic_sla_change_path) >= last_sent_time 
 		issues = (dramatic_sla_change) ?
 			Issue.where("updated_on > ? OR closed_on IS NULL", last_sent_time) :
-			Issue.where("updated_on > ? OR (closed_on IS NULL AND due_date BETWEEN ? AND ?)", last_sent_time, last_sent_time, curr_time)
+			Issue.where("updated_on > ? OR (closed_on IS NULL AND ( (due_date BETWEEN ? AND ?) OR uuid IS NULL ) )", last_sent_time, last_sent_time, curr_time)
 		
 		@@ticket_count = issues.length.to_s
 		puts "Attempting to sync " + @@ticket_count + " tickets"
@@ -50,6 +50,7 @@ class ProducerPusher
 				subject: issue.subject,
 				complex_id: issue.cinema.external_id,
 				status: issue.status.name_raw,
+				priority: issue.priority.position,
 				sla_status: issue.sla_status_raw,
 				url: Setting["protocol"] + "://" + Setting["host_name"] + "/issues/" + ticket_id, #derived
 				opened_on: issue.created_on.to_i
