@@ -18,7 +18,7 @@ module IssuePatch
       utc_working_periods = get_all_utc_working_periods
       if priority.nil? ||
          priority.sla_priority.nil? ||
-         (paused? && !in_breach? && !near_breach?) ||
+         (paused? && !in_breach?) ||
          utc_working_periods.blank?
         update_column(:due_date, nil)
         update_column(:near_breach_date, nil)
