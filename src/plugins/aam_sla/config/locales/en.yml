@@ -1,5 +1,7 @@
 en:
   sla_seconds: SLA Seconds
+  near_breach_seconds: Near-breach Seconds
+  bad_near_breach_seconds_warning: "Seconds must be larger than near-breach seconds"
 
   field_sla_status: SLA Status
   sla_status: SLA Status
