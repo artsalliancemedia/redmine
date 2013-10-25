@@ -2,7 +2,7 @@
 
 <% unless(@pauses.blank?) %>
   <h3>
-    <%= 'Time Zone shown in: ' + (User.current.time_zone.blank? ? Time.zone.to_s : User.current.time_zone.to_s) %>
+    <%= l(:time_zone_show_in) + ': ' + (User.current.time_zone.blank? ? Time.zone.to_s : User.current.time_zone.to_s) %>
   </h3>
 <% end %>
 
@@ -13,8 +13,8 @@
   </colgroup>
   <% @pauses.each do |pause| %>
     <tr>
-      <td><b>Start Time:</b> <%= pause.start_date_string %></td>
-      <td><b>End Time:</b> <%= pause.end_date_string %></td>
+      <td><b><%= l(:field_start_time_string) %>:</b> <%= pause.start_date_string %></td>
+      <td><b><%= l(:field_end_time_string) %>:</b> <%= pause.end_date_string %></td>
     </tr>
   <% end %>
 </table>
