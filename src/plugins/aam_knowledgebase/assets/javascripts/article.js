@@ -1,10 +1,10 @@
-function addRelatedIssue(issueId, issueName) {
+function addRelatedIssue(issueId, issueName, removeLocalised) {
 	//Check for duplicate before adding
 	if(!$("#related-issue-"+ issueId).length) {
 		var issue =
 			"<span id='related-issue-"+ issueId +"'>" +
 				"<a href='/issues/" + issueId + "/'>" + issueName + "</a>" +
-				"<span class='article-remove-issue'>Remove</span><br />" +
+				"<span class='article-remove-issue'>"+ removeLocalised +"</span><br />" +
 				"<input type='hidden' name='message[issue_ids][]' value='" + issueId + "'" +
 			"</span>";
 		//Add related issue
