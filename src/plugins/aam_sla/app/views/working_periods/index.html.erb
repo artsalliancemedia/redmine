@@ -7,12 +7,12 @@
 
 <% unless(@adjusted_working_periods.blank?) %>
   <h3>
-    <%= 'Original Time Zone: ' + @adjusted_working_periods.first[0].time_zone_string %>
+    <%= l(:original_time_zone) + ': ' + @adjusted_working_periods.first[0].time_zone_string %>
   </h3>
   <h3>
     <% shown_time_zone = (User.current.time_zone.blank? ? Time.zone : User.current.time_zone) %>
     <% shown_time_zone_string = "(GMT" + shown_time_zone.now.strftime("%:z") + ") " + shown_time_zone.name %>
-    <%= 'Shown in: ' + shown_time_zone_string %>
+    <%= l(:shown_in) + ': ' + shown_time_zone_string %>
   </h3>
 <% end %>
 

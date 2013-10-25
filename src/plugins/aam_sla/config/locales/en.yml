@@ -1,5 +1,7 @@
 en:
   sla_seconds: SLA Seconds
+  near_breach_seconds: Near-breach Seconds
+  bad_near_breach_seconds_warning: "Seconds must be larger than near-breach seconds"
 
   field_sla_status: SLA Status
   sla_status: SLA Status
@@ -38,6 +40,9 @@ en:
   field_end_time_tip: "(e.g. 17:00 or 5pm)"
   field_start_time_string: "Start Time"
   field_end_time_string: "End Time"
+  time_zone_show_in: "Time zone shown in"
+  original_time_zone: "Original Time zone"
+  shown_in: "Shown in"
 
   text_journal_paused: Issue paused
   text_journal_unpaused: Issue unpaused
