@@ -1,3 +1,11 @@
+## 0.9.2
+
+* Working periods bug fixes, refinement, and formatting improvements
+* Add en-GB translations and localise a few remaining raw strings
+* Added near-breach as a possible SLA status
+* Send more issue fields to Producer and force resync of previously-failed-to-send tickets
+* Minor bug fixes for issue priorities.
+ 
 ## 0.9.1
 
 * Working periods bug fixes and refinements.
@@ -6,7 +14,7 @@
 ## 0.9.0
 
 * AAM Theme
-* Lifeguard(Producer) Intergration
+* Lifeguard(Producer) Integration
   * Pulls in complexes, screens and devices from Lifeguard (Producer) and stores them locally in the Redmine database.
   * Able to assign tickets to a complex, screen and/or device.
   * Pushes ticket summary data to Lifeguard (Producer) for display in the reporting UI.
