@@ -42,8 +42,7 @@ module IssuePatch
           day_working_periods.each do |wp|
             specific_wp = wp.specific_working_period(start_date, num_weeks) # Get working period for a specific date
             wp_length = get_working_period_length(specific_wp, start_date)
-            if wp_length < 0
-              flash[:warning] = l(:error_working_period_length)
+            if wp_length < 0 # Check for negative working period duration to stop infinite loop hangs
               update_column(:due_date, nil)
               update_column(:near_breach_date, nil)
               return
