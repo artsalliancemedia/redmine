@@ -17,6 +17,7 @@ en:
   issue_unpaused: Issue unpaused
   pause_list_title: "Pauses for Issue #"
   still_paused: Still paused
+  permission_issue_toggle_pause: Pause/unpause issues
 
   label_working_periods_new: "New working period"
   label_working_period: "Working Period"
