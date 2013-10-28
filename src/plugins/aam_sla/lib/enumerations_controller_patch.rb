@@ -7,7 +7,7 @@ module EnumerationsControllerPatch
     base.send(:include, InstanceMethods)
 
     EnumerationsController.class_eval do
-		before_filter :sla_priority_grab, :only => [:new, :edit]
+		before_filter :sla_priority_grab, :only => [:new, :edit, :create, :update]
       after_filter :sla_seconds, :only => [:create, :update]
       after_filter :update_issue_due_dates, :only => [:create, :update, :index] # Bit of a bodge, as the updates redirect to the index page
     end
@@ -35,7 +35,10 @@ module EnumerationsControllerPatch
     end
 	
 	def sla_priority_grab
-		@enumeration.build_sla_priority unless @enumeration.sla_priority
+		if @enumeration.type == 'IssuePriority'
+			#Build an empty sla priority if making a new issue priority
+			@enumeration.build_sla_priority unless @enumeration.sla_priority
+		end
 	end
   end
 end
