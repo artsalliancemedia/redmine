@@ -28,6 +28,7 @@ en:
   error_invalid_time_zone: "Error: Time zone must match current working periods"
   error_duration_not_positive: "Error: End Time must be greater than Start Time"
   error_working_period_overlap: "Error: Specified working period overlaps with another already created"
+  error_working_period_length: "Error: Working period has negative duration, contact an administrator"
 
   column_day: Day
   column_start_time: Start Time
