@@ -54,14 +54,16 @@ class WorkingPeriod < ActiveRecord::Base
     if(adjusted_start_time.wday != adjusted_end_time.wday && # Crosses boundary, two WorkingPeriods needed
       !(adjusted_end_time.hour == 0 && adjusted_end_time.min == 0)) # Check to make sure it does not end on midnight
       if(adjusted_start_time.wday != self.start_time.wday) # Crosses boundary to previous day
+        split_time = adjusted_end_time.change({:hour => 0, :min => 0, :sec => 0})
         return [WorkingPeriod.new({:day => prev_day, :start_time => adjusted_start_time,
-                                   :end_time => Time.parse('24:00'), :time_zone => self.time_zone}),
-                WorkingPeriod.new({:day => self.day, :start_time => Time.parse('00:00'),
+                                   :end_time => split_time, :time_zone => self.time_zone}),
+                WorkingPeriod.new({:day => self.day, :start_time => split_time,
                                    :end_time => adjusted_end_time, :time_zone => self.time_zone})]
       elsif(adjusted_end_time.wday != self.end_time.wday) # Crosses boundary to next day
+        split_time = adjusted_end_time.change({:hour => 0, :min => 0, :sec => 0})
         return [WorkingPeriod.new({:day => self.day, :start_time => adjusted_start_time,
-                                   :end_time => Time.parse('24:00'), :time_zone => self.time_zone}),
-                WorkingPeriod.new({:day => next_day, :start_time => Time.parse('00:00'),
+                                   :end_time => split_time, :time_zone => self.time_zone}),
+                WorkingPeriod.new({:day => next_day, :start_time => split_time,
                                    :end_time => adjusted_end_time, :time_zone => self.time_zone})]
       end
     else
@@ -84,8 +86,8 @@ class WorkingPeriod < ActiveRecord::Base
     start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
     day_diff = (self.day - start_day) % 7 # Get day difference between working period and issue start date
     total_days = day_diff + num_weeks * 7
-    new_start_time = specific_time(start_date, total_days, self.start_time)
-    new_end_time = specific_time(start_date, total_days, self.end_time)
+    new_start_time = specific_start_time(start_date, total_days)
+    new_end_time = specific_end_time(start_date, total_days)
     WorkingPeriod.new({:day => self.day, :start_time => new_start_time, :end_time => new_end_time, :time_zone => self.time_zone})
   end
 
@@ -107,9 +109,17 @@ class WorkingPeriod < ActiveRecord::Base
     ActiveSupport::TimeZone[self.time_zone].blank? ? 0 : ActiveSupport::TimeZone[self.time_zone].now.utc_offset
   end
 
-  def specific_time(start_date, num_days, time_of_day)
+  def specific_start_time(start_date, num_days)
     new_time = start_date + num_days * 86400 # Get correct date
-    new_time.change({:hour => time_of_day.hour, :min => time_of_day.min, :sec => time_of_day.sec}) # Get correct time
+    new_time.change({:hour => self.start_time.hour, :min => self.start_time.min, :sec => self.start_time.sec}) # Get correct time
+  end
+
+  def specific_end_time(start_date, num_days)
+    new_time = start_date + num_days * 86400 # Get correct date
+    if self.end_time.hour == 0 and self.end_time.min == 0 # Check if end date needs to be midnight of the NEXT day
+      new_time += 1.days
+    end
+    new_time.change({:hour => self.end_time.hour, :min => self.end_time.min, :sec => self.end_time.sec}) # Get correct time
   end
 
   def format_time_no_time_zone_change(time)
