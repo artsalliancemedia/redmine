@@ -55,6 +55,7 @@ class WorkingPeriodsController < ApplicationController
       if @working_period.day == wp.day &&
           (((wp1_start < wp2_end) && (wp1_start > wp2_start)) ||
            ((wp1_end < wp2_end) && (wp1_end > wp2_start)) ||
+           ((wp2_start > wp1_start) && (wp2_end < wp1_end)) ||
            (wp1_start == wp2_start) || (wp1_end == wp2_end))
         raise l(:error_working_period_overlap)
       end
