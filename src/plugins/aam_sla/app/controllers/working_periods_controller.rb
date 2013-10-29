@@ -41,6 +41,9 @@ class WorkingPeriodsController < ApplicationController
       raise l(:error_invalid_time_zone) + " - " + WorkingPeriod.first.time_zone_string
     end
 
+    if @working_period.end_time.hour == 0 and @working_period.end_time.min == 0 and @working_period.end_time.sec == 0
+      @working_period.end_time += 1.days # Special case for end time being midnight (needs to be midnight of the next day)
+    end
     if @working_period.start_time >= @working_period.end_time
       raise l(:error_duration_not_positive)
     end

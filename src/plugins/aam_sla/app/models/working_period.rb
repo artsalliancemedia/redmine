@@ -45,21 +45,26 @@ class WorkingPeriod < ActiveRecord::Base
 
   def adjust_for_current_time_zone(user_time_zone_offset)
     # Get difference between current user's time zone and working periods time zone
+    extra_day = 0
+    if self.end_time.hour == 0 && self.end_time.min == 0 && self.end_time.sec == 0 &&
+       self.start_time.day == self.end_time.day
+      extra_day = 1.days # Add extra day for special case of end time at midnight
+    end
     current_time_zone_offset = user_time_zone_offset - get_time_zone_offset
     adjusted_start_time = self.start_time + current_time_zone_offset.seconds
-    adjusted_end_time = self.end_time + current_time_zone_offset.seconds
+    adjusted_end_time = self.end_time + extra_day + current_time_zone_offset.seconds
     
     prev_day = (self.day == 0) ? 6 : self.day - 1
     next_day = (self.day == 6) ? 0 : self.day + 1
     if(adjusted_start_time.wday != adjusted_end_time.wday && # Crosses boundary, two WorkingPeriods needed
-      !(adjusted_end_time.hour == 0 && adjusted_end_time.min == 0)) # Check to make sure it does not end on midnight
-      if(adjusted_start_time.wday != self.start_time.wday) # Crosses boundary to previous day
+      !(adjusted_end_time.hour == 0 && adjusted_end_time.min == 0 && adjusted_end_time.sec == 0)) # Check to make sure it does not end on midnight
+      if current_time_zone_offset.seconds < 0 # Crosses boundary to previous day
         split_time = adjusted_end_time.change({:hour => 0, :min => 0, :sec => 0})
         return [WorkingPeriod.new({:day => prev_day, :start_time => adjusted_start_time,
                                    :end_time => split_time, :time_zone => self.time_zone}),
                 WorkingPeriod.new({:day => self.day, :start_time => split_time,
                                    :end_time => adjusted_end_time, :time_zone => self.time_zone})]
-      elsif(adjusted_end_time.wday != self.end_time.wday) # Crosses boundary to next day
+      else # Crosses boundary to next day
         split_time = adjusted_end_time.change({:hour => 0, :min => 0, :sec => 0})
         return [WorkingPeriod.new({:day => self.day, :start_time => adjusted_start_time,
                                    :end_time => split_time, :time_zone => self.time_zone}),
@@ -116,7 +121,8 @@ class WorkingPeriod < ActiveRecord::Base
 
   def specific_end_time(start_date, num_days)
     new_time = start_date + num_days * 86400 # Get correct date
-    if self.end_time.hour == 0 and self.end_time.min == 0 # Check if end date needs to be midnight of the NEXT day
+    # Check if end date needs to be midnight of the NEXT day
+    if self.end_time.hour == 0 and self.end_time.min == 0 and self.end_time.sec == 0
       new_time += 1.days
     end
     new_time.change({:hour => self.end_time.hour, :min => self.end_time.min, :sec => self.end_time.sec}) # Get correct time
