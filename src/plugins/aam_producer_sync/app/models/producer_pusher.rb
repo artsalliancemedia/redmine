@@ -5,9 +5,9 @@ require 'pp'
 
 class ProducerPusher
 	
-  def query_api(ticket_slimmed)
+  def api_request(body, url_extension)
 
-		url_base = Setting.plugin_aam_producer_sync['producer_sync_url'];		
+		url_base = Setting.plugin_aam_producer_sync['producer_sync_url'] + url_extension
 		auth = {
 			username: Setting.plugin_aam_producer_sync['username'],
 			password: Setting.plugin_aam_producer_sync['password']
@@ -22,7 +22,7 @@ class ProducerPusher
 		end
 		
 		req = Net::HTTP::Post.new(uri.request_uri)
-		req.body = ticket_slimmed.to_json
+		req.body = body.to_json
 		req.content_type = 'application/json'
 
 		return http.request(req)
@@ -40,8 +40,10 @@ class ProducerPusher
 			Issue.where("updated_on > ? OR (closed_on IS NULL AND (due_date BETWEEN ? AND ? OR near_breach_date BETWEEN ? AND ? OR uuid IS NULL))",
 				last_sent_time, last_sent_time, curr_time, last_sent_time, curr_time)
 		
-		@@ticket_count = issues.length.to_s
-		puts "Attempting to sync " + @@ticket_count + " tickets"
+		@@ticket_count = issues.length
+		return true if @@ticket_count == 0
+		
+		puts "Attempting to sync #{@@ticket_count} tickets"
 			
 		issues.each do |issue|
 			ticket_id = issue.id.to_s
@@ -72,7 +74,7 @@ class ProducerPusher
 				ticket_type = "New"
 			end
 
-			response = query_api(issue_slimmed)
+			response = api_request( issue_slimmed, '' )
 			status = response.code
 
 			ticket_id_info = "#{ticket_type} ticket ##{ticket_id}"
@@ -80,6 +82,7 @@ class ProducerPusher
 			if (status != '200')
 				#Server or auth error, don't bother continuing
 				puts status + " Error. Terminating task now."
+				puts response.body if @@debugging
 				return false
 			end
 
@@ -112,10 +115,30 @@ class ProducerPusher
 	end
 	
 	def delete_deleted_tickets
-		#Pending info from Producer Team
+		#Get list of uuids of deleted issues
+		deleted_issues = DeletedIssue.select(:uuid).map { |di| di.uuid }
+		deleted_issues_obj = { uuids: deleted_issues }
 		
-		#sync ticket uuid
-		#clear table
+		@@deletable_count = deleted_issues.length
+		return true if @@deletable_count == 0
+		
+		response = api_request( deleted_issues_obj, '/multi_delete' )
+		puts response.body if @@debugging
+		status = response.code
+		
+		if (status != '200')
+			puts status + " Error. Terminating task now."
+			return false
+		end
+		
+		#Find ids of successfully deleted tickets
+		response_obj = JSON.parse response.body
+		succesful_deletees = response_obj['data']
+		if succesful_deletees && succesful_deletees.length > 0
+			DeletedIssue.where(:uuid => succesful_deletees).destroy_all
+			@@deleted_count = succesful_deletees.length
+		end
+		return true
 	end
   
 	def push(debug)
@@ -135,14 +158,20 @@ class ProducerPusher
 		@@success_count = 0
 		succesful = send_tickets( last_run_time, this_run_time )
 		
-		delete_deleted_tickets
+		@@deleted_count = 0
+		succesful = delete_deleted_tickets if succesful
 
 		if succesful
 			file = open(last_run_path, 'w')
 			file.write this_run_time
 			file.close
+			
+			if @@ticket_count + @@deletable_count > 0
+				puts "#{Time.now.to_s}  #{@@success_count} out of #{@@ticket_count} tickets were synced. #{@@deleted_count} of #{@@deletable_count} successfully deleted"
+			else
+				puts "#{Time.now} Nothing to sync or delete"
+			end
 		end
-		puts "#{Time.now.to_s}  #{@@success_count} out of #{@@ticket_count} tickets were synced"
 	end
   
 end
