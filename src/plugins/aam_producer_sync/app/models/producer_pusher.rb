@@ -40,14 +40,14 @@ class ProducerPusher
 			Issue.where("updated_on > ? OR (closed_on IS NULL AND (due_date BETWEEN ? AND ? OR near_breach_date BETWEEN ? AND ? OR uuid IS NULL))",
 				last_sent_time, last_sent_time, curr_time, last_sent_time, curr_time)
 		
-		@@ticket_count = issues.length
-		return true if @@ticket_count == 0
+		@ticket_count = issues.length
+		return true if @ticket_count == 0
 		
-		puts "Attempting to sync #{@@ticket_count} tickets"
+		puts "Attempting to sync #{@ticket_count} tickets"
 			
 		issues.each do |issue|
 			ticket_id = issue.id.to_s
-			puts "Processing ticket #" + ticket_id if @@debugging
+			puts "Processing ticket #" + ticket_id if @debugging
 						
 			issue_slimmed = { #compulsory or derived fields
 				subject: issue.subject,
@@ -82,7 +82,7 @@ class ProducerPusher
 			if (status != '200')
 				#Server or auth error, don't bother continuing
 				puts status + " Error. Terminating task now."
-				puts response.body if @@debugging
+				puts response.body if @debugging
 				return false
 			end
 
@@ -90,7 +90,7 @@ class ProducerPusher
 			uuid = response["data"]["uuid"]
 			if uuid
 				puts "#{ticket_id_info} sent successfully"
-				@@success_count += 1
+				@success_count += 1
 				#Execute raw SQL to overcome redmine complaints about irrelevant fields (e.g. due date), and
 				#prevent auto updating of the updated_on timestamp field,
 				# which preferably should not change when the uuid is added.
@@ -99,7 +99,7 @@ class ProducerPusher
 					SET uuid=#{ActiveRecord::Base.sanitize(uuid)}
 					WHERE id=#{ticket_id}
 				")
-				puts execute_sql if @@debugging
+				puts execute_sql if @debugging
 			else
 				#If a ticket can't be sent, it is usually because Producer doesn't have a record of the
 				#screen, device or cinema of the ticket. Because we pull this data from Producer, this should
@@ -107,9 +107,9 @@ class ProducerPusher
 				#Therefore, it is safe to ignore tickets which couldn't be sent, and not bother trying to re-send them.
 				puts "#{ticket_id_info} not sent due to Producer error."
 				error = response["messages"][0]["msg"] || "Unknown"
-				puts error if @@debugging
+				puts error if @debugging
 			end
-			puts "" if @@debugging
+			puts "" if @debugging
 		end
 		return true
 	end
@@ -119,11 +119,11 @@ class ProducerPusher
 		deleted_issues = DeletedIssue.select(:uuid).map { |di| di.uuid }
 		deleted_issues_obj = { uuids: deleted_issues }
 		
-		@@deletable_count = deleted_issues.length
-		return true if @@deletable_count == 0
+		@deletable_count = deleted_issues.length
+		return true if @deletable_count == 0
 		
 		response = api_request( deleted_issues_obj, '/multi_delete' )
-		puts response.body if @@debugging
+		puts response.body if @debugging
 		status = response.code
 		
 		if (status != '200')
@@ -136,14 +136,14 @@ class ProducerPusher
 		succesful_deletees = response_obj['data']
 		if succesful_deletees && succesful_deletees.length > 0
 			DeletedIssue.where(:uuid => succesful_deletees).destroy_all
-			@@deleted_count = succesful_deletees.length
+			@deleted_count = succesful_deletees.length
 		end
 		return true
 	end
   
 	def push(debug)
-		@@debugging = debug || false
-		puts "Running Producer ticket sync with debugging " + @@debugging.to_s
+		@debugging = debug || false
+		puts "Running Producer ticket sync with debugging " + @debugging.to_s
 
 		#Get now so we don't miss (next time) any tickets modified/created during this sync
 		this_run_time = (Time.now + 1).to_s #Round up to prevent same ticket being sent again next time task runs
@@ -155,10 +155,10 @@ class ProducerPusher
 
 		puts "Looking for tickets added/modified between #{last_run_time} and #{this_run_time}"
 		
-		@@success_count = 0
+		@success_count = 0
 		succesful = send_tickets( last_run_time, this_run_time )
 		
-		@@deleted_count = 0
+		@deleted_count = 0
 		succesful = delete_deleted_tickets if succesful
 
 		if succesful
@@ -166,8 +166,8 @@ class ProducerPusher
 			file.write this_run_time
 			file.close
 			
-			if @@ticket_count + @@deletable_count > 0
-				puts "#{Time.now.to_s}  #{@@success_count} out of #{@@ticket_count} tickets were synced. #{@@deleted_count} of #{@@deletable_count} successfully deleted"
+			if @ticket_count + @deletable_count > 0
+				puts "#{Time.now.to_s}  #{@success_count} out of #{@ticket_count} tickets were synced. #{@deleted_count} of #{@deletable_count} successfully deleted"
 			else
 				puts "#{Time.now} Nothing to sync or delete"
 			end
