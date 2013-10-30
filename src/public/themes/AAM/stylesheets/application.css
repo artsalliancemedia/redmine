@@ -6,6 +6,8 @@
 
 html {
 overflow-y: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4 {
@@ -17,17 +19,17 @@ LET'S GET SOME ICON FONT GOINT ON HERE
 ***/
 
 @font-face {
-	font-family: 'icomoon';
-	src:url('/themes/AAM/fonts/icomoon.eot');
-	src:url('/themes/AAM/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
-		url('/themes/AAM/fonts/icomoon.woff') format('woff'),
-		url('/themes/AAM/fonts/icomoon.ttf') format('truetype'),
-		url('/themes/AAM/fonts/icomoon.svg#icomoon') format('svg');
+	font-family: 'AAM icons';
+	src:url('/themes/AAM/fonts/AAM-icons.eot');
+	src:url('/themes/AAM/fonts/AAM-icons.eot?#iefix') format('embedded-opentype'),
+   		url('/themes/AAM/fonts/AAM-icons.svg#AAM-icons') format('svg'),
+		url('/themes/AAM/fonts/AAM-icons.ttf') format('truetype'),
+   		url('/themes/AAM/fonts/AAM-icons.woff') format('woff');
 	font-weight: normal;
 	font-style: normal;
 }
 .icon::before, .icon-copy::before {
-font-family:icomoon;
+font-family:'AAM icons';
 font-size:1.5em;
 margin-right:4px;
 display:inline-block;
@@ -52,7 +54,7 @@ margin-left:10px;
 }
 a[accesskey="r"]::before {
 content: '\004a';
-font-family: icomoon;
+font-family: 'AAM icons';
 margin-right:5px;
 }
 .icon.icon-vote::before, .icon.icon-unvote::before {
@@ -84,7 +86,7 @@ content:'\00a3';
 color:#AAA;
 }
 .message .author .user::before {
-font-family:icomoon;
+font-family:'AAM icons';
 font-size:1em;
 margin-right:4px;
 display:inline-block;
@@ -99,7 +101,7 @@ padding-left: 0px;
 }
 h3.comments::before {
 content:'\e041';
-font-family:icomoon;
+font-family:'AAM icons';
 margin-right:5px;
 }
 .group {
@@ -108,7 +110,7 @@ background:none!important;
 }
 .group::before {
 content: '\0055';
-font-family: icomoon;
+font-family: 'AAM icons';
 margin-right: 5px;
 margin-left:3px;
 }
@@ -122,11 +124,6 @@ margin-left:5px;
 }
 .board.details .contextual .icon-add::before {
 content: '\e042';
-}
-
-/** Hourglass icon only temporary, will get unique icon for out of hours soon **/
-.icon-out-of-hours {
-background-image: url(../../../images/hourglass.png);
 }
 
 /**
@@ -150,7 +147,28 @@ bottom:11px;
 left: -webkit-calc(50% - 193px);
 left: -moz-calc(50% - 193px);
 left: calc(50% - 193px);
+top:7px;
 }
+
+#main-menu li a::before {
+font-size: 23px;
+font-weight: normal!important; /** even when selected **/
+margin-right:5px;
+font-family:'AAM icons';
+vertical-align:middle;
+}
+
+#main-menu li .issues::before {
+content: '\e062';
+}
+#main-menu li .new-issue::before {
+content: '\e063';
+}
+#main-menu li .boards::before {
+content: '\e020';
+}
+
+
 /****
 TABLES ALIGN PLEASE
 ****/
@@ -199,19 +217,41 @@ NAV
 body {
 font-family:Arial, sans-serif; /** most of our apps use Arial. not as wide as Verdana  **/
 }
+
+
 #main-menu li a.selected, #main-menu li a.selected:hover {
-background: #FFF;
-color: #222;
-border-top: 2px solid #E54A76;
+background: none;
+color: #050505;
+/** border-top: 2px solid #E54A76; **/
 }
 
 #main-menu li a, #main-menu li a:hover {
+color: #050505;
 border-radius: 3px;
 padding: 4px 15px 4px 15px;
 }
 #main-menu li a:hover {
 background: rgba(255, 255, 255, 0.25);
 }
+
+#main-menu li a.selected::after {
+content: '';
+display: block;
+width: 17px;
+height: 17px;
+background: #FFF;
+margin-left: 45%;
+-webkit-transform: rotate(45deg);
+-moz-transform: rotate(45deg);
+-o-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+margin-top: 5px;
+-moz-box-shadow: -1px -1px 1px rgba(0, 0, 0, 0.15);
+box-shadow: -1px -1px 1px rgba(0, 0, 0, 0.15);
+}
+
+
 #header h1 {
 margin-top:2px; /** Vertical middle align **/
 display:inline-block;
@@ -293,13 +333,13 @@ font-size: 1.15em;
 }
 #filters legend::before {
 content:'\0072'; /** filter icon **/
-font-family:icomoon;
+font-family:'AAM icons';
 font-weight:normal;
 margin-right:3px;
 }
 .collapsible:not(#filters) legend::before {
 content:'\0079';  /** cog wheel **/
-font-family:icomoon;
+font-family:'AAM icons';
 font-weight:normal;
 margin-right:3px;
 }
@@ -354,7 +394,7 @@ content: ']';
 text-align: center;
 display: block;
 font-size: 16em;
-font-family: icomoon;
+font-family: 'AAM icons';
 color: #FFF;
 text-shadow: 0px 1px 3px #888;
 }
@@ -385,7 +425,7 @@ Knowledge Base
 ****/
 .questions-tags li a::before {
 content:'\006c';
-font-family:icomoon;
+font-family:'AAM icons';
 margin-right:3px;
 }
 .message .author {
@@ -421,6 +461,148 @@ color: #FFF;
 }
 .message.details + br + p a::before {
 content:'\e041';
-font-family:icomoon;
+font-family:'AAM icons';
 margin-right:4px;
+}
+
+/****
+ADMIN SECTION
+****/
+#admin-menu li {
+margin: 0;
+list-style-type: none;
+display: inline-block;
+font-size: 16px;
+vertical-align: middle;
+background: #6287D6;
+color: #FFF;
+width: calc(100% / 6 - 3px);
+text-align: center;
+padding: 30px 0px;
+margin-bottom: 3px;
+}
+#admin-menu li:hover {
+background:white;
+}
+#admin-menu li:hover a{
+color:#6287D6;
+text-decoration:none;
+}
+#admin-menu a {
+background-image:none!important;
+color:white;
+white-space:nowrap;
+}
+#admin-menu a::before  {
+font-family:'AAM icons';
+font-size:35px;
+display: block;
+margin-bottom: 9px;
+}
+/**
+ADMIN MENU IN SIDEBAR
+***/
+
+#sidebar #admin-menu li {
+margin: 0;
+list-style-type: none;
+display: inline-block;
+font-size: 14px;
+vertical-align: middle;
+background: #6287D6;
+color: #FFF;
+width: 95%;
+text-align: left;
+padding: 0px;
+margin-bottom: 3px;
+}
+#sidebar #admin-menu li:hover {
+background:white;
+}
+#sidebar #admin-menu li:hover a{
+color:#6287D6;
+text-decoration:none;
+}
+#sidebar #admin-menu a {
+background-image:none!important;
+color:white;
+line-height:32px;
+}
+#sidebar #admin-menu a::before  {
+font-family:'AAM icons';
+font-size:25px;
+display: inline;
+margin-bottom: 9px;
+margin-right:5px;
+vertical-align:middle;
+}
+
+#sidebar #admin-menu a.selected {
+font-size:20px;
+background:none;
+line-height:65px;
+}
+
+#admin-menu a.projects::before {
+content:'\e059';
+}
+#admin-menu a.users::before {
+content:'\0055';
+}
+#admin-menu a.groups::before {
+content:'\006f';
+}
+#admin-menu a.roles::before {
+content:'\e05e';
+}
+#admin-menu a.trackers::before {
+content:'\e058';
+}
+#admin-menu a.issue_statuses::before {
+content:'\e061';
+}
+#admin-menu a.workflows::before {
+content:'\e05a';
+}
+#admin-menu a.custom_fields::before {
+content:'\e05b';
+}
+#admin-menu a.enumerations::before {
+content:'\e053';   /*** going to change icon  **/
+}
+#admin-menu a.settings::before {
+content:'\0079';
+}
+#admin-menu a.plugins::before {
+content:'\e055';
+}
+#admin-menu a.working-periods::before {
+content:'\e05d';
+}
+#admin-menu a.info::before {
+content:'\0069';
+}
+#admin-menu a.cinemas::before {
+content:'\0045';
+}
+#admin-menu a.devices::before {
+content:'\e00f';
+}
+#admin-menu a.screens::before {
+content:'\e00d';
+}
+#admin-menu a.circuit-groups::before {
+content:'\e038';
+}
+#admin-menu a.server_authentication::before {
+content:'\e064';
+}
+
+
+
+
+
+/** Hourglass icon only temporary, will get unique icon for out of hours soon **/
+.icon-out-of-hours {
+background-image: url(../../../images/hourglass.png);
 }
