@@ -11,12 +11,20 @@
      <col span="1" style="width: 15%;">
      <col span="1" style="width: 85%;">
   </colgroup>
-  <% @pauses.each do |pause| %>
+  <thead>
     <tr>
-      <td><b><%= l(:field_start_time_string) %>:</b> <%= pause.start_date_string %></td>
-      <td><b><%= l(:field_end_time_string) %>:</b> <%= pause.end_date_string %></td>
+      <th><%= l(:column_start_time) %></th>
+      <th><%= l(:column_end_time) %></th>
     </tr>
-  <% end %>
+  </thead>
+  <tbody>
+    <% @pauses.each do |pause| %>
+      <tr>
+        <td><%= pause.start_date_string %></td>
+        <td><%= pause.end_date_string %></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
 
 <%= link_to l(:button_back), issue_path(@issue) %>
