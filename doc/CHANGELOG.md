@@ -1,3 +1,12 @@
+
+## 0.9.3
+
+* Working periods bug fixes
+* Minor issue priority update/create bug fixes
+* New styles and icons
+* Add some missing translations
+* Producer push deletes locally-deleted tickets on Producer/Lifeguard too.
+
 ## 0.9.2
 
 * Working periods bug fixes, refinement, and formatting improvements
