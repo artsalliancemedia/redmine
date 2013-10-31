@@ -1,6 +1,6 @@
 # English strings go here for Rails i18n
 en:
-  label_questions: 'Knowledgebase'
+  label_questions: 'Knowledge Base'
   label_questions_search: 'Search for an article'
   label_article_new: "New article"
   label_questions_message: "Article"
@@ -30,19 +30,18 @@ en:
 
   categorisation: "Categorization"
   article_add: "Add article"
-  article_make_from_issue: "Make knowledgebase article from this issue"
-  related_kb: "Knowledge base articles that link to this issue"
+  article_make_from_issue: "Create KB Article"
+  related_kb: "Linked Knowledge Base Articles"
   na: "n/a"
-  
   label_topic: "Topic"
 
   #Override core - doesn't actually work, unfortunately!
-  permission_view_questions: View Knowledgebase
+  permission_view_questions: View Knowledge Base
   permission_edit_messages_tags: Edit tags
   permission_edit_vote_messages: Vote articles
   label_board: Knowledgebase
-  label_board_new: New Knowledgebase
-  label_board_plural: Knowledgebase
+  label_board_new: New Knowledge Base
+  label_board_plural: Knowledge Base
   label_topic_plural: Topics
   label_message_plural: Articles
   label_message_last: Last article
