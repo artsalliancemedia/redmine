@@ -18,4 +18,4 @@ cd .. # Back to the root directory.
 mv ./src aam_lifeguard-redmine
 
 # Build archive
-tar -czf aam_lifeguard-redmine-`cat ./src/version.txt`.tar.gz ./aam_lifeguard-redmine
+tar -czf aam_lifeguard-redmine-`cat ./aam_lifeguard-redmine/version.txt`.tar.gz ./aam_lifeguard-redmine
