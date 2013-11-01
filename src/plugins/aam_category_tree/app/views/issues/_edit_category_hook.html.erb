@@ -5,7 +5,11 @@
 
 <% if @issue.safe_attribute?('category_id') && @issue.project.issue_categories.any? %>
 <p id="category-tree">
-  <label for="category-root"><%= l(:category) %></label>
+  <label for="category-root"><%= l(:category)%>
+	<% if @issue.required_attribute?('category_id') %>
+	  <span class="required">*</span>
+	<% end %>
+  </label>
   <span id="category-tree-dropdowns"></span>
 </p>
  <% end %>
