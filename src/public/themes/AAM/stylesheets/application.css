@@ -35,13 +35,45 @@ margin-right:4px;
 display:inline-block;
 vertical-align:middle;
 }
-.icon-save, .icon-checked, .icon-reload, .icon.icon-vote, .icon.icon-view, .icon.icon-tag, .icon.icon-edit, .icon.icon-del, .icon.icon-comment, .icon.icon-unvote, .icon.icon-fav, .icon-fav-off, .icon-copy {
+.icon-save, .icon-checked, .icon-reload, .icon.icon-vote, .icon.icon-view, .icon.icon-tag, .icon.icon-edit, .icon.icon-del, .icon.icon-comment, .icon.icon-unvote, .icon.icon-fav, .icon-fav-off, .icon-copy, .icon-user, .icon-lock, .icon-edit, .icon-out-of-hours, .icon-summary, .icon-add, .search_for_watchers a{
 background:none!important;
 padding-left:0px;
 margin-right:20px;
 }
+.icon-edit::before {
+content:'\0023';
+font-family:'AAM icons';
+font-size:1.5em;
+margin-right:4px;
+display:inline-block;
+vertical-align:middle;
+}
+.icon-add, .search_for_watchers a {
+font-size:12px;
+}
+.icon-add, .search_for_watchers a::before {
+content:'\e017';
+font-family:'AAM icons';
+margin-right:5px;
+}
+.icon-add::before {
+content:'\003c';
+color: #48BB48;
+}
+.icon-summary::before {
+content:'\003d';
+}
+.icon-out-of-hours::before {
+content:'\0048';
+}
 .icon-save:before {
 content:'\0073';
+}
+.icon-lock::before {
+content:'\004e';
+}
+.icon-user::before {
+content:'\0075';
 }
 .icon-checked::before {
 content:'\0064';
@@ -94,7 +126,18 @@ vertical-align:middle;
 
 content:'\0075';
 }
-
+.icon-pause::before {
+content:'\0033';
+}
+.icon-unpause::before {
+content:'\e065';
+}
+.icon-pause-list::before {
+content:'\0022';
+}
+.icon-pause-list {
+margin-right:20px;
+}
 h3.comments {
 background: none!important;
 padding-left: 0px;
@@ -124,6 +167,34 @@ margin-left:5px;
 }
 .board.details .contextual .icon-add::before {
 content: '\e042';
+}
+.board.details .contextual .icon-add {
+font-family:inherit;
+}
+
+.id a {
+background: #169;
+color: #FFF;
+padding: 2px 5px;
+border-radius: 3px;
+}
+dt.issue, dt.message {
+background:none!important;
+padding-left:0px!important;
+}
+dt.issue::before {
+content:'\006c';
+font-family:'AAM icons';
+margin-right:5px;
+vertical-align:middle;
+font-size:1.3em;
+}
+dt.message::before {
+content:'\e042';
+font-family:'AAM icons';
+margin-right:5px;
+vertical-align:middle;
+font-size:1.3em;
 }
 
 /**
@@ -343,6 +414,14 @@ font-family:'AAM icons';
 font-weight:normal;
 margin-right:3px;
 }
+
+p.subtitle {
+font-size: 1.1em;
+margin: -6px 0 12px 0;
+font-style: normal;
+color: #999;
+}
+
 /** Settings page **/
 .action-account #wrapper #wrapper2 #wrapper3 #main #sidebar::before {
 content: 'Arts Alliance Media';
@@ -597,11 +676,44 @@ content:'\e038';
 #admin-menu a.server_authentication::before {
 content:'\e064';
 }
+a[href="#make-kb-add"]::before {
+content:'\e020';
+font-family:'AAM icons';
+margin-right:5px;
+font-size:1.5em;
+vertical-align:middle;
+}
+/****
+ISSUE PAGE
+****/
+/**
+.tabular label {
+text-align: left;
+margin-left: 0;
+width: auto;
+display: block;
+}
+.tabular p {
+padding-left:0;
+}
+**/
 
+#relations, #issue_tree + hr {
+display:none;
+}
 
+p.pagination {
+font-size: 100%;
+font-weight: bold;
+}
 
+.list tbody tr td {
+padding:8px;
+}
 
-
+.category-heading:first-child {
+margin-left:0;
+}
 /** Hourglass icon only temporary, will get unique icon for out of hours soon **/
 .icon-out-of-hours {
 background-image: url(../../../images/hourglass.png);

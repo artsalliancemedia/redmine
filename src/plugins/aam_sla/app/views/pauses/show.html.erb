@@ -1,11 +1,5 @@
 <h2><%= t(:pause_list_title) + @issue.id.to_s %></h2>
 
-<% unless(@pauses.blank?) %>
-  <h3>
-    <%= l(:time_zone_show_in) + ': ' + (User.current.time_zone.blank? ? Time.zone.to_s : User.current.time_zone.to_s) %>
-  </h3>
-<% end %>
-
 <table class="list">
   <colgroup>
      <col span="1" style="width: 15%;">

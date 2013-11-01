@@ -1,4 +1,4 @@
-en-GB:
+en:
   sla_seconds: SLA Seconds
   near_breach_seconds: Near-breach Seconds
   bad_near_breach_seconds_warning: "Seconds must be larger than near-breach seconds"
@@ -10,9 +10,9 @@ en-GB:
   near_breach: Near Breach
   breach: Breach
   out_of_hours: Out of working hours
-  button_pause: Pause
-  button_unpause: Unpause
-  button_pause_list: Pause List
+  button_pause: Pause Clock
+  button_unpause: Resume Clock
+  button_pause_list: List of Pauses
   issue_paused: Issue paused
   issue_unpaused: Issue unpaused
   pause_list_title: "Pauses for Issue #"
