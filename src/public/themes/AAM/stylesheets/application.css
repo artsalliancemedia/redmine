@@ -151,7 +151,7 @@ margin-right:5px;
 padding-left:0px!important;
 background:none!important;
 }
-.group::before {
+.group td:first-child::before {
 content: '\0055';
 font-family: 'AAM icons';
 margin-right: 5px;
