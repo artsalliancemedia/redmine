@@ -10,8 +10,8 @@ class ProducerAlertsToTickets
 			username: Setting.plugin_aam_producer_alerts['username'],
 			password: Setting.plugin_aam_producer_alerts['password']
 		}
-		params = '?username=' + auth[:username] + '&password=' + auth[:password]
-		uri = URI.join(url_base, params)
+		params = '?username=' + auth[:username] + '&password=' + auth[:password] + '&q={"type":"ticket"}'
+		uri = URI.join( url_base, URI.encode(params) )
 		http = Net::HTTP.new(uri.host, uri.port)
 		
 		if url_base.include? "https"
@@ -21,15 +21,17 @@ class ProducerAlertsToTickets
 		
 		req = Net::HTTP::Get.new(uri.request_uri)
 		return http.request(req)
-  end
+	end
 	
 	def add_tickets_from_alerts
 		response_json = (ActiveSupport::JSON.decode query_api.body)["data"]
 		@alerts_count = response_json['count']
 		puts "Producer returned #{@alerts_count} alerts" if @debugging
 		
-    response_json['alerts'].each do |alert|
-			unless Issue.find_by_uuid alert['ticket_uuid']
+		response_json['alerts'].each do |alert|
+			
+			#Skip un-ticketable and previously-ticketised alerts
+			if alert['ticket_uuid'] and not Issue.find_by_uuid alert['ticket_uuid']
 				#New alert, so create new ticket stub
 				puts "Processing new alert: " + alert['subject'] if @debugging
 				
@@ -39,7 +41,8 @@ class ProducerAlertsToTickets
 				ticket.subject = alert['subject']
 				ticket.description = alert['description']
 				
-				ticket.cinema_id = alert['complex_id'] if Cinema.find_by_external_id alert['complex_id']
+				complex = Cinema.find_by_external_id alert['complex_id']
+				ticket.cinema_id = complex.id if complex
 				
 				screen = Screen.find_by_uuid alert['screen_uuid']
 				ticket.screen_id = screen.id if screen
@@ -78,7 +81,7 @@ class ProducerAlertsToTickets
 		error_count = @alerts_count - @new_count - @skipped_count
 		puts "WARNING! #{error_count} new alerts could not be ticketised. Run task in debug mode to solve." if error_count > 0
 		
-		puts "End, #{Time.now.to_s}:  #{@new_count} alerts were ticketised (#{@skipped_count} existing tickets skipped)."
+		puts "End, #{Time.now.to_s}:  #{@new_count} alerts were ticketised (#{@skipped_count} skipped)."
 	end
   
 end
