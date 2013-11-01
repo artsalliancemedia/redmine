@@ -25,7 +25,7 @@ class ProducerPuller
     complexes_obj = ActiveSupport::JSON.decode(response.body)["data"]["complexes"]
 		
     @complexes_saved = 0
-    @complexes_skipped = 0
+    @complexes_total = complexes_obj.count
 
     complexes_obj.each do |complex_obj|
       existing = Cinema.find_by_external_id(complex_obj["id"])
@@ -38,12 +38,8 @@ class ProducerPuller
         cinema.external_id = complex_obj["id"]
         cinema.save
         @complexes_saved += 1
-      else
-        @complexes_skipped += 1
       end
     end
-		puts @complexes_saved.to_s + " complexes saved"
-		puts @complexes_skipped.to_s + " complexes skipped"
   end
   
   def insert_screens
@@ -51,7 +47,7 @@ class ProducerPuller
     screens_obj = ActiveSupport::JSON.decode(response.body)["data"]["screens"]
 
     @screens_saved = 0
-    @screens_skipped = 0
+    @screens_total = screens_obj.count
 
     screens_obj.each do |screen_obj|
       existing = Screen.find_by_uuid(screen_obj["uuid"])
@@ -65,22 +61,19 @@ class ProducerPuller
           screen.cinema_id = Cinema.find_by_external_id(screen_obj["complex_id"]).id
           screen.save
           @screens_saved += 1
-        else
-          @screens_skipped += 1
-        end
-      else
-        @screens_skipped += 1
+		else
+			puts "Rejecting orphan screen #{screen_obj["uuid"]}" if @debugging
+		end
       end
     end
-		puts @screens_saved.to_s + " screens saved"
-		puts @screens_skipped.to_s + " screens skipped"
   end
 
   def insert_devices
     response = query_api('devices')
     devices_obj = ActiveSupport::JSON.decode(response.body)["data"]["devices"]
+	
     @devices_saved = 0
-    @devices_skipped = 0
+    @devices_total = devices_obj.count
 
     devices_obj.each do |device_obj|
       existing = Device.find_by_uuid(device_obj["uuid"])
@@ -100,7 +93,7 @@ class ProducerPuller
           device.deviceable_id = Cinema.find_by_external_id(device_obj["complex_id"]).id
           device.deviceable_type = "Cinema"
         else
-          @devices_skipped += 1
+		  puts "Rejecting orphan device #{device_obj["uuid"]}" if @debugging
           next
         end
 
@@ -124,18 +117,25 @@ class ProducerPuller
 
         device.save
         @devices_saved += 1
-      else
-        @devices_skipped += 1
       end
     end
-		puts @devices_saved.to_s + " devices saved"
-		puts @devices_skipped.to_s + " devices skipped"
   end
   
-	def pull
+	def pull(debug)
+		@debugging = debug || false
+		puts "#{Time.now}  Pulling..."
+		
 		insert_complexes
 		insert_screens
-		insert_devices    
+		insert_devices
+		
+		if @complexes_saved + @screens_saved + @devices_saved == 0 && !@debugging
+			puts "No new devices, screens or complexes"
+		else
+			puts "#{@complexes_saved} out of #{@complexes_total} complexes saved"
+			puts "#{@screens_saved} out of #{@screens_total} screens saved"
+			puts "#{@devices_saved} out of #{@devices_total} devices saved"
+		end
   end
   
 end
