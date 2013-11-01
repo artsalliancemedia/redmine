@@ -25,14 +25,13 @@ This process is controlled from our jenkins box (aam-ci-1:8080), in particular t
 
 ## Demo/Test Releases
 
-1. Run `bundle exec thin stop -C /home/redmine/redmine-thin.yml`
+1. Run `bundle exec thin stop -C deploy/redmine-thin.yml`
 1. `SCP` or `wget` the aam_lifeguard archive onto the `demo-redmine-1` box. (I've been copying to `/home/redmine`)
 1. Extract it using `tar -xf aam_lifeguard-redmine-1.0.0.tar.gz /home/redmine/aam_lifeguard-redmine`.
 1. Modify any settings files contained in `/home/redmine` if needed.
 1. Modify the `build.sh` file if the version number of the archive has changed.
 1. Run `/home/redmine/build.sh`, this will add in symlinks for the settings files to the appropriate location in the archive folder.
-1. Run `rake db:migrate` and `rake redmine:plugins:migrate` to update the database.
-1. Run `bundle exec thin start -C /home/redmine/redmine-thin.yml` to get Redmine to pick up the new settings.
+1. Run `bundle exec thin start -C deploy/redmine-thin.yml` to get Redmine to pick up the new settings.
 1. Check `demo-redmine-1:3000` to make sure it's working :)
 1. Relax with a cold beverage.
 

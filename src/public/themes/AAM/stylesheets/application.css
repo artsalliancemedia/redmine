@@ -51,7 +51,7 @@ vertical-align:middle;
 .icon-add, .search_for_watchers a {
 font-size:12px;
 }
-.icon-add, .search_for_watchers a::before {
+.icon-add::before, .search_for_watchers a::before {
 content:'\e017';
 font-family:'AAM icons';
 margin-right:5px;
