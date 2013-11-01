@@ -32,17 +32,23 @@ module IssuePatch
       num_weeks = -1
       final_working_period = nil
       near_breach_working_period = nil
+      total_wp_length = 0
+      done_full_week = false
       while final_working_period == nil do
         while days_index < 7 do
           # Need to keep track of weeks to calculate future working period dates
           if days_index == start_day
             num_weeks += 1
           end
+          if days_index == 0
+            done_full_week = true
+          end
           day_working_periods = utc_working_periods.select{|wp| wp.day == days_index} # Get working periods for this day of the week
           day_working_periods.each do |wp|
             specific_wp = wp.specific_working_period(start_date, num_weeks) # Get working period for a specific date
             wp_length = get_working_period_length(specific_wp, start_date)
-            if wp_length <= 0 # Check for negative working period duration to stop infinite loop hangs
+            total_wp_length += wp_length
+            if wp_length < 0 # Check for negative working period duration (invalid) to stop infinite loop hangs
               update_column(:due_date, nil)
               update_column(:near_breach_date, nil)
               return
@@ -65,6 +71,12 @@ module IssuePatch
           days_index += 1
         end
         days_index = 0
+        if total_wp_length == 0 and done_full_week # Prevent infinite loops for valid (but empty) working periods
+          update_column(:due_date, nil)
+          update_column(:near_breach_date, nil)
+          return
+        end
+        total_wp_length = 0
       end
 
       temp_due_date = final_working_period.start_time + num_seconds_left
