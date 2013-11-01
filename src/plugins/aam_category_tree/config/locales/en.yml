@@ -9,3 +9,5 @@ en:
   new_sub_category: "Add sub-category"
   show_all: "Show all"
   hide_all: "Hide all"
+  
+  permission_move_category: "Move category"
