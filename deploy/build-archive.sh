@@ -1,6 +1,12 @@
 cd ../src
 cp -r ../lib/redmine/* .
 
+mkdir deploy
+cp -r ../deploy/* ./deploy/
+
+mkdir user_docs
+cp -r ../doc/* ./user_docs
+
 # Apply patches
 for f in ./core_patches/*
 do
