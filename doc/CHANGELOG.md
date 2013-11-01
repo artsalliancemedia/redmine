@@ -1,4 +1,10 @@
 
+## 0.9.4
+
+* Finalising language strings
+* Style fixes
+* Improving logging
+
 ## 0.9.3
 
 * Working periods bug fixes
