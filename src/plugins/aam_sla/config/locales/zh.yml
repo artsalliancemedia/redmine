@@ -1,0 +1,58 @@
+zh:
+  sla_seconds: SLA Seconds
+  near_breach_seconds: Near-breach Seconds
+  bad_near_breach_seconds_warning: "Seconds must be larger than near-breach seconds"
+
+  field_sla_status: SLA Status
+  sla_status: SLA Status
+  ok: Okay
+  paused: Paused
+  near_breach: Near Breach
+  breach: Breach
+  out_of_hours: Out of working hours
+  button_pause: Pause Clock
+  button_unpause: Resume Clock
+  button_pause_list: List of Pauses
+  issue_paused: Issue paused
+  issue_unpaused: Issue unpaused
+  pause_list_title: "Pauses for Issue #"
+  still_paused: Still paused
+  permission_issue_toggle_pause: Pause/unpause issues
+
+  label_working_periods_new: "New working period"
+  label_working_period: "Working Period"
+  working_period: "Working Period"
+  working_period_plural: "Working Periods"
+  text_working_periods_destroy_confirmation: 'Are you sure you want to delete the selected working period(s)?'
+  error_no_start_time: "Error: Must enter a valid Start Time"
+  error_no_end_time: "Error: Must enter a valid End Time"
+  error_invalid_time_zone: "Error: Time zone must match current working periods"
+  error_duration_not_positive: "Error: End Time must be greater than Start Time"
+  error_working_period_overlap: "Error: Specified working period overlaps with another already created"
+  error_working_period_length: "Error: Working period has negative duration, contact an administrator"
+
+  column_day: Day
+  column_start_time: Start Time
+  column_end_time: End Time
+  column_delete: ""
+  field_day_list: "Day"
+  field_start_time_new: "Start Time"
+  field_start_time_tip: "(e.g. 9:00 or 9am)"
+  field_end_time_new: "End Time"
+  field_end_time_tip: "(e.g. 17:00 or 5pm)"
+  field_start_time_string: "Start Time"
+  field_end_time_string: "End Time"
+  time_zone_show_in: "Time zone shown in"
+  original_time_zone: "Original Time zone"
+  shown_in: "Shown in"
+
+  text_journal_paused: Issue paused
+  text_journal_unpaused: Issue unpaused
+
+  monday: Monday
+  tuesday: Tuesday
+  wednesday: Wednesday
+  thursday: Thursday
+  friday: Friday
+  saturday: Saturday
+  sunday: Sunday
