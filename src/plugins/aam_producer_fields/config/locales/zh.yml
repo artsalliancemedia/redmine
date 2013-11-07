@@ -1,0 +1,67 @@
+zh:
+  label_cinema_new: "New cinema"
+  label_cinema: "Cinema"
+  cinema: "Cinema"
+  complex: "Complex"
+  cinema_plural: "Cinemas"
+  text_cinemas_destroy_confirmation: 'Are you sure you want to delete the selected cinema(s)?'
+
+  label_screen_new: "New screen"
+  label_screen: "Screen"
+  screen: "Screen"
+  screen_plural: "Screens"
+  text_screens_destroy_confirmation: 'Are you sure you want to delete the selected screen(s)?'
+
+  label_device_new: "New device"
+  label_device: "Device"
+  device: "Device"
+  device_plural: "Devices"
+  text_devices_destroy_confirmation: 'Are you sure you want to delete the selected device(s)?'
+  category: "Category"
+
+  label_circuit_group_new: "New Circuit Group"
+  label_circuit_group: "Circuit Group"
+  circuit_group: "Circuit Group"
+  circuit_group_plural: "Circuit Groups"
+  text_circuit_groups_destroy_confirmation: 'Are you sure you want to delete the selected circuit group(s)?'
+
+  field_cinema_ids: "Cinemas"
+  field_cinema: "Cinema"
+  field_screen: "Screen"
+  field_device: "Device"
+
+  field_name: "Name"
+  field_title: "Title"
+  field_telephone: "Telephone"
+  field_city: "City"
+  field_cinema_city: Complex City
+  field_postcode: "Postcode"
+  field_cinema_postcode: Complex Postcode
+  field_ip_address: "IP Address"
+  field_external: "External ID"
+  field_uuid: "UUID"
+  field_manufacturer: "Manufacturer"
+  field_model: "Model"
+  field_software_version: "Software version"
+  field_firmware_version: "Firmware version"
+  field_device_category: Device category
+  field_device_model: Device model
+  field_device_manufacturer: Device manufacturer
+  field_identifier: "Identifier"
+
+  screen_server: Screen Server
+  projector: Projector
+  ftp_folder: FTP
+  local_folder: Local Folder
+  lms: LMS
+  pos: POS
+  watchfolder: Watchfolder
+  
+  with_software: "software v."
+  and_firmware: "firmware v."
+
+  producer_url_label: "Producer URL"
+  username_label: "Username"
+  password_label: "Password"
+  pull_data: "Pull from Producer"
+
