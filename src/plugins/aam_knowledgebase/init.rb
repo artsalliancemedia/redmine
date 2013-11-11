@@ -49,4 +49,5 @@ Rails.configuration.to_prepare do
   Issue.send(:include, KbIssuePatch) unless Issue.included_modules.include? KbIssuePatch
   Message.send(:include, KbMessagePatch) unless Message.included_modules.include? KbMessagePatch
   BoardsHelper.send(:include, BoardsHelperPatch) unless BoardsHelper.included_modules.include? BoardsHelperPatch
+  ProjectsHelper.send(:include, ProjectsHelperPatch) unless ProjectsHelper.included_modules.include? ProjectsHelperPatch
 end

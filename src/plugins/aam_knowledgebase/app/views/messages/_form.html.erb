@@ -22,7 +22,7 @@
 
 
 <% if !replying && !@message.new_record? && @message.safe_attribute?('board_id') %>
-  <p><label><%= l(:label_board) %></label><br />
+  <p><label><%= l(:category) %></label><br />
   <%= f.select :board_id, boards_options_for_select(@message.project.boards) %></p>
 <% end %>
 
@@ -30,29 +30,6 @@
 <%= label_tag "message_content", l(:description_message_content), :class => "hidden-for-sighted" %>
 <%= f.text_area :content, :cols => 80, :rows => 15, :class => 'wiki-edit', :id => 'message_content' %></p>
 <%= wikitoolbar_for 'message_content' %>
-<!--[eoform:message]-->
-<!--
-<h4><%= l(:categorisation) %></h4>
-  
- <p>
-<label for="message_manufacturer"><%= l(:field_kb_device_manufacturer) %></label>
-<%= f.select :manufacturer, Device.find_by_sql("SELECT DISTINCT manufacturer FROM devices").map{|m| m.manufacturer}.reject{|m| m.nil?},
-  {:include_blank => true}, { :data => { :url => "/devices_for_autocomplete/manufacturer/" } }  %>
-</p>
- <p>
-<label for="message_model"><%= l(:field_kb_device_model) %></label>
-<%= f.select :model, Message.get_models(@message.manufacturer), {:include_blank => true},
-	{ :data => { :url => "/devices_for_autocomplete/model/" } } %>
- </p>
- <p>
-<label for="message_firmware_version"><%= l(:field_kb_device_firmware_version) %></label>
-<%= f.select :firmware_version, Message.get_firmwares(@message.model), {:include_blank => true} %>
-</p>
- <p>
-<label for="message_software_version"><%= l(:field_kb_device_software_version) %></label>
-<%= f.select :software_version, Message.get_softwares(@message.model), {:include_blank => true} %>
-</p>
--->
  
 <% if Issue.exists? %>
 <p id="related-issues">
