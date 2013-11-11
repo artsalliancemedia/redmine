@@ -1,120 +1,88 @@
 //need to wrap-up the document.ready call because redmine reloads the form at various points
 function onLoad() {
-	$(document).ready(function() {
-		moveDisplayBlock();
+  $(document).ready(function() {
+    $('#issue_subject').parent().after($('#similar_articles_root'), $('#similar_issues_root'));
 
-		var handleUpdate = function() {
-			var url = dym_data.search_url;
-			var parameters = {
-				project_id: dym_data.project_id,
-				issue_id: dym_data.issue_id
-			};
-			var device_id = $("#issue_device_id").val();
-			var subject = $("#issue_subject").val();
-			if(device_id) {
-				parameters['device_id'] = device_id;
-			}
-			if(subject) {
-				parameters['query'] = subject;
-			}
-			console.log(parameters);
-			new $.ajax(url, {
-				data: parameters,
-				success: function(data, textStatus, jqXHR) {
-					updateBlocks(data);
-				}
-			});
-		};
-		
-		//From http://stackoverflow.com/questions/1909441/jquery-keyup-delay
-		var delay = (function() {
-			var timer = 0;
-			return function(callback, ms) {
-				clearTimeout(timer);
-				timer = setTimeout(callback, ms);
-			};
-		})();
-		$('#issue_subject').bind(dym_data.event_type, function() {
-			var keyup_delay = 350;
-			delay(handleUpdate, keyup_delay);
-		});
+    function handle_update() {
+      var params = {
+        issue_id: dym_data.issue_id,
+        device_id: $("#issue_device_id").val(),
+        subject: $("#issue_subject").val(),
+        category_id: $("#issue_category_id").val()
+      };
 
-		//This fires whenever the device is changed, since that event causes this script to reload
-		handleUpdate();
-	});
+      $.get(dym_data.search_url, params, update_blocks);
+    }
+    
+    //From http://stackoverflow.com/questions/1909441/jquery-keyup-delay
+    var delay = (function() {
+      var timer = 0;
+      return function(callback, ms) {
+        clearTimeout(timer);
+        timer = setTimeout(callback, ms);
+      };
+    })();
+
+    $("#category-tree-dropdowns").on('reloaded', handle_update);
+
+    $('#issue_subject').bind(dym_data.event_type, function() {
+      var keyup_delay = 350;
+      delay(handle_update, keyup_delay);
+    });
+
+    //This fires whenever the device is changed, since that event causes this script to reload
+    handle_update();
+  });
 }
 
-function updateBlocks(data) {
-	updateSimilarXBlock(data.articles, "articles", displayArticleItem);
-	updateSimilarXBlock(data.issues, "issues", displayIssueItem);
+function update_blocks(data) {
+  update_block(data.articles, "articles", display_item);
+  update_block(data.issues, "issues", display_item);
 }
 
-function updateSimilarXBlock(data, x, x_maker) {
-	var items = data.list;
-	var count = items.length;
-	var count_all = data.count;
-	if (count === 0) {
-		$('#similar_'+ x).hide();
-	} else {
-		var items_html = '';
-		for (var i = 0; i < count; i++) {
-			items_html += x_maker(items[i]);
-		}
+function update_block(data, selector, cb) {
+  var items = data.list,
+    num_returned = items.length,
+    total_found = data.count;
 
-		if (count_all > count) {
-			var more = count_all - count;
-			var more_text = '<li>' + more + ' ' + dym_data.label_more + '</li>';
-			items_html += more_text;
-		}
+  if (num_returned === 0) {
+    $('#similar_' + selector).hide();
+  } else {
+    var items_html = '';
+    for (var i = 0; i < num_returned; i++) {
+      items_html += cb(selector, items[i]);
+    }
 
-		$('#similar_'+ x +'_list').html(items_html);
-		$('#'+ x +'_count').html(count_all);
-		$('#similar_'+ x).show();
-	}
+    $('#similar_'+ selector +'_list').html(items_html);
+    $('#'+ selector +'_count').html(total_found);
+    $('#similar_'+ selector).show();
+  }
 }
 
-function displayArticleItem(item) {
-	var message_url = sanitize('/boards/' + item.category_id + '/topics/' + item.id);
-	var item_id = sanitize('#' + item.id);
-	var item_subject = sanitize(item.subject);
+function display_item(selector, item) {
+  var url;
+  switch (selector) {
+    case "articles":
+        url = sanitize('/boards/' + item.category_id + '/topics/' + item.id);
+      break;
+    case "issues":
+        url = sanitize(dym_data.issue_url + '/' + item.id);
+      break;
+    default:
+      console.log('Unknown selector type! Please contact dev for a fix.');
+  }
 
-	var item_html = '<li><a href="' + message_url + '">'
-			+ item_id
-			+ ' &ndash; '
-			+ item_subject
-			+ '</a> ('
-			+ item.category
-			+ ')</li>';
+  var categorisation = item.category;
+  if (item.status) categorisation += ', ' + item.status;
 
-	return item_html;
-}
-
-function displayIssueItem(item) {
-	var issue_url = sanitize(dym_data.issue_url + '/' + item.id);
-	var item_id = sanitize('#' + item.id);
-	var item_subject = sanitize(item.subject);
-	var item_status = sanitize(item.status_name);
-
-	var item_html = '<li><a href="' + issue_url + '">'
-			+ ' ' + item_id
-			+ ' &ndash; '
-			+ item_subject
-			+ '</a> ('
-			+ item_status
-			+ ')</li>';
-
-	return item_html;
-}
-
-//Move the view hook to a more useful location
-function moveDisplayBlock() {
-	$('#issue_subject').parent().after($('#similar_articles_root'), $('#similar_issues_root'));
+  return '<li>'
+    + '<a href="' + url + '" target="_new">' + sanitize('#' + item.id) + ' &ndash; ' + sanitize(item.subject) + '</a> (' + sanitize(categorisation) + ')'
+    + '</li>';
 }
 
 function sanitize(value) {
-	var html_safe = value.replace(/[<]+/g, '&lt;')
-			.replace(/[>]+/g, '&gt;')
-			.replace(/["]+/g, '&quot;')
-			.replace(/[']+/g, '&#039;');
-	return html_safe;
+  return value.replace(/[<]+/g, '&lt;')
+    .replace(/[>]+/g, '&gt;')
+    .replace(/["]+/g, '&quot;')
+    .replace(/[']+/g, '&#039;');
 }

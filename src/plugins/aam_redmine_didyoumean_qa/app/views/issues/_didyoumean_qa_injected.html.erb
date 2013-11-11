@@ -1,6 +1,6 @@
 <div id="similar_articles_root">
   <div id="similar_articles" class="dym">
-    <b><%= l(:dym_similar_articles_caption) %> (<span id="articles_count">&nbsp;</span>)</b>
+    <b><%= l(:dym_similar_articles_caption) %> (<span id="articles_count">&nbsp;</span> <%= l(:label_articles) %>)</b>
     <ul id="similar_articles_list"></ul>
   </div>
 </div>
@@ -16,16 +16,14 @@
   <%= javascript_include_tag 'didyoumean_qa', :plugin => 'aam_redmine_didyoumean_qa' %>
 <% end %>
 
-<%
-dym_event_type = Setting.plugin_aam_redmine_didyoumean_qa['start_search_when'] == "1" ? "keyup" : "change"
-%>
+<% dym_event_type = Setting.plugin_aam_redmine_didyoumean_qa['start_search_when'] == "1" ? "keyup" : "change" %>
 
 <script type="text/javascript">
   var dym_data = {
-	project_id: "<%= @project.id %>",
-	issue_id: "<%= @issue.id || '' %>",
+    project_id: "<%= @project.id %>",
+    issue_id: "<%= @issue.id || '' %>",
     issue_url: "<%= url_for(Issue.new) %>",
-	event_type: "<%= dym_event_type %>",
+    event_type: "<%= dym_event_type %>",
     search_url: "<%= url_for(:action => 'index', :controller => 'search_messages') %>",
     label_more: "<%= l(:dym_more) %>"
   };

@@ -2,7 +2,7 @@
 <% allow_replies = false #hide replies for simplification %>
 
 <div class="contextual">
-	<!-- disable some of this stuff for now, to simplify UI
+  <!-- disable some of this stuff for now, to simplify UI
     <%= watcher_link(@topic, User.current) if false %>
     <% voted = User.current.voted_for?(@topic) %>
     <%= link_to(
@@ -10,7 +10,7 @@
           {:controller => 'questions', :action => 'vote', :id => @topic},
           :class => 'icon ' + (voted ? 'icon-vote' : 'icon-unvote')
         ) if User.current.allowed_to?(:vote_messages, @project) %>
-	-->
+  -->
 
     <%= link_to(
           l(:button_quote),
@@ -35,26 +35,28 @@
 
 <div class="message details">
     <h2><%=h @topic.subject %></h2>
-	
-	<% def neat(str) #easier to define here than patch the message helper
-		if str.nil?
-		  str = ""
-		end
-		if str && str.empty?
-			return l(:na)
-		else
-			return str
-		end
-	end
+  
+  <% def neat(str) #easier to define here than patch the message helper
+    if str.nil?
+      str = ""
+    end
+    if str && str.empty?
+      return l(:na)
+    else
+      return str
+    end
+  end
    %>
-	
-	<p>
-	  <span class="category-heading"><%= l(:field_manufacturer) %></span>: <%= neat @message.manufacturer %>
-	  <span class="category-heading"><%= l(:field_model) %></span>: <%= neat @message.model %>
-	  <span class="category-heading"><%= l(:field_software_version) %></span>: <%= neat(@message.software_version) %>
-	  <span class="category-heading"><%= l(:field_firmware_version) %></span>: <%= neat(@message.firmware_version) %>
-	</p>
-	
+  
+  <!--
+  <p>
+    <span class="category-heading"><%= l(:field_manufacturer) %></span>: <%= neat @message.manufacturer %>
+    <span class="category-heading"><%= l(:field_model) %></span>: <%= neat @message.model %>
+    <span class="category-heading"><%= l(:field_software_version) %></span>: <%= neat(@message.software_version) %>
+    <span class="category-heading"><%= l(:field_firmware_version) %></span>: <%= neat(@message.firmware_version) %>
+  </p>
+-->
+  
     <%= avatar(@topic.author, :size => "32") %>
     <p class="author"><%= link_to_user @topic.author %><br>
        <%= l(:label_questions_added_time, :value => time_tag(@topic.created_on)).html_safe %>
@@ -63,13 +65,15 @@
       <%= textilizable(@topic, :content) %>
     </div>
     <%= link_to_attachments @topic, :author => false %>
-	
-	<div id="issues-related">
-	  <h4><%= l(:label_related_issues) %></h4>
-	  <% @message.issues.each do |iss| %>
-		<%= link_to iss.subject, issue_path(iss) %> <br />
-	  <% end %>
-	</div>
+  
+  <% if @message.issues.any? %>
+  <div id="issues-related">
+    <h4><%= l(:label_related_issues) %></h4>
+    <% @message.issues.each do |iss| %>
+    <%= link_to iss.subject, issue_path(iss) %> <br />
+    <% end %>
+  </div>
+  <% end %>
 
 </div>
 <br />
@@ -79,14 +83,14 @@
 <% @replies.each do |message| %>
   <div class="message reply" id="<%= "message-#{message.id}" %>">
     <div class="contextual">
-	  <!--
+    <!--
     <% liked = User.current.voted_for?(message) %>
     <%= link_to(
           message.cached_votes_up > 0 ? "(#{message.cached_votes_up})" : "",
           {:controller => 'questions', :action => 'vote', :id => message},
           :class => 'vote icon ' + (liked ? 'icon-vote' : 'icon-unvote')
         ) if true || User.current.allowed_to?(:vote_messages, @project) %>
-	  -->
+    -->
       <%= link_to(
             image_tag('comment.png'),
             {:action => 'quote', :id => message},
@@ -137,7 +141,7 @@
 <% content_for :sidebar do %>  
   <h3><%= l(:label_questions_message) %></h3>
   <ul class="question-meta">
-	<!--
+  <!--
     <li class="votes icon icon-vote">
       <%= l(:label_questions_votes, :count => @topic.cached_votes_up - @topic.cached_votes_down ) %>
     </li>

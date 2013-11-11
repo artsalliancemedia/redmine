@@ -1,0 +1,25 @@
+<% if @issue.safe_attribute? 'device_id' %>
+  <% screens = Screen.where(:cinema_id => @issue.cinema_id) %>
+  <%
+    if @issue.screen_id and screens.any? { |s| s.id == @issue.screen_id }
+      devices = Device.where({:deviceable_id => @issue.screen_id, :deviceable_type => 'Screen'})
+    elsif @issue.cinema_id
+      devices = Device.where({:deviceable_id => @issue.cinema_id, :deviceable_type => 'Cinema'})
+    else
+      devices = []
+    end
+
+    def full_device_name(d)
+      def check_blank(lead, trail)
+        return trail.blank? ? "" : lead + " " + trail
+      end
+
+      name = t(d.category)
+      details = d.manufacturer.to_s + " " + d.model.to_s + " " + check_blank(l(:and_firmware), d.firmware_version.to_s)
+      return details.blank? ? name : name + " - " + details
+    end
+  %>
+
+  <p><%= form.select :device_id,  devices.collect {|d| [full_device_name(d), d.id]}, {:include_blank => true},
+                  {:onchange => "updateIssueFrom('#{escape_javascript project_issue_form_path(@project, :id => @issue, :format => 'js')}')"} %></p>
+<% end %>

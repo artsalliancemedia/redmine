@@ -31,7 +31,7 @@
 <%= f.text_area :content, :cols => 80, :rows => 15, :class => 'wiki-edit', :id => 'message_content' %></p>
 <%= wikitoolbar_for 'message_content' %>
 <!--[eoform:message]-->
-
+<!--
 <h4><%= l(:categorisation) %></h4>
   
  <p>
@@ -52,6 +52,7 @@
 <label for="message_software_version"><%= l(:field_kb_device_software_version) %></label>
 <%= f.select :software_version, Message.get_softwares(@message.model), {:include_blank => true} %>
 </p>
+-->
  
 <% if Issue.exists? %>
 <p id="related-issues">

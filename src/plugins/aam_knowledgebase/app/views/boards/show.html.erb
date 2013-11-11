@@ -2,28 +2,28 @@
 
 <div class="board details">
 <div class="contextual">
-<%= link_to_if_authorized l(:label_message_new),
-                          {:controller => 'messages', :action => 'new', :board_id => @board},
-                          :class => 'icon icon-add',
-                          :onclick => 'showAndScrollTo("add-message", "message_subject"); return false;' %>
-<%= watcher_link(@board, User.current) %>
+  <%= link_to_if_authorized l(:label_article_new),
+                            {:controller => 'messages', :action => 'new', :board_id => @board},
+                            :class => 'icon icon-add',
+                            :onclick => 'showAndScrollTo("add-message", "message_subject"); return false;' %>
+  <!--<%= watcher_link(@board, User.current) %>-->
 </div>
 
 <div id="add-message" style="display:none;">
-<% if authorize_for('messages', 'new') %>
-<h2><%= link_to h(@board.name), :controller => 'boards', :action => 'show', :project_id => @project, :id => @board %> &#187; <%= l(:label_message_new) %></h2>
-<%= form_for @message, :url => {:controller => 'messages', :action => 'new', :board_id => @board}, :html => {:multipart => true, :id => 'message-form'} do |f| %>
-  <%= render :partial => 'messages/form', :locals => {:f => f} %>
-  <p><%= submit_tag l(:button_create) %>
-  <%= preview_link({:controller => 'messages', :action => 'preview', :board_id => @board}, 'message-form') %> |
-  <%= link_to l(:button_cancel), "#", :onclick => '$("#add-message").hide(); return false;' %></p>
-<% end %>
-<div id="preview" class="wiki"></div>
-<% end %>
+  <% if authorize_for('messages', 'new') %>
+    <h2><%= link_to h(@board.name), :controller => 'boards', :action => 'show', :project_id => @project, :id => @board %> &#187; <%= l(:label_article_new) %></h2>
+    <%= form_for @message, :url => {:controller => 'messages', :action => 'new', :board_id => @board}, :html => {:multipart => true, :id => 'message-form'} do |f| %>
+      <%= render :partial => 'messages/form', :locals => {:f => f} %>
+      <p><%= submit_tag l(:button_create) %>
+      <%= preview_link({:controller => 'messages', :action => 'preview', :board_id => @board}, 'message-form') %> |
+      <%= link_to l(:button_cancel), "#", :onclick => '$("#add-message").hide(); return false;' %></p>
+    <% end %>
+  <div id="preview" class="wiki"></div>
+  <% end %>
 </div>
 
 <h2><%=h @board.name %></h2>
-<p class="subtitle"><%=h @board.description %></p>
+<!--<p class="subtitle"><%=h @board.description %></p>-->
 
 <div class="filters">   
   <%= form_tag({:controller => "questions", :action => "topics" }, :method => :get,  :id => "query_form") do %> 
@@ -35,7 +35,6 @@
     <%= javascript_tag "observeSearchfield('topic_search', 'topics_list', '#{ escape_javascript(autocomplete_for_topic_questions_path(:project_id => @project, :board_id => @board)) }')" %>    
                                                          
   <% end %>  
-
 </div>
 
 </div>

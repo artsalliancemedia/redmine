@@ -46,8 +46,8 @@ en:
   label_board_new: New Knowledge Base
   label_board_plural: Knowledge Base
   label_topic_plural: Topics
-  label_message_plural: Articles
+  label_article_plural: Articles
   label_message_last: Last article
-  label_message_new: New article
+  label_article_new: New article
   label_message_posted: Article added
   label_reply_plural: Comments
