@@ -6,31 +6,15 @@ function onLoad() {
     function handle_update() {
       var params = {
         issue_id: dym_data.issue_id,
-        device_id: $("#issue_device_id").val(),
         subject: $("#issue_subject").val(),
         category_id: $("#issue_category_id").val()
       };
 
       $.get(dym_data.search_url, params, update_blocks);
     }
-    
-    //From http://stackoverflow.com/questions/1909441/jquery-keyup-delay
-    var delay = (function() {
-      var timer = 0;
-      return function(callback, ms) {
-        clearTimeout(timer);
-        timer = setTimeout(callback, ms);
-      };
-    })();
 
     $("#category-tree-dropdowns").on('reloaded', handle_update);
 
-    $('#issue_subject').bind(dym_data.event_type, function() {
-      var keyup_delay = 350;
-      delay(handle_update, keyup_delay);
-    });
-
-    //This fires whenever the device is changed, since that event causes this script to reload
     handle_update();
   });
 }
