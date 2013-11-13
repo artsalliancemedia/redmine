@@ -1,4 +1,5 @@
 zh:
+  # my_label: "My label"
   label_cinema_new: "New cinema"
   label_cinema: "Cinema"
   cinema: "Cinema"

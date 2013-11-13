@@ -15,21 +15,14 @@ en-GB:
   label_questions_notice_message: Notice article
   label_questions_notice: Info
   label_questions_most_voted: Most voted
+  label_category_new: "New Category"
+  field_category_parent: "Parent Category"
 
   permission_vote_messages: Vote messages
   permission_convert_issues: Create articles from issues
-
-  button_questions_vote: Vote
-  button_questions_unvote: Unvote
-  button_questions_like: Like
-  button_questions_unlike: Unlike
   button_remove: "Remove"
-
   field_questions_tags: Tags
-  field_kb_device_model: "Device Model"
-  field_kb_device_manufacturer: "Device Manufacturer"
-  field_kb_device_firmware_version: "Device Firmware Version"
-  field_kb_device_software_version: "Device Software Version"
+  label_kb_category_plural: "Knowledge Base Categories"
 
   categorisation: "Categorization"
   article_add: "Add article"
@@ -46,8 +39,8 @@ en-GB:
   label_board_new: New Knowledge Base
   label_board_plural: Knowledge Base
   label_topic_plural: Topics
-  label_message_plural: Articles
+  label_article_plural: Articles
   label_message_last: Last article
-  label_message_new: New article
+  label_article_new: New article
   label_message_posted: Article added
   label_reply_plural: Comments
