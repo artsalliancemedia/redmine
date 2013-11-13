@@ -5,6 +5,7 @@ module ResolutionTreesHelper
     def prepare_drop_down(values, chosen, name, reject)
       return {
         options: values.reject{ |val| !reject.nil? && val.name == reject.name }
+                        .sort { |a,b| a.position <=> b.position }
                         .collect{ |cat| [cat.name, cat.id] },
         selected: chosen,
         label: "resolution-" + name

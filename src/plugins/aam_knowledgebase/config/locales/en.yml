@@ -15,6 +15,8 @@ en:
   label_questions_notice_message: Notice article
   label_questions_notice: Info
   label_questions_most_voted: Most voted
+  label_category_new: "New Category"
+  field_category_parent: "Parent Category"
 
   permission_vote_messages: Vote messages
   permission_convert_issues: Create articles from issues

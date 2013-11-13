@@ -1,0 +1,9 @@
+<%= error_messages_for @board %>
+
+<div class="box tabular">
+  <p><%= f.text_field :name, :required => true %></p>
+  <input type="hidden" name="board[description]" value="Nothing to see here, sorry for the hack :)" />
+  <% if @board.valid_parents.any? %>
+    <p><%= f.select :parent_id, boards_options_for_select(@board.valid_parents), :include_blank => true, :label => :field_category_parent %></p>
+  <% end %>
+</div>
