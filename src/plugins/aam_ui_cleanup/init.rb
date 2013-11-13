@@ -18,3 +18,7 @@ Redmine::Plugin.register :aam_ui_cleanup do
 
   menu :project_menu, :boards, {:controller => 'boards', :action => 'index'}, :caption => :label_questions, :after => :new_issue, :param => :project_id
 end
+
+Rails.configuration.to_prepare do
+  QueriesHelper.send(:include, QueriesHelperPatch) unless QueriesHelper.included_modules.include?(QueriesHelperPatch)
+end

@@ -1,6 +1,7 @@
 module ProducerFields
   class FieldsHooks < Redmine::Hook::ViewListener
-    render_on :view_issues_form_details_top, :partial => 'edit_fields_hook', :handlers => [:erb], :formats => [:html]
+    render_on :view_issues_form_details_top, :partial => 'edit_fields_hook_top', :handlers => [:erb], :formats => [:html]
+    render_on :view_issues_form_details_middle, :partial => 'edit_fields_hook_middle', :handlers => [:erb], :formats => [:html]
     render_on :view_issues_show_details_bottom, :partial => 'show_fields_hook', :handlers => [:erb], :formats => [:html]
 
     def helper_issues_show_detail_after_setting(context = { })

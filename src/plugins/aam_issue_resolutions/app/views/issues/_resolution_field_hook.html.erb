@@ -1,0 +1,17 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "resolution_tree", :plugin => 'aam_issue_resolutions' %>
+<% end %>
+<%= javascript_tag "handle_dynamic_resolution_tree('issue_resolution_id')" %>
+
+<% if @issue.safe_attribute?('resolution_id') && @issue.project.issue_resolutions.any? %>
+  <p id="resolution-tree">
+    <label for="resolution-root"><%= l(:label_resolution)%>
+    <% if @issue.required_attribute?('resolution_id') %>
+      <span class="required">*</span>
+    <% end %>
+    </label>
+    <span id="resolution-tree-dropdowns"></span>
+  </p>
+<% end %>
+
+<input type="hidden" id="issue_resolution_id" name="issue[resolution_id" value="<%= @issue.resolution_id %>" />

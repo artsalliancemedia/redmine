@@ -1,0 +1,8 @@
+en:
+  label_resolution: 'Resolution'
+  label_issue_resolution_plural: 'Issue Resolutions'
+  label_resolutions_new: 'New Resolution'
+  field_resolution_parent: 'Parent Resolution'
+  field_resolution: 'Resolution'
+  text_issue_resolutions_destroy_confirmation: 'Are you sure you want to delete the selected issue resolution(s)?'
+

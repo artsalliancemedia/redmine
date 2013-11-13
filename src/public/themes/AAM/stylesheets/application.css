@@ -19,14 +19,14 @@ LET'S GET SOME ICON FONT GOINT ON HERE
 ***/
 
 @font-face {
-	font-family: 'AAM icons';
-	src:url('/themes/AAM/fonts/AAM-icons.eot');
-	src:url('/themes/AAM/fonts/AAM-icons.eot?#iefix') format('embedded-opentype'),
-   		url('/themes/AAM/fonts/AAM-icons.svg#AAM-icons') format('svg'),
-		url('/themes/AAM/fonts/AAM-icons.ttf') format('truetype'),
-   		url('/themes/AAM/fonts/AAM-icons.woff') format('woff');
-	font-weight: normal;
-	font-style: normal;
+    font-family: 'AAM icons';
+    src:url('/themes/AAM/fonts/AAM-icons.eot');
+    src:url('/themes/AAM/fonts/AAM-icons.eot?#iefix') format('embedded-opentype'),
+        url('/themes/AAM/fonts/AAM-icons.svg#AAM-icons') format('svg'),
+        url('/themes/AAM/fonts/AAM-icons.ttf') format('truetype'),
+        url('/themes/AAM/fonts/AAM-icons.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 .icon::before, .icon-copy::before {
 font-family:'AAM icons';
@@ -151,7 +151,7 @@ margin-right:5px;
 padding-left:0px!important;
 background:none!important;
 }
-.group td:first-child::before {
+.group::before {
 content: '\0055';
 font-family: 'AAM icons';
 margin-right: 5px;
@@ -510,6 +510,7 @@ margin-right:3px;
 .message .author {
 border-left: 4px dotted #AAA;
 padding-left: 20px;
+margin-top: ;
 }
 h2, .wiki h1 {
 font-size: 24px;
@@ -717,4 +718,54 @@ margin-left:0;
 /** Hourglass icon only temporary, will get unique icon for out of hours soon **/
 .icon-out-of-hours {
 background-image: url(../../../images/hourglass.png);
+}
+
+
+
+
+
+
+/** DEV CSS **/
+
+#forum_list {
+list-style-type: none;
+padding: 0;
+}
+#forum_list li {
+padding-top: 10px;
+padding-left: 5px;
+border-bottom: 1px dashed #ccc;
+}
+#forum_list li:hover {
+    background-color: #ffffdd;
+}
+#forum_list li:hover .topic-count {
+display: block;
+}
+#forum_list .topic-count {
+float: right;
+margin: 5px 10px 0;
+display: none;
+}
+#forum_list .last-message {
+font-size: 14px;
+}
+#forum_list .last-message-author {
+font-size: 12px;
+font-style: italic;
+}
+#footer, #quick-search {
+display: none;
+}
+.board.details .contextual .icon-add {
+margin-right: 5px;
+}
+
+.wiki p {
+font-size: 16px;
+line-height: 1.5em;
+}
+
+input.autocomplete {
+padding-left: 30px !important;
 }

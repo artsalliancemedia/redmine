@@ -47,53 +47,53 @@ class QuestionsController < ApplicationController
     message.subject = issue.subject
     message.content = issue.description.blank? ? issue.subject : issue.description
     message.attachments = issue.attachments
-		
-		if issue.device
-			message.manufacturer = issue.device.manufacturer
-			message.model = issue.device.model
-			message.software_version = issue.device.software_version
-			message.firmware_version = issue.device.firmware_version
-		end
-		message.issues << issue
-		
-		copy_notes = false #Just ignore them
-		if copy_notes
-			issue.journals.select{|j| !j.notes.blank?}.each do |journal|
-				reply = Message.new
-				reply.author = journal.user
-				reply.created_on = journal.created_on
-				reply.subject = "Re: #{message.subject}"
-				reply.content = journal.notes
-				reply.board = board
-				message.children << reply
-			end
-		end
+    
+    if issue.device
+      message.manufacturer = issue.device.manufacturer
+      message.model = issue.device.model
+      message.software_version = issue.device.software_version
+      message.firmware_version = issue.device.firmware_version
+    end
+    message.issues << issue
+    
+    copy_notes = false #Just ignore them
+    if copy_notes
+      issue.journals.select{|j| !j.notes.blank?}.each do |journal|
+        reply = Message.new
+        reply.author = journal.user
+        reply.created_on = journal.created_on
+        reply.subject = "Re: #{message.subject}"
+        reply.content = journal.notes
+        reply.board = board
+        message.children << reply
+      end
+    end
     if message.save
-			redirect_to board_message_path(board, message)
-		else
+      redirect_to board_message_path(board, message)
+    else
       redirect_back_or_default({:controller => 'issues', :action => 'show', :id => issue})
     end
 
   end
-	
-	def device_models
-		@models = Message.get_models( params[:manufacturer] )
-		render :layout => false
-	end
-	
-	def device_model_info
-		@softwares = Message.get_softwares(params[:model])
-		@firmwares = Message.get_firmwares(params[:model])
-		render :layout => false
-	end
+  
+  def device_models
+    @models = Message.get_models( params[:manufacturer] )
+    render :layout => false
+  end
+  
+  def device_model_info
+    @softwares = Message.get_softwares(params[:model])
+    @firmwares = Message.get_firmwares(params[:model])
+    render :layout => false
+  end
 
 private
 
   def find_topics
-    seach = params[:q] || params[:topic_search]
+    search = params[:q] || params[:topic_search]
 
-    columns = ["subject", "content"]
-    tokens = seach.to_s.scan(%r{((\s|^)"[\s\w]+"(\s|$)|\S+)}).collect{|m| m.first.gsub(%r{(^\s*"\s*|\s*"\s*$)}, '')}.uniq.select {|w| w.length > 1 }
+    columns = ["subject", "content", "boards.name"]
+    tokens = search.to_s.scan(%r{((\s|^)"[\s\w]+"(\s|$)|\S+)}).collect{|m| m.first.gsub(%r{(^\s*"\s*|\s*"\s*$)}, '')}.uniq.select {|w| w.length > 1 }
     tokens = [] << tokens unless tokens.is_a?(Array)
     token_clauses = columns.collect {|column| "(LOWER(#{column}) LIKE ?)"}
     sql = (['(' + token_clauses.join(' OR ') + ')'] * tokens.size).join(' AND ')

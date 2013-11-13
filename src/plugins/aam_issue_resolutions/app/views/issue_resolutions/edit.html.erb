@@ -1,0 +1,6 @@
+<h2><%= l(:label_resolution) %></h2>
+
+<%= labelled_form_for @issue_resolution, :url => project_issue_resolution_path(@project, @issue_resolution) do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+  <%= submit_tag l(:button_save) %>
+<% end %>
