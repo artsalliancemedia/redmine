@@ -2,20 +2,17 @@ function handle_dynamic_category_tree_now(category_element_name, parent_element_
     var category_tree = $("#category-tree-dropdowns");
 
     function load_category_tree(category) {
+
         var params = {};
-        if(no_blank_at_root) {
-            params['no_blank'] = 'y';
-        }
-        if(reject_id) {
-            params['id_ignore'] = reject_id; 
-        }
+        if(no_blank_at_root) params['no_blank'] = 'y';
+        if(reject_id) params['id_ignore'] = reject_id; 
+
         var q_str = "?" + $.param(params);
         category_tree.load("/category_trees/drop_downs/" + (category || 0) + q_str, function() { $(this).trigger('reloaded'); });
     }
 
     var parent_category = $("#" + category_element_name);
-    //Hide the old category drop-down
-    //  but DO NOT remove/disable it as we use it to send the category to the issue ontroller
+    //Hide the old category drop-down but DO NOT remove/disable it as we use it to send the category to the issue ontroller
     parent_category.parent(parent_element_block_type || 'p').hide();
 
     load_category_tree(parent_category.val());

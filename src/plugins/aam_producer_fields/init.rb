@@ -5,7 +5,6 @@ require_dependency 'producer_fields_hooks'
 Redmine::Plugin.register :aam_producer_fields do
   name 'Producer Fields plugin'
   author 'Arts Alliance Media'
-  # Adapted from the extended_fields plugin.
   description 'Populates data for the "Cinema", "Screen" and "Device" custom fields on Redmine issue tickets.'
   version '0.0.1'
   author_url 'http://artsalliancemedia.com'
@@ -29,7 +28,5 @@ Redmine::Plugin.register :aam_producer_fields do
 end
 
 Rails.configuration.to_prepare do
-  unless IssueQuery.included_modules.include?(ProducerIssueQueryPatch)
-      IssueQuery.send(:include, ProducerIssueQueryPatch)
-  end
+  IssueQuery.send(:include, ProducerIssueQueryPatch) unless IssueQuery.included_modules.include?(ProducerIssueQueryPatch)
 end

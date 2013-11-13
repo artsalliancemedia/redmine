@@ -1,0 +1,8 @@
+<%= error_messages_for 'issue_resolution' %>
+
+<div class="box tabular">
+  <p><%= f.text_field :name, :size => 30, :required => true %></p>
+  <% if @issue_resolution.valid_parents.any? %>
+    <p><%= f.select :parent_id, issue_resolutions_options_for_select(@issue_resolution.valid_parents), :include_blank => true, :label => :field_resolution_parent %></p>
+  <% end %>
+</div>

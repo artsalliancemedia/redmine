@@ -1,0 +1,32 @@
+<% if @project.issue_resolutions.any? %>
+<table class="list">
+  <thead><tr>
+    <th><%= l(:label_resolution) %></th>
+    <th></th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+<% IssueResolution.resolution_tree(@project.issue_resolutions) do |issue_resolution, level|
+  next if issue_resolution.new_record? %>
+  <tr class="<%= cycle 'odd', 'even' %>">
+    <td style="padding-left: <%= level * 18 %>px;"><%= link_to issue_resolution.name, project_issue_resolution_path(@project, issue_resolution) %></td>
+    <td align="center">
+      <%= reorder_links('issue_resolution', {:controller => 'issue_resolutions', :action => 'update', :project_id => @project, :id => issue_resolution}, :put) %>
+    </td>
+    <td class="buttons">
+    <% if User.current.allowed_to?(:manage_resolutions, @project) %>
+      <%= link_to l(:button_edit), edit_project_issue_resolution_path(@project, issue_resolution), :class => 'icon icon-edit' %>
+      <%= delete_link project_issue_resolution_path(@project, issue_resolution) %>
+    <% end %>
+    </td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<% else %>
+<p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+
+<% if User.current.allowed_to?(:manage_resolutions, @project) %>
+<p><%= link_to l(:label_resolutions_new), new_project_issue_resolution_path(@project), :class => 'icon icon-add' %></p>
+<% end %>

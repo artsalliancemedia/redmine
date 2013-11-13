@@ -16,7 +16,7 @@ module QueriesHelperPatch
     def filters_options_with_uicleanup(opts)
       options = filters_options_without_uicleanup(opts)
 
-      unneeded_fields = ["is_private","relates","duplicates","duplicated","blocks","blocked","precedes","follows","copied_to","copied_from"]
+      unneeded_fields = ["tracker_id","is_private","relates","duplicates","duplicated","blocks","blocked","precedes","follows","copied_to","copied_from"]
       options.select! {|o| !unneeded_fields.include?(o[1].to_s) }
 
       options
