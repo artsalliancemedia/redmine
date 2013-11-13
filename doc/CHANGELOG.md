@@ -1,4 +1,14 @@
 
+## 0.10.0
+
+* Re-work the knowledge base
+ * Re-design the kb homepage
+ * Remove (actually hide) device fields
+ * Change "did you mean" to look up kb articles based on categorisation rather than device info.
+* Add in resolution field
+* Remove unused filter options
+* Fix a bunch of language inconsistencies
+
 ## 0.9.4
 
 * Finalising language strings
