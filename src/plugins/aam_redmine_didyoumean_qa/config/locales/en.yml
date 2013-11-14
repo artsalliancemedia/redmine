@@ -1,4 +1,3 @@
-# English strings go here for Rails i18n
 en:
   dym_similar_articles_caption: "Found in the Knowledge Base"
   dym_similar_issues_caption: "Related issues"
