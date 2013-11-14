@@ -15,7 +15,11 @@ Redmine::Plugin.register :aam_ui_cleanup do
   delete_menu_item(:project_menu, :activity)
   delete_menu_item(:project_menu, :boards)
   delete_menu_item(:project_menu, :settings)
+  delete_menu_item(:admin_menu, :ldap_authentication)
+  delete_menu_item(:admin_menu, :info)
+  delete_menu_item(:admin_menu, :enumerations)
 
+  menu :admin_menu, :enumerations, { :controller => 'enumerations', :action => 'index' }, :caption => :enumeration_issue_priorities
   menu :project_menu, :boards, {:controller => 'boards', :action => 'index'}, :caption => :label_questions, :after => :new_issue, :param => :project_id
 end
 

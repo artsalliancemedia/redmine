@@ -1,3 +1,4 @@
+# English strings go here for Rails i18n
 zh:
   label_questions: 'Knowledge Base'
   label_questions_search: 'Search for an article'
@@ -43,4 +44,3 @@ zh:
   label_article_new: New article
   label_message_posted: Article added
   label_reply_plural: Comments
-

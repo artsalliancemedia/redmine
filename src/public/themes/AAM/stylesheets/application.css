@@ -769,3 +769,7 @@ line-height: 1.5em;
 input.autocomplete {
 padding-left: 30px !important;
 }
+
+div.attachments {
+	clear: both;
+}

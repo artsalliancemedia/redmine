@@ -1,8 +1,6 @@
-
 zh:
   producer_sync_url_label: "Producer Sync API endpoint"
   username_label: "Username"
   password_label: "Password"
 
   field_name_raw: "Producer status"
-

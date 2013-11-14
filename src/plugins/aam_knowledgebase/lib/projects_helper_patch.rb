@@ -17,7 +17,7 @@ module ProjectsHelperPatch
     def project_settings_tabs_with_lang_change
       project_settings = project_settings_tabs_without_lang_change
 
-      project_settings.select! {|ps| ps[:name] != 'boards' }
+      project_settings.select! {|ps| !['boards', 'versions'].include?(ps[:name]) }
       project_settings << {:name => 'resolutions', :action => :manage_resolutions, :partial => 'projects/settings/resolutions', :label => :label_issue_resolution_plural}
       project_settings << {:name => 'boards', :action => :manage_boards, :partial => 'projects/settings/boards', :label => :label_kb_category_plural}
 
