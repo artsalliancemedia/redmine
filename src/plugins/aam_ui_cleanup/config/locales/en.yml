@@ -1,3 +1,49 @@
 # English strings go here for Rails i18n
 en:
   lifeguard: "Lifeguard"
+
+  # Change Issue to Ticket
+  permission_manage_categories: Manage ticket categories
+  permission_view_issues: View Tickets
+  permission_add_issues: Add tickets
+  permission_edit_issues: Edit tickets
+  permission_manage_issue_relations: Manage ticket relations
+  permission_move_issues: Move tickets
+  permission_delete_issues: Delete tickets
+  permission_manage_related_issues: Manage related tickets
+  project_module_issue_tracking: Ticket tracking
+  label_issue: Ticket
+  label_issue_new: New Ticket
+  label_issue_plural: Tickets
+  label_issue_view_all: View all tickets
+  label_issues_by: "Tickets by %{value}"
+  label_issue_added: Ticket added
+  label_issue_updated: Ticket updated
+  label_issue_status: Ticket status
+  label_issue_status_plural: Ticket statuses
+  label_issue_category: Ticket category
+  label_issue_category_plural: Ticket categories
+  label_reported_issues: Reported tickets
+  label_assigned_to_me_issues: Tickets assigned to me
+  label_x_issues:
+    zero:  0 tickets
+    one:   1 ticket
+    other: "%{count} tickets"
+  label_any_issues_in_project: any tickets in project
+  label_any_issues_not_in_project: any tickets not in project
+  label_no_issues_in_project: no tickets in project
+  label_watched_issues: Watched tickets
+  label_related_issues: Related tickets
+  label_bulk_edit_selected_issues: Bulk edit selected tickets
+  label_issues_visibility_all: All tickets
+  label_issues_visibility_public: All non private tickets
+  label_issues_visibility_own: Tickets created by or assigned to the user
+  label_attribute_of_issue: "Ticket's %{name}"
+  text_issue_category_destroy_question: "Some tickets (%{count}) are assigned to this category. What do you want to do?"
+  text_issue_category_reassign_to: Reassign tickets to this category
+  text_user_mail_option: "For unselected projects, you will only receive notifications about things you watch or you're involved in (eg. tickets you're the author or assignee)."
+  text_issues_destroy_confirmation: 'Are you sure you want to delete the selected ticket(s)?'
+  notice_failed_to_save_issues: "Failed to save %{count} ticket(s) on %{total} selected: %{ids}."
+  notice_no_issue_selected: "No issue is selected! Please, check the ticket you want to edit."
+  field_assignable: Tickets can be assigned to this role
+  field_issues_visibility: Tickets visibility
