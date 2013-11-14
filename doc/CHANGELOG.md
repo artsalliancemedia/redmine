@@ -1,4 +1,9 @@
 
+## 0.10.1
+
+* Bug fixes
+* Missing lang strings
+
 ## 0.10.0
 
 * Re-work the knowledge base
