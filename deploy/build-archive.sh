@@ -1,7 +1,6 @@
 cd ../src
-mv ./public/favicon.ico ./public/favicon.ico.bak
 cp -r ../lib/redmine/* .
-mv ./public/favicon.ico.bak ./public/favicon.ico
+cp ./public/themes/AAM/img/favicon.ico ./public/favicon.ico
 
 mkdir deploy
 cp -r ../deploy/* ./deploy/
