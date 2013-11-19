@@ -10,3 +10,5 @@ echo n | cp -i "$APP_PATH/config/additional_environment.rb.example" "$SETTINGS_P
 ln -s "$SETTINGS_PATH/database.yml" "$APP_PATH/config/database.yml"
 ln -s "$SETTINGS_PATH/configuration.yml" "$APP_PATH/config/configuration.yml"
 ln -s "$SETTINGS_PATH/additional_environment.rb" "$APP_PATH/config/additional_environment.rb"
+
+mkdir /var/log/aam_lifeguard-redmine

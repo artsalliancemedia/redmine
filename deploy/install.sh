@@ -4,6 +4,6 @@ APP_PATH="/home/redmine/aam_lifeguard-redmine"
 cd $APP_PATH
 bundle install --deployment --without rmagick
 
-rake generate_secret_token
-rake db:migrate
-rake redmine:plugins:migrate
+RAILS_ENV=production bundle exec rake generate_secret_token
+RAILS_ENV=production bundle exec rake db:migrate
+RAILS_ENV=production bundle exec rake redmine:plugins:migrate

@@ -1,4 +1,9 @@
 
+## 0.10.2
+
+* Bug fixes to the deployment process
+* Improve the deployment documentation
+
 ## 0.10.1
 
 * Bug fixes
