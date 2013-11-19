@@ -1,15 +1,20 @@
 Index: config/routes.rb
 ===================================================================
---- config/routes.rb	(revision 0)
+--- config/routes.rb	(revision 12307)
 +++ config/routes.rb	(working copy)
-@@ -16,7 +16,9 @@
+@@ -16,8 +16,6 @@
  # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  
  RedmineApp::Application.routes.draw do
 -  root :to => 'welcome#index', :as => 'home'
-+  root :to => 'issues#index', :as => 'home', :project_id => 'lifeguard'
-+
-+  match 'welcome', :to => 'welcome#index'
- 
+-
    match 'login', :to => 'account#login', :as => 'signin', :via => [:get, :post]
    match 'logout', :to => 'account#logout', :as => 'signout', :via => [:get, :post]
+   match 'account/register', :to => 'account#register', :via => [:get, :post], :as => 'register'
+@@ -352,4 +350,6 @@
+       end
+     end
+   end
++
++  root :to => 'issues#index', :as => 'home', :project_id => 'lifeguard'
+ end
