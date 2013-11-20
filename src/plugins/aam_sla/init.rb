@@ -32,8 +32,8 @@ Rails.configuration.to_prepare do
     IssuesController.send(:include, IssuesControllerPatch)
   end
 
-  unless IssueQuery.included_modules.include?(IssueQueryPatch)
-    IssueQuery.send(:include, IssueQueryPatch)
+  unless IssueQuery.included_modules.include?(SlaIssueQueryPatch)
+    IssueQuery.send(:include, SlaIssueQueryPatch)
   end
 
   unless User.included_modules.include?(TzUserPatch)
