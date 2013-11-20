@@ -69,7 +69,7 @@ class ProducerAlertsToTickets
           success = @debugging ? ticket.save! : ticket.save
 
           @new_count += 1 if success
-        elsif not is_active and not is_new and not is_new.closed?
+        elsif not is_active and is_new
           puts "Closing ticket for inactive alert: " + alert['subject'] if @debugging
           producer_closed_status = IssueStatus.find_by_name_raw 'closed'
           if producer_closed_status
@@ -97,7 +97,7 @@ class ProducerAlertsToTickets
   end
     
   def run(debug)
-    @debugging = debug || false
+    @debugging = debug || true
     puts "Start, #{Time.now.to_s}:  Running Producer alerts_to_tickets with debugging " + @debugging.to_s
 
     @new_count = 0

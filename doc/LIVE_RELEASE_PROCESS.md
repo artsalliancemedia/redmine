@@ -22,7 +22,7 @@ Make sure that the steps prefixed by *1st Installation* are only run the **first
 
 1. Log on to the box to be installed/updated, preferably as root.
 1. *System Update:* Run `cd /home/redmine/aam_lifeguard-redmine;bundle exec thin stop -C /home/redmine/redmine-thin.yml`.
-1. *System Update:* Run `tar -cfz /home/redmine/aam_lifeguard-redmine.\`date "+%Y%m%dT%H%M"\`.tar.gz aam_lifeguard-redmine/` to backup the old installation, then remove it `rm -rf /home/redmine/aam_lifeguard-redmine`.
+1. *System Update:* Run `tar -cfz /home/redmine/aam_lifeguard-redmine.`date "+%Y%m%dT%H%M"`.tar.gz aam_lifeguard-redmine/` to backup the old installation, then remove it `rm -rf /home/redmine/aam_lifeguard-redmine`.
 1. Copy the `aam_lifeguard-redmine.tar.gz` file to the box and extract to `/home/redmine/aam_lifeguard-redmine`.
 1. Execute `/home/redmine/aam_lifeguard-redmine/deploy/deploy.sh`. This copies the settings files locally to the machine and won't overwrite them on system update so settings are preserved.
 1. Modify settings files, they're in `/home/redmine`.
