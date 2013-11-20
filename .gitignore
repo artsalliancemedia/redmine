@@ -2,3 +2,5 @@
 /src/.bundle
 /lib/redmine/.bundle
 
+
+/src/plugins/aam_producer_sync/assets/lastrun.stor

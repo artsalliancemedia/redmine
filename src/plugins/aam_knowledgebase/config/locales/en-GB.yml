@@ -1,4 +1,3 @@
-# English strings go here for Rails i18n
 en-GB:
   label_questions: 'Knowledge Base'
   label_questions_search: 'Search for an article'
@@ -33,8 +32,6 @@ en-GB:
 
   #Override core - doesn't actually work, unfortunately!
   permission_view_questions: View Knowledge Base
-  permission_edit_messages_tags: Edit tags
-  permission_edit_vote_messages: Vote articles
   label_board: Knowledgebase
   label_board_new: New Knowledge Base
   label_board_plural: Knowledge Base
@@ -44,3 +41,13 @@ en-GB:
   label_article_new: New article
   label_message_posted: Article added
   label_reply_plural: Comments
+
+  # Change forums to knowledge base!
+  permission_kb_manage_boards: Manage categories
+  permission_kb_add_messages: Add articles
+  permission_kb_edit_messages: Edit articles
+  permission_kb_edit_own_messages: Edit own articles
+  permission_kb_delete_messages: Delete articles
+  permission_kb_delete_own_messages: Delete own articles
+  permission_kb_edit_messages_tags: Edit tags
+  project_module_kb_boards: Knowledge Base

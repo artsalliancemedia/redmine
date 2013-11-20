@@ -25,4 +25,5 @@ end
 
 Rails.configuration.to_prepare do
   QueriesHelper.send(:include, QueriesHelperPatch) unless QueriesHelper.included_modules.include?(QueriesHelperPatch)
+  RolesController.send(:include, RolesControllerPatch) unless RolesController.included_modules.include?(RolesControllerPatch)
 end

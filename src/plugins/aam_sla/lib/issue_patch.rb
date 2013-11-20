@@ -28,7 +28,7 @@ module IssuePatch
       start_day = ((start_date.wday - 1) % 7) # Get weekday starting from Monday
       days_index = start_day
       num_seconds_left = priority.sla_priority.seconds
-      num_near_breach_seconds_left = priority.sla_priority.seconds - priority.sla_priority.near_breach_seconds
+      num_near_breach_seconds_left = priority.sla_priority.seconds - (priority.sla_priority.near_breach_seconds || 0)
       num_weeks = -1
       final_working_period = nil
       near_breach_working_period = nil
@@ -40,9 +40,11 @@ module IssuePatch
           if days_index == start_day
             num_weeks += 1
           end
+
           if days_index == 0
             done_full_week = true
           end
+
           day_working_periods = utc_working_periods.select{|wp| wp.day == days_index} # Get working periods for this day of the week
           day_working_periods.each do |wp|
             specific_wp = wp.specific_working_period(start_date, num_weeks) # Get working period for a specific date
@@ -53,12 +55,14 @@ module IssuePatch
               update_column(:near_breach_date, nil)
               return
             end
+
             if wp_length < num_near_breach_seconds_left
               num_near_breach_seconds_left -= wp_length
             elsif near_breach_working_period.nil?
               near_breach_working_period = specific_wp # This is the working period the issue is estimated to finish in
               num_near_breach_seconds_left += specific_wp.duration - wp_length # Need to account for pauses in final working period
             end
+
             if wp_length < num_seconds_left # Issue not finished yet
               num_seconds_left -= wp_length
             else
@@ -160,7 +164,6 @@ module IssuePatch
         if @custom_values_before_change
           # custom fields changes
           custom_field_values.each {|c|
-            puts c
             before = @custom_values_before_change[c.custom_field_id]
             after = c.value
             next if before == after || (before.blank? && after.blank?)
