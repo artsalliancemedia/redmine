@@ -23,7 +23,7 @@ Please follow these steps in order:
   * Click around and test the installation is still working correctly before proceeding.
 1. Copy across the `/src/core_patches` folder to the root of the redmine installation directory.
   * Stop the redmine webserver.
-  * To apply the patch(es) correctly please run `patch -p0 -i <redmine_dir>/core_patches/patch_123.diff`. This will modify the code.
+  * To apply the patch(es) correctly please run `patch -p0 -i <redmine_dir>/core_patches/patch_123.diff` (I use Git BASH to execute this). This will modify the code.
   * Then run the command `rake db:migrate` in the root folder. This will modify the database.
   * Start the redmine webserver.
   * Login and test the installation is still working correctly before proceeding.

@@ -60,7 +60,9 @@ Ensure these entries are in the cron scheduler (normally `/etc/crontab`). Change
 
 ### Deployment
 
-@todo: to complete.
+By default our Redmine installation will run under port 7000 if one server instance is configured using thin.
+
+If you need a more sturdy deployment then Thin allows you to spin up multiple, rack-compliant, server instances on different ports. You would then configure Nginx as a reverse proxy to these instances to give it a unified address to the outside world.
 
 ### Troubleshooting
 
