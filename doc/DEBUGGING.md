@@ -5,7 +5,7 @@ We have two primary log files we can use for debugging, these are:
 * Thin Server Log
 * Rails Debugging Log
 
-These can be found under `/var/log` on the system. They should be on a rotation to save space, I would request all log files just to make sure.
+These can be found under `/var/log/aam_lideguard-redmine` on the system. They should be on a rotation to save space, I would request all log files just to make sure.
 
 ## Production Database Backups
 
