@@ -31,8 +31,8 @@ Make sure that the steps prefixed by *1st Installation* are only run the **first
   * `additional_environment.rb` controls the logging output, please see the "Logging" section below for further details.
   * `redmine-thin.yml` controls the thin server settings, see the "Deployment" section below for further details.
 1. Execute `/home/redmine/aam_lifeguard-redmine/deploy/install.sh` this will install the dependencies and perform any database migrations.
-1. *1st Installation:* Run `RAILS_ENV=production rake redmine:load_default_data` to load Redmine's default dataset.
-1. *1st Installation:* Then run `RAILS_ENV=production rake lifeguard:data_modify` to modify the default data for lifeguards requirements.
+1. *1st Installation:* Run `RAILS_ENV=production cd /home/redmine/aam_lifeguard-redmine;bundle exec rake redmine:load_default_data` to load Redmine's default dataset.
+1. *1st Installation:* Then run `RAILS_ENV=production cd /home/redmine/aam_lifeguard-redmine;bundle exec rake lifeguard:data_modify` to modify the default data for lifeguards requirements.
 1. *1st Installation:* Install the cron tasks, see the "Cron Tasks" section below for more details.
 1. Run `cd /home/redmine/aam_lifeguard-redmine;bundle exec thin start -C /home/redmine/redmine-thin.yml` to get Redmine to pick up the new settings.
 1. Check `localhost:7000` to make sure it's working :)
